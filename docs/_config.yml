@@ -9,3 +9,5 @@ gems:
 title: "Benjamin PREVOT - Jeedom plugin - Connexoon"
 description: "Documentation du plugin permettant de piloter la box Connexoon."
 author: "Benjamin PREVOT"
+sass:
+  style: compressed
