@@ -1,0 +1,1 @@
+# Benjamin PREVOT - Jeedom plugin - Connexoon
