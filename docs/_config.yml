@@ -6,9 +6,16 @@ highlighter: rouge
 gems:
 - jekyll-paginate
 - jekyll-seo-tag
+exclude:
+- vendor
+plugins:
+- jekyll-seo-tag
 title: "Benjamin PREVOT - Jeedom plugin - Connexoon"
 description: "Documentation du plugin permettant de piloter la box Connexoon."
 author: "Benjamin PREVOT"
 sass:
   sass_dir: assets/css
   style: compressed
+kramdown:
+  input: GFM
+  hard_wrap: false
