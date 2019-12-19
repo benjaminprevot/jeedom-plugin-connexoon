@@ -1,0 +1,11 @@
+---
+langs: [ fr_FR ]
+baseurl: "/"
+markdown: kramdown
+highlighter: rouge
+gems:
+- jekyll-paginate
+- jekyll-seo-tag
+title: "Benjamin PREVOT - Jeedom plugin - Connexoon"
+description: "Documentation du plugin permettant de piloter la box Connexoon."
+author: "Benjamin PREVOT"
