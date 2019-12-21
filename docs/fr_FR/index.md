@@ -20,7 +20,7 @@ Les informations générés devront ensuite être recopiés dans les paramètres
 
 Dans un premier, il faut se connecter à [https://developer.somfy.com/](https://developer.somfy.com/).
 
-Si vous disposez déjà d'un compte sur ce portail, vous pouvez vous rendre directement au paragraphe [Création d'une application](#création-d-une-application)
+Si vous disposez déjà d'un compte sur ce portail, vous pouvez vous rendre directement au paragraphe [Création d'une application](#création-dune-application).
 
 #### Création d'un compte
 
