@@ -1,6 +1,7 @@
 ---
 title: Documentation en Français
 description: Documentation du plugin Jeedom permettant de piloter la box Connexoon
+type: documentation
 ---
 
 ## Description

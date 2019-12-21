@@ -1,0 +1,10 @@
+<h2>Documentation</h2>
+<ul>
+  {% for page in site.pages %}
+    {% if page.type == "documentation" %}
+      <li>
+        <a href="{% link page %}">{{ page.title }}</a>
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>
