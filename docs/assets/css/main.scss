@@ -2,8 +2,10 @@
 # Main style file
 ---
 
-$font-stack: Roboto, sans-serif;
+@import "meyer-reset";
+
+$font-family: Roboto, sans-serif;
 
 body {
-  font: $font-stack;
+  font-family: $font-family;
 }
