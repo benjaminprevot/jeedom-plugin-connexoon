@@ -7,7 +7,7 @@ layout: default
   {% for page in site.pages %}
     {% if page.type == "documentation" %}
       <li>
-        <a href="{% link page %}">{{ page.title }}</a>
+        <a href="{{ page.url }}">{{ page.title }}</a>
       </li>
     {% endif %}
   {% endfor %}
