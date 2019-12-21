@@ -4,8 +4,6 @@ description: Documentation du plugin Jeedom permettant de piloter la box Connexo
 lang: fr-FR
 ---
 
-# Benjamin PREVOT - Jeedom plugin - Connexoon
-
 ## Description
 
 Ce plugin Jeedom permet de piloter les volets roulants à partir de la box [Connexoon de Somfy](https://www.somfy.fr/produits/1811429/connexoon).
