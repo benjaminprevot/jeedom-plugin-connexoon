@@ -1,6 +1,6 @@
 ---
-title: "Benjamin PREVOT - Jeedom plugin - Connexoon"
-description: "Documentation du plugin permettant de piloter la box Connexoon."
+title: "Connexoon"
+description: "Documentation du plugin Jeedom permettant de piloter la box Connexoon."
 author: "Benjamin PREVOT"
 langs: [ fr_FR ]
 baseurl: "/"
@@ -18,3 +18,12 @@ exclude:
 - vendor
 plugins:
 - jekyll-seo-tag
+twitter:
+  username: benjaminprevot
+  card: summary
+social:
+  name: Benjamin PREVOT
+  links:
+    - https://twitter.com/benjaminprevot
+    - https://www.linkedin.com/in/benjaminprevot
+    - https://github.com/benjaminprevot
