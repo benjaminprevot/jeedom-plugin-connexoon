@@ -4,9 +4,10 @@ layout: default
 
 <h2>Documentation</h2>
 <ul>
-  {% for page in (site.pages | where: "type", "documentation") %}
+  {% assign documentations = site.pages | where: "type", "documentation" %}
+  {% for documentation in documentations %}
     <li>
-      <a href="/{{ site.github.project_title | append: page.url }}">{{ page.title }}</a>
+      <a href="/{{ site.github.project_title | append: documentation.url }}">{{ documentation.title }}</a>
     </li>
   {% endfor %}
 </ul>
