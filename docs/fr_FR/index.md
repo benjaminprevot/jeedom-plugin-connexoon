@@ -1,5 +1,5 @@
 ---
-title: Connexoon
+title: Documentation en Français
 description: Documentation du plugin Jeedom permettant de piloter la box Connexoon
 lang: fr_FR
 ---
