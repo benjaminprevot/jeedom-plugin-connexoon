@@ -7,11 +7,13 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Roboto+Mono:400,500|Material+Icons" rel="stylesheet">
     <link href="/{{site.github.project_title}}/assets/css/main.css" rel="stylesheet">
 
-    {% seo %}
+    <title>{{ page.title | appent: " | " }}{{ site.title }}</title>
+
+    {% seo title=false %}
   </head>
   <body>
     <main>
-      <h1>{{ site.title }} - {{ page.title }}</h1>
+      <h1>{{ site.title }}{{ page.title | preprend: " - " }}</h1>
       {{ content }}
     </main>
   </body>
