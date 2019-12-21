@@ -1,3 +1,9 @@
+---
+title: Connexoon
+description: Documentation du plugin Jeedom permettant de piloter la box Connexoon
+lang: fr-FR
+---
+
 # Benjamin PREVOT - Jeedom plugin - Connexoon
 
 ## Description
