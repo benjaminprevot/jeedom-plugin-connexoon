@@ -7,7 +7,7 @@ layout: default
   {% for page in site.pages %}
     {% if page.type == "documentation" %}
       <li>
-        <a href="{{ page.url }}">{{ page.title }}</a>
+        <a href="/{{ site.github.project_title | append: page.url }}">{{ page.title }}</a>
       </li>
     {% endif %}
   {% endfor %}
