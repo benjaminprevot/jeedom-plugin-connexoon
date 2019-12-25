@@ -5,6 +5,8 @@ lang: fr_FR
 type: documentation
 ---
 
+# Documentation en Français
+
 ## Description
 
 Ce plugin Jeedom permet de piloter les volets roulants à partir de la box [Connexoon de Somfy](https://www.somfy.fr/produits/1811429/connexoon).
@@ -27,7 +29,7 @@ Si vous disposez déjà d'un compte sur ce portail, vous pouvez vous rendre dire
 
 En haut à droite de l'écran, cliquer sur _Log in_.
 
-![Lien log in](/fr_FR/img/login-link.png)
+![Lien log in](/assets/img/fr_FR/login-link.png)
 
 #### Création d'une application
 
