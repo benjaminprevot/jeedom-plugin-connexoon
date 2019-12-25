@@ -1,2 +1,11 @@
+de_DE:
+  label: Deutsch
+
+en_US:
+  label: English
+
+es_ES:
+  label: Español
+
 fr_FR:
   label: Français
