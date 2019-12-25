@@ -29,17 +29,33 @@ Si vous disposez déjà d'un compte sur ce portail, vous pouvez vous rendre dire
 
 En haut à droite de l'écran, cliquer sur _Log in_.
 
-![Lien log in](/{{ site.github.project_title }}/assets/img/fr_FR/login-link.png)
+![Lien Log in](/{{ site.github.project_title }}/assets/img/fr_FR/login-link.png)
+
+__TODO__ : Ajouter les captures pour la création de compte
 
 #### Création d'une application
 
 Une fois connecté au portail du développeur, cliquer dans le menu haut sur _My Apps_.
 
-Vous voyez la liste des applications créées.
+![Lien My Apps](/{{ site.github.project_title }}/assets/img/fr_FR/my-apps-link.png)
+
+Vous voyez la liste des applications créées, elle est vide si vous n'en avez pas encore mis en place.
 
 Cliquez sur le bouton _Add a new App_.
+
+![Lien Add a new App](/{{ site.github.project_title }}/assets/img/fr_FR/add-a-new-app-link.png)
 
 Renseignez les informations demandées :
 - _App Name_ : Nom que vous souhaitez donner à votre application
 - _Callback URL_ : URL vers votre box Jeedom (même si elle n'est pas accessible d'un réseau externe)
 - _App Description_ : Une description de votre application
+
+![Formulaire Add a new App](/{{ site.github.project_title }}/assets/img/fr_FR/add-a-new-app-form.png)
+
+Cliquez sur le bouton _Create App_.
+
+![Lien Create App](/{{ site.github.project_title }}/assets/img/fr_FR/create-app-link.png)
+
+Si tout s'est déroulé correctement, un message indique que l'application est correctement créée et elle apparaît alors dans la liste.
+
+![Application créée avec succès](/{{ site.github.project_title }}/assets/img/fr_FR/app-creation-successful.png)
