@@ -27,6 +27,8 @@ Si vous disposez déjà d'un compte sur ce portail, vous pouvez vous rendre dire
 
 En haut à droite de l'écran, cliquer sur _Log in_.
 
+![Lien log in](/fr_FR/img/login-link.png)
+
 #### Création d'une application
 
 Une fois connecté au portail du développeur, cliquer dans le menu haut sur _My Apps_.
