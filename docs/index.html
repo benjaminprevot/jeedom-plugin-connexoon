@@ -11,3 +11,13 @@ layout: default
     </li>
   {% endfor %}
 </ul>
+
+<h2>Changelog</h2>
+<ul>
+  {% assign changelogs = site.pages | where: "type", "changelog" %}
+  {% for changelog in changelogs %}
+    <li>
+      <a href="/{{ site.github.project_title | append: changelog.url }}">{{ changelog.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
