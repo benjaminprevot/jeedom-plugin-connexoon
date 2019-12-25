@@ -69,3 +69,13 @@ Les informations de l'application sont affichées, en particulier les clés perm
 Notez les valeurs des _Consumer Key_ et _Consumer Secret_.
 
 Elles seront utilisées plus tard pour configurer le plugin dans l'interface Jeedom.
+
+### Plugin
+
+Après avoir installé le plugin dans Jeedom, il faut renseigner les informations lui permettant d'utiliser l'API Somfy.
+
+Pour cela, il suffit de renseigner les valeurs de _Consumer Key_ et _Consumer Secret_ notées précédemment.
+
+Ensuite, cliquez sur le bouton _Sauvegarder_.
+
+Une fenêtre s'ouvre vous demandant de reseigner les informations de connexion au portail Somfy puis d'autoriser le plugin à utiliser l'API.
