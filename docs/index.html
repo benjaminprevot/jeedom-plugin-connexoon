@@ -2,6 +2,18 @@
 layout: default
 ---
 
+{% for lang in site.data.langs %}
+  <h2>{{ lang.label }}</h2>
+  <ul>
+    {% assign pages = site.pages | where: "lang", lang.code | sort: "type" %}
+    {% for page in pages %}
+      <li>
+        <a href="/{{ site.github.project_title | append: page.url }}">{{ page.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endfor %}
+
 <h2>Documentation</h2>
 <ul>
   {% assign documentations = site.pages | where: "type", "documentation" %}
