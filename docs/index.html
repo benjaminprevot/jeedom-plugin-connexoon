@@ -2,10 +2,10 @@
 layout: default
 ---
 
-{% for lang in site.data.langs %}
-  <h2>{{ lang.label }}</h2>
+{% for lang in site.langs %}
+  <h2>{{ site.data.langs[lang].label }}</h2>
   <ul>
-    {% assign pages = site.pages | where: "lang", lang.code | sort: "type" %}
+    {% assign pages = site.pages | where: "lang", lang | sort: "type" %}
     {% for page in pages %}
       <li>
         <a href="/{{ site.github.project_title | append: page.url }}">{{ page.title }}</a>
@@ -13,23 +13,3 @@ layout: default
     {% endfor %}
   </ul>
 {% endfor %}
-
-<h2>Documentation</h2>
-<ul>
-  {% assign documentations = site.pages | where: "type", "documentation" %}
-  {% for documentation in documentations %}
-    <li>
-      <a href="/{{ site.github.project_title | append: documentation.url }}">{{ documentation.title }}</a>
-    </li>
-  {% endfor %}
-</ul>
-
-<h2>Changelog</h2>
-<ul>
-  {% assign changelogs = site.pages | where: "type", "changelog" %}
-  {% for changelog in changelogs %}
-    <li>
-      <a href="/{{ site.github.project_title | append: changelog.url }}">{{ changelog.title }}</a>
-    </li>
-  {% endfor %}
-</ul>
