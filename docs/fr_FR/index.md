@@ -59,3 +59,13 @@ Cliquez sur le bouton _Create App_.
 Si tout s'est déroulé correctement, un message indique que l'application est correctement créée et elle apparaît alors dans la liste.
 
 ![Application créée avec succès](/{{ site.github.project_title }}/assets/img/fr_FR/app-creation-successful.png)
+
+Cliquez ensuite sur la ligne correspondant à votre application.
+
+Les informations de l'application sont affichées, en particulier les clés permettant d'utiliser l'API.
+
+![Détails de l'application](/{{ site.github.project_title }}/assets/img/fr_FR/app-details.png)
+
+Notez les valeurs des _Consumer Key_ et _Consumer Secret_.
+
+Elles seront utilisées plus tard pour configurer le plugin dans l'interface Jeedom.
