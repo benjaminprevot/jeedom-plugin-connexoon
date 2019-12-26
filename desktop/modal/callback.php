@@ -10,6 +10,6 @@ if (!isset($_GET['code']) || !isset($_GET['state'])) {
 $code = $_GET['code'];
 $state = $_GET['state'];
 
-connexoon::getAndSaveToken($code, $state);
+benjaminprevotConnexoon::getAndSaveToken($code, $state);
 ?>
 <script>window.close();</script>

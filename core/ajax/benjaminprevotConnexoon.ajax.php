@@ -24,10 +24,12 @@ try {
     {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
+    
+    ajax::init();
 
     if (init('action') == 'sync')
     {
-		connexoon::sync();
+		benjaminprevotConnexoon::sync();
 		ajax::success();
 	}
 

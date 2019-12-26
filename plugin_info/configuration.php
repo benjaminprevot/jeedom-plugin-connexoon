@@ -25,7 +25,7 @@ if (!isConnect()) {
         <div class="form-group">
             <label class="col-sm-2 control-label">{{Token exists}}</label>
             <div class="col-sm-3">
-                <?php if (config::byKey('token_exists', 'connexoon', 'false') === 'false'): ?>
+                <?php if (config::byKey('token_exists', 'benjaminprevotConnexoon', 'false') === 'false'): ?>
                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                 <?php else: ?>
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
@@ -42,13 +42,13 @@ if (!isConnect()) {
 </form>
 <script>
     $('#bt_savePluginConfig').on('click', function(e) {
-        window.open('index.php?v=d&plugin=connexoon&modal=authorization', '{{Authorization}}', 'directories=no,menubar=no,status=no,location=no,fullscreen=yes');
+        window.open('index.php?v=d&plugin=benjaminprevotConnexoon&modal=authorization', '{{Authorization}}', 'directories=no,menubar=no,status=no,location=no,fullscreen=yes');
     });
 
     $('#bt_syncConnexoon').on('click', function () {
         $.ajax({
             type: "POST",
-            url: "plugins/connexoon/core/ajax/connexoon.ajax.php",
+            url: "plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php",
             data: {
                 action: "sync",
             },

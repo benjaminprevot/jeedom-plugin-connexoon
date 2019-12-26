@@ -18,12 +18,12 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-function connexoon_install()
+function benjaminprevotConnexoon_install()
 { }
 
-function connexoon_update()
+function benjaminprevotConnexoon_update()
 { }
 
 
-function connexoon_remove()
+function benjaminprevotConnexoon_remove()
 { }

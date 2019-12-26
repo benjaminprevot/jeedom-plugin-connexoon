@@ -2,7 +2,7 @@
 if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
-$plugin = plugin::byId('connexoon');
+$plugin = plugin::byId('benjaminprevotConnexoon');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 ?>
@@ -97,5 +97,5 @@ $eqLogics = eqLogic::byType($plugin->getId());
     </div>
 </div>
 
-<?php include_file('desktop', 'connexoon', 'js', 'connexoon');?>
+<?php include_file('desktop', 'benjaminprevotConnexoon', 'js', 'benjaminprevotConnexoon');?>
 <?php include_file('core', 'plugin.template', 'js');?>

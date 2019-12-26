@@ -1,14 +1,14 @@
 <?php
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-class connexoon extends eqLogic
+class benjaminprevotConnexoon extends eqLogic
 {
     /**
      * Logging methods.
      */
     private static function log($level, $message)
     {
-        log::add('connexoon', $level, $message);
+        log::add('benjaminprevotConnexoon', $level, $message);
     }
 
     public static function logDebug($message)
@@ -36,12 +36,12 @@ class connexoon extends eqLogic
      */
     public static function getConfig($key)
     {
-        return config::byKey($key, 'connexoon');
+        return config::byKey($key, 'benjaminprevotConnexoon');
     }
 
     public static function setConfig($key, $value)
     {
-        config::save($key, $value, 'connexoon');
+        config::save($key, $value, 'benjaminprevotConnexoon');
     }
 
     private static function httpPost($url, $params = array(), $headers = array())
@@ -141,22 +141,22 @@ class connexoon extends eqLogic
 
                         self::logDebug('Synching ' . $logicalId);
 
-                        $connexoon = connexoon::byLogicalId($logicalId, 'connexoon');
+                        $benjaminprevotConnexoon = benjaminprevotConnexoon::byLogicalId($logicalId, 'benjaminprevotConnexoon');
 
-                        if (!is_object($connexoon))
+                        if (!is_object($benjaminprevotConnexoon))
                         {
-                            $connexoon = new connexoon();
+                            $benjaminprevotConnexoon = new benjaminprevotConnexoon();
                         }
 
-                        $connexoon->setConfiguration('type', 'roller_shutter');
-                        $connexoon->setConfiguration('actions', implode('|', array_map($capabilityNameFunc, $device['capabilities'])));
-                        $connexoon->setLogicalId($logicalId);
-                        $connexoon->setName($device['name']);
-                        $connexoon->setEqType_name('connexoon');
-                        $connexoon->setIsVisible(1);
-                        $connexoon->setIsEnable($device['available'] == 'true' ? 1 : 0);
-                        $connexoon->save();
-                        $connexoon->refresh();
+                        $benjaminprevotConnexoon->setConfiguration('type', 'roller_shutter');
+                        $benjaminprevotConnexoon->setConfiguration('actions', implode('|', array_map($capabilityNameFunc, $device['capabilities'])));
+                        $benjaminprevotConnexoon->setLogicalId($logicalId);
+                        $benjaminprevotConnexoon->setName($device['name']);
+                        $benjaminprevotConnexoon->setEqType_name('benjaminprevotConnexoon');
+                        $benjaminprevotConnexoon->setIsVisible(1);
+                        $benjaminprevotConnexoon->setIsEnable($device['available'] == 'true' ? 1 : 0);
+                        $benjaminprevotConnexoon->save();
+                        $benjaminprevotConnexoon->refresh();
                     }
                 }
             }
@@ -208,7 +208,7 @@ class connexoon extends eqLogic
                 'client_secret' => $consumer_secret,
                 'grant_type' => 'authorization_code',
                 'code' => $code,
-                'redirect_uri' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=connexoon&modal=callback',
+                'redirect_uri' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=benjaminprevotConnexoon&modal=callback',
                 'state' => $state
             )
         );
@@ -235,7 +235,7 @@ class connexoon extends eqLogic
         $cmd = $this->getCmd(null, $logicalId);
         
         if (!is_object($cmd)) {
-            $cmd = new connexoonCmd();
+            $cmd = new benjaminprevotConnexoonCmd();
             $cmd->setLogicalId($logicalId);
         }
 
@@ -310,11 +310,11 @@ class connexoon extends eqLogic
             $replace['#' . $cmd->getLogicalId() . '_hide#'] = $cmd->getIsVisible() ? '' : 'display:none;';
         }
         
-        return template_replace($replace, getTemplate('core', $version, 'eqLogic', 'connexoon'));
+        return template_replace($replace, getTemplate('core', $version, 'eqLogic', 'benjaminprevotConnexoon'));
     }
 }
 
-class connexoonCmd extends cmd
+class benjaminprevotConnexoonCmd extends cmd
 {
     private function deviceAction($eqLogic, $action)
     {
@@ -326,7 +326,7 @@ class connexoonCmd extends cmd
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Authorization: Bearer ' . connexoon::getConfig('access_token'),
+            'Authorization: Bearer ' . benjaminprevotConnexoon::getConfig('access_token'),
             'Content-Type: application/json'
         ));
         curl_setopt($ch, CURLOPT_POSTFIELDS, '{ "name": "' . $action . '", "parameters": [] }' ); 
@@ -339,7 +339,7 @@ class connexoonCmd extends cmd
             return $response;
         }
 
-        connexoon::logError('Error while calling "' . $url . '": ' . $httpCode);
+        benjaminprevotConnexoon::logError('Error while calling "' . $url . '": ' . $httpCode);
 
         return false;
     }
