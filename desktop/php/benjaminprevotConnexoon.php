@@ -27,7 +27,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
     <div class="col-xs-12 eqLogic" style="display: none;">
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation">
-                <a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay">
+                <a href="" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay">
                     <i class="fa fa-arrow-circle-left"></i>
                 </a>
             </li>
