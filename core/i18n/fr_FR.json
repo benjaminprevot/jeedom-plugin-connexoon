@@ -1,0 +1,10 @@
+{
+  "plugins\/benjaminprevotConnexoon\/core\/class\/benjaminprevotConnexoon.class.php": {
+    "Open": "Ouvrir",
+    "Close": "Fermer",
+    "Identify": "Identifier",
+    "Stop": "Stop",
+    "Refresh": "Rafraîchir",
+    "Position": "Position"
+  }
+}
