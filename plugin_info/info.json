@@ -1,0 +1,16 @@
+{
+    "id": "benjaminprevot-jeedom-plugin-connexoon",
+    "name": "Connexoon",
+    "description": "Plugin to manage Somfy Connexoon",
+    "licence": "AGPL",
+    "author": "Benjamin PREVOT",
+    "require": "3.0",
+    "category": "automatisation",
+    "hasDependency": false,
+    "hasOwnDeamon": false,
+    "maxDependancyInstallTime": 0,
+    "changelog": "https://benjaminprevot.github.io/jeedom-plugin-connexoon/#language#/changelog.html",
+    "documentation": "https://benjaminprevot.github.io/jeedom-plugin-connexoon/#language#/",
+    "language": [ "fr_FR" ],
+    "compatibility" : [ "rpi" ]
+}
