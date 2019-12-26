@@ -76,6 +76,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" placeholder="{{Identifiant}}" readonly/>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"></label>
+                            <div class="col-sm-9 form-actions">
+                                <a class="btn btn-success eqLogicAction" data-action="save"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
+                            </div>
+                        </div>
                     </fieldset>
                 </form>
             </div>
