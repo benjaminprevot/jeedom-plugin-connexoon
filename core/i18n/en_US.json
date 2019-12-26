@@ -6,5 +6,8 @@
     "Stop": "Stop",
     "Refresh": "Refresh",
     "Position": "Position"
+  },
+  "plugins\/benjaminprevotConnexoon\/desktop\/php\/benjaminprevotConnexoon.php": {
+    "My rollers": "My rollers"
   }
 }

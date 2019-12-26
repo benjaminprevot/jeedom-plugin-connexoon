@@ -6,5 +6,8 @@
     "Stop": "Stop",
     "Refresh": "Rafraîchir",
     "Position": "Position"
+  },
+  "plugins\/benjaminprevotConnexoon\/desktop\/php\/benjaminprevotConnexoon.php": {
+    "My rollers": "Mes volets"
   }
 }

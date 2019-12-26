@@ -9,7 +9,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 <div class="row row-overflow">
     <div class="col-xs-12 eqLogicThumbnailDisplay">
-        <legend><i class="fas fa-table"></i> {{Mes équipements}}</legend>
+        <legend><i class="fas fa-table"></i> {{My rollers}}</legend>
         <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
         <div class="eqLogicThumbnailContainer">
             <?php
