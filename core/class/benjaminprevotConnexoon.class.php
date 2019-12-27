@@ -120,6 +120,8 @@ class benjaminprevotConnexoon extends eqLogic
             && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired')
         {
             self::refreshToken();
+
+            return self::callApi($url, $limit - 1);
         }
 
         return $json;
