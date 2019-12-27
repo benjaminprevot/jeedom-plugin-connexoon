@@ -1,13 +1,13 @@
 {
   "plugins\/benjaminprevotConnexoon\/core\/class\/benjaminprevotConnexoon.class.php": {
-    "Open": "Ouvrir",
-    "Close": "Fermer",
-    "Identify": "Identifier",
+    "Ouvrir": "Ouvrir",
+    "Fermer": "Fermer",
+    "Identifier": "Identifier",
     "Stop": "Stop",
-    "Refresh": "Rafraîchir",
+    "Rafraîchir": "Rafraîchir",
     "Position": "Position"
   },
   "plugins\/benjaminprevotConnexoon\/desktop\/php\/benjaminprevotConnexoon.php": {
-    "My rollers": "Mes volets"
+    "Mes volets": "Mes volets"
   }
 }

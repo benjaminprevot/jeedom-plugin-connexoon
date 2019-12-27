@@ -268,22 +268,22 @@ class benjaminprevotConnexoon extends eqLogic
         $actions = explode('|', $this->getConfiguration('actions', ''));
 
         if (in_array('open', $actions)) {
-            $this->addCommand('open', 'Open', 'ROLLER_OPEN');
+            $this->addCommand('open', 'Ouvrir', 'ROLLER_OPEN');
         }
 
         if (in_array('close', $actions)) {
-            $this->addCommand('close', 'Close', 'ROLLER_CLOSE');
+            $this->addCommand('close', 'Fermer', 'ROLLER_CLOSE');
         }
 
         if (in_array('identify', $actions)) {
-            $this->addCommand('identify', 'Identify', 'ROLLER_IDENTIFY');
+            $this->addCommand('identify', 'Identifier', 'ROLLER_IDENTIFY');
         }
 
         if (in_array('stop', $actions)) {
             $this->addCommand('stop', 'Stop', 'ROLLER_STOP');
         }
 
-        $this->addCommand('refresh', 'Refresh', 'ROLLER_REFRESH');
+        $this->addCommand('refresh', 'Rafraîchir', 'ROLLER_REFRESH');
 
         // Info
         $this->addCommand('position', 'Position', 'ROLLER_POSITION', 'info', 'numeric', '%');
