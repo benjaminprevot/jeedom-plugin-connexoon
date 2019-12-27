@@ -1,59 +1,52 @@
 <?php
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-class benjaminprevotConnexoon extends eqLogic
-{
+class benjaminprevotConnexoon extends eqLogic {
+    
+    const ID = 'benjaminprevotConnexoon';
+
     /**
      * Logging methods.
      */
-    private static function log($level, $message)
-    {
-        log::add('benjaminprevotConnexoon', $level, $message);
+    private static function log($level, $message) {
+        log::add(self::ID, $level, $message);
     }
 
-    public static function logDebug($message)
-    {
+    public static function logDebug($message) {
         self::log('debug', $message);
     }
 
-    public static function logInfo($message)
-    {
+    public static function logInfo($message) {
         self::log('info', $message);
     }
 
-    public static function logWarn($message)
-    {
+    public static function logWarn($message) {
         self::log('warning', $message);
     }
 
-    public static function logError($message)
-    {
+    public static function logError($message) {
         self::log('error', $message);
     }
 
     /**
      * Configuration methods.
      */
-    public static function getConfig($key)
-    {
-        return config::byKey($key, 'benjaminprevotConnexoon');
+    public static function getConfig($key) {
+        return config::byKey($key, self::ID);
     }
 
-    public static function setConfig($key, $value)
-    {
-        config::save($key, $value, 'benjaminprevotConnexoon');
+    public static function setConfig($key, $value) {
+        config::save($key, $value, self::ID);
     }
 
     /**
      * HTTP utility functions.
      */
-    public static function buildUrl($url, $params = array())
-    {
+    public static function buildUrl($url, $params = array()) {
         return $url . '?' . http_build_query($params);
     }
 
-    private static function httpPost($url, $params = array(), $headers = array())
-    {
+    private static function httpPost($url, $params = array(), $headers = array(), $body = false) {
         $requestUrl = self::buildUrl($url, $params);
 
         self::logDebug('Calling "' . $requestUrl . '"');
@@ -64,8 +57,14 @@ class benjaminprevotConnexoon extends eqLogic
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        if ($body !== false) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+        }
+        
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
         curl_close($ch);
 
         self::logDebug('Response code: ' . $httpCode);
@@ -78,27 +77,57 @@ class benjaminprevotConnexoon extends eqLogic
         return false;
     }
 
-    private static function getJson($url, $params = array(), $headers = array())
-    {
-        return json_decode(self::httpPost($url, $params, $headers), true);
+    private static function getJson($url, $params = array(), $headers = array(), $body = false) {
+        return json_decode(self::httpPost($url, $params, $headers, $body), true);
     }
 
-    private static function saveToken($json)
-    {
-        if (isset($json['access_token']) && isset($json['refresh_token']))
-        {
+    private static function saveToken($json) {
+        if (isset($json['access_token']) && isset($json['refresh_token'])) {
             self::setConfig('access_token', $json['access_token']);
             self::setConfig('refresh_token', $json['refresh_token']);
             self::setConfig('token_exists', 'true');
-        }
-        else
-        {
+        } else {
             self::setConfig('token_exists', 'false');
         }
     }
 
-    public static function callApi($url, $limit = 5)
-    {
+    public static function refreshToken() {
+        self::logDebug('Refreshing token');
+
+        $json = self::getJson(
+            'https://accounts.somfy.com/oauth/oauth/v2/token',
+            array(
+                'client_id' => self::getConfig('consumer_key'),
+                'client_secret' => self::getConfig('consumer_secret'),
+                'grant_type' => 'refresh_token',
+                'refresh_token' => self::getConfig('refresh_token')
+            ));
+
+        self::saveToken($json);
+    }
+
+    public static function getAndSaveToken($code, $state) {
+        self::logDebug('Getting access token');
+
+        $consumer_key = self::getConfig('consumer_key');
+        $consumer_secret = self::getConfig('consumer_secret');
+
+        $json = self::getJson(
+            'https://accounts.somfy.com/oauth/oauth/v2/token',
+            array(
+                'client_id' => $consumer_key,
+                'client_secret' => $consumer_secret,
+                'grant_type' => 'authorization_code',
+                'code' => $code,
+                'redirect_uri' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=' . self::ID . '&modal=callback',
+                'state' => $state
+            )
+        );
+
+        self::saveToken($json);
+    }
+
+    public static function callApi($url, $limit = 5) {
         self::logDebug('Calling API: ' . $url . ' (' . $limit . ')');
 
         if ($limit < 1) {
@@ -115,10 +144,9 @@ class benjaminprevotConnexoon extends eqLogic
         );
 
         if (isset($json['fault'])
-            && isset($json['fault']['detail'])
-            && isset($json['fault']['detail']['errorcode'])
-            && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired')
-        {
+                && isset($json['fault']['detail'])
+                && isset($json['fault']['detail']['errorcode'])
+                && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired') {
             self::refreshToken();
 
             return self::callApi($url, $limit - 1);
@@ -127,34 +155,28 @@ class benjaminprevotConnexoon extends eqLogic
         return $json;
     }
 
-    public static function sync()
-    {
+    public static function sync() {
         self::logDebug('Refreshing devices');
 
         $sites = self::getSites();
 
-        foreach ($sites as $site)
-        {
-            if (isset($site['id']))
-            {
+        foreach ($sites as $site) {
+            if (isset($site['id'])) {
                 $devices = self::getDevices($site['id']);
 
                 $capabilityNameFunc = function($capability) {
                     return $capability['name'];
                 };
 
-                foreach ($devices as $device)
-                {
-                    if (in_array('roller_shutter', $device['categories']))
-                    {
+                foreach ($devices as $device) {
+                    if (in_array('roller_shutter', $device['categories'])) {
                         $logicalId = $device['id'];
 
                         self::logDebug('Synching ' . $logicalId);
 
-                        $benjaminprevotConnexoon = benjaminprevotConnexoon::byLogicalId($logicalId, 'benjaminprevotConnexoon');
+                        $benjaminprevotConnexoon = benjaminprevotConnexoon::byLogicalId($logicalId, self::ID);
 
-                        if (!is_object($benjaminprevotConnexoon))
-                        {
+                        if (!is_object($benjaminprevotConnexoon)) {
                             $benjaminprevotConnexoon = new benjaminprevotConnexoon();
                         }
 
@@ -162,7 +184,7 @@ class benjaminprevotConnexoon extends eqLogic
                         $benjaminprevotConnexoon->setConfiguration('actions', implode('|', array_map($capabilityNameFunc, $device['capabilities'])));
                         $benjaminprevotConnexoon->setLogicalId($logicalId);
                         $benjaminprevotConnexoon->setName($device['name']);
-                        $benjaminprevotConnexoon->setEqType_name('benjaminprevotConnexoon');
+                        $benjaminprevotConnexoon->setEqType_name(self::ID);
                         $benjaminprevotConnexoon->setIsVisible(1);
                         $benjaminprevotConnexoon->setIsEnable($device['available'] == 'true' ? 1 : 0);
                         $benjaminprevotConnexoon->save();
@@ -173,70 +195,27 @@ class benjaminprevotConnexoon extends eqLogic
         }
     }
 
-    public static function cron5()
-    {
+    public static function cron5() {
         self::sync();
     }
 
-    public static function cron30()
-    {
+    public static function cron30() {
         self::refreshToken();
     }
 
-    public static function refreshToken()
-    {
-        self::logDebug('Refreshing token');
-
-        $json = self::getJson(
-            'https://accounts.somfy.com/oauth/oauth/v2/token',
-            array(
-                'client_id' => self::getConfig('consumer_key'),
-                'client_secret' => self::getConfig('consumer_secret'),
-                'grant_type' => 'refresh_token',
-                'refresh_token' => self::getConfig('refresh_token')
-            ));
-
-        self::saveToken($json);
-    }
-
-    public static function getAndSaveToken($code, $state)
-    {
-        self::logDebug('Getting access token');
-
-        $consumer_key = self::getConfig('consumer_key');
-        $consumer_secret = self::getConfig('consumer_secret');
-
-        $json = self::getJson(
-            'https://accounts.somfy.com/oauth/oauth/v2/token',
-            array(
-                'client_id' => $consumer_key,
-                'client_secret' => $consumer_secret,
-                'grant_type' => 'authorization_code',
-                'code' => $code,
-                'redirect_uri' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=benjaminprevotConnexoon&modal=callback',
-                'state' => $state
-            )
-        );
-
-        self::saveToken($json);
-    }
-
-    public static function getSites()
-    {
+    public static function getSites() {
         self::logDebug('Getting sites list');
 
         return self::callApi('https://api.somfy.com/api/v1/site');
     }
 
-    public static function getDevices($siteId)
-    {
+    public static function getDevices($siteId) {
         self::logDebug('Getting devices list for site ' . $siteId);
 
         return self::callApi('https://api.somfy.com/api/v1/site/' . $siteId . '/device');
     }
 
-    private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null)
-    {
+    private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null) {
         $cmd = $this->getCmd(null, $logicalId);
         
         if (!is_object($cmd)) {
@@ -253,6 +232,18 @@ class benjaminprevotConnexoon extends eqLogic
         $cmd->save();
     }
 
+    public function action($action) {
+        return self::getJson(
+            'https://api.somfy.com/api/v1/device/' . $this->getLogicalId() . '/exec',
+            array(),
+            array(
+                'Authorization: Bearer ' . self::getConfig('access_token'),
+                'Content-Type: application/json'
+            ),
+            '{ "name": "' . $action . '", "parameters": [] }'
+        );
+    }
+
     public function refresh() {
         $device = self::callApi('https://api.somfy.com/api/v1/device/' . $this->getLogicalId());
 
@@ -267,8 +258,7 @@ class benjaminprevotConnexoon extends eqLogic
         $this->refreshWidget();
     }
 
-    public function postSave()
-    {
+    public function postSave() {
         // Action
         $actions = explode('|', $this->getConfiguration('actions', ''));
 
@@ -315,42 +305,14 @@ class benjaminprevotConnexoon extends eqLogic
             $replace['#' . $cmd->getLogicalId() . '_hide#'] = $cmd->getIsVisible() ? '' : 'display:none;';
         }
         
-        return template_replace($replace, getTemplate('core', $version, 'eqLogic', 'benjaminprevotConnexoon'));
+        return template_replace($replace, getTemplate('core', $version, 'eqLogic', self::ID));
     }
+
 }
 
-class benjaminprevotConnexoonCmd extends cmd
-{
-    private function deviceAction($eqLogic, $action)
-    {
-        $url = 'https://api.somfy.com/api/v1/device/' . $eqLogic->getLogicalId() . '/exec';
+class benjaminprevotConnexoonCmd extends cmd {
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Authorization: Bearer ' . benjaminprevotConnexoon::getConfig('access_token'),
-            'Content-Type: application/json'
-        ));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, '{ "name": "' . $action . '", "parameters": [] }' ); 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($httpCode == 200) {
-            return $response;
-        }
-
-        benjaminprevotConnexoon::logError('Error while calling "' . $url . '": ' . $httpCode);
-
-        return false;
-    }
-
-    public function execute($_options = array())
-    {
+    public function execute($_options = array()) {
         if ($this->getType() == '') {
             return;
         }
@@ -362,8 +324,9 @@ class benjaminprevotConnexoonCmd extends cmd
             if ($action == 'refresh') {
                 $eqLogic->refresh();
             } else {
-                $this->deviceAction($eqLogic, $action);
+                $eqLogic->action($action);
             }
         }
     }
+
 }
