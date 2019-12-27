@@ -44,14 +44,22 @@ class benjaminprevotConnexoon extends eqLogic
         config::save($key, $value, 'benjaminprevotConnexoon');
     }
 
+    /**
+     * HTTP utility functions.
+     */
+    public static function buildUrl($url, $params = array())
+    {
+        return $url . '?' . http_build_query($params);
+    }
+
     private static function httpPost($url, $params = array(), $headers = array())
     {
-        $requestUrl = self::getUrl($url, $params);
+        $requestUrl = self::buildUrl($url, $params);
 
         self::logDebug('Calling "' . $requestUrl . '"');
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::getUrl($url, $params));
+        curl_setopt($ch, CURLOPT_URL, $requestUrl);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -187,11 +195,6 @@ class benjaminprevotConnexoon extends eqLogic
             ));
 
         self::saveToken($json);
-    }
-
-    public static function getUrl($url, $params = array())
-    {
-        return $url . '?' . http_build_query($params);
     }
 
     public static function getAndSaveToken($code, $state)
