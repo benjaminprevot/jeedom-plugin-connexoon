@@ -39,6 +39,10 @@ class benjaminprevotConnexoon extends eqLogic {
         config::save($key, $value, self::ID);
     }
 
+    public static function removeConfig($key) {
+        config::remove($key, self::ID);
+    }
+
     /**
      * HTTP utility functions.
      */
