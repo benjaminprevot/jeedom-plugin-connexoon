@@ -55,41 +55,33 @@ class benjaminprevotConnexoon extends eqLogic {
         }
     }
 
-    public static function refreshToken() {
-        Logger::debug('Refreshing token');
+  public static function refreshToken() {
+    Logger::debug('Refreshing token');
 
-        $json = self::getJson(
-            'https://accounts.somfy.com/oauth/oauth/v2/token',
-            array(
-                'client_id' => Config::get('consumer_key'),
-                'client_secret' => Config::get('consumer_secret'),
-                'grant_type' => 'refresh_token',
-                'refresh_token' => Config::get('refresh_token')
-            ));
+    $json = HttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/token')
+        ->param('client_id', Config::get('consumer_key'))
+        ->param('client_secret', Config::get('consumer_secret'))
+        ->param('refresh_token', Config::get('refresh_token'))
+        ->param('grant_type', 'refresh_token')
+        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
 
-        self::saveToken($json);
-    }
+    self::saveToken($json);
+  }
 
-    public static function getAndSaveToken($code, $state) {
-        Logger::debug('Getting access token');
+  public static function getAndSaveToken($code, $state) {
+    Logger::debug('Getting access token');
 
-        $consumer_key = Config::get('consumer_key');
-        $consumer_secret = Config::get('consumer_secret');
+    $json = HttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/token')
+        ->param('client_id', Config::get('consumer_key'))
+        ->param('client_secret', Config::get('consumer_secret'))
+        ->param('grant_type', 'authorization_code')
+        ->param('code', $code)
+        ->param('redirect_uri', $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=' . Plugin::ID . '&modal=callback')
+        ->param('state', $state)
+        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
 
-        $json = self::getJson(
-            'https://accounts.somfy.com/oauth/oauth/v2/token',
-            array(
-                'client_id' => $consumer_key,
-                'client_secret' => $consumer_secret,
-                'grant_type' => 'authorization_code',
-                'code' => $code,
-                'redirect_uri' => $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=' . Plugin::ID . '&modal=callback',
-                'state' => $state
-            )
-        );
-
-        self::saveToken($json);
-    }
+    self::saveToken($json);
+  }
 
     public static function callApi($url, $limit = 5) {
         Logger::debug('Calling API: ' . $url . ' (' . $limit . ')');
