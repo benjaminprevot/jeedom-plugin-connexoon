@@ -72,18 +72,18 @@ class HttpResponse
 
   public function __construct($code, $content)
   {
-      $this->_code = $code;
-      $this->_content = $content;
+    $this->_code = $code;
+    $this->_content = $content;
   }
 
   public function getCode()
   {
-      return $this->_code;
+    return $this->_code;
   }
 
   public function getContent()
   {
-      return $this->_content;
+    return $this->_content;
   }
 }
 
@@ -97,14 +97,20 @@ class HttpRequest
 
   const RESPONSE_STRING = 'STRING';
 
-  public static function get()
+  public static function get($url)
   {
-      return new HttpRequest(self::METHOD_GET);
+    $request = new HttpRequest(self::METHOD_GET);
+    $request->_url = $url;
+
+    return $request;
   }
 
-  public static function post()
+  public static function post($url)
   {
-      return new HttpRequest(self::METHOD_POST);
+    $request = new HttpRequest(self::METHOD_POST);
+    $request->_url = $url;
+
+    return $request;
   }
 
   private $_method;
@@ -119,43 +125,36 @@ class HttpRequest
 
   private function __construct($method)
   {
-      $this->_method = $method;
-      $this->_params = array();
-      $this->_headers = array();
-      $this->_content = '';
+    $this->_method = $method;
+    $this->_params = array();
+    $this->_headers = array();
+    $this->_content = '';
   }
 
   private function header_map($key, $value)
   {
-      return $key . ': ' . $value;
-  }
-
-  public function url($url)
-  {
-      $this->_url = $url;
-
-      return $this;
+    return $key . ': ' . $value;
   }
 
   public function param($key, $value)
   {
-      $this->_params[$key] = $value;
+    $this->_params[$key] = $value;
 
-      return $this;
+    return $this;
   }
 
   public function header($key, $value)
   {
-      $this->_headers[$key] = $value;
+    $this->_headers[$key] = $value;
 
-      return $this;
+    return $this;
   }
 
   public function content($content)
   {
-      $this->_content = $content;
+    $this->_content = $content;
 
-      return $this;
+    return $this;
   }
 
   public function buildUrl()
@@ -165,37 +164,37 @@ class HttpRequest
 
   public function send($responseType)
   {
-      // Build url with query parameters if exist
-      $url = $this->buildUrl();
+    // Build url with query parameters if exist
+    $url = $this->buildUrl();
 
-      // Build headers array
-      $headers = array_map(array($this, 'header_map'), array_keys($this->_headers), $this->_headers);
+    // Build headers array
+    $headers = array_map(array($this, 'header_map'), array_keys($this->_headers), $this->_headers);
 
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, $url);
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-      curl_setopt($ch, CURLOPT_HEADER, false);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-      if ($this->_method === self::METHOD_POST) {
-          curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_content);
-      }
-      
-      $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-      $content = curl_exec($ch);
+    if ($this->_method === self::METHOD_POST) {
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_content);
+    }
+    
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $content = curl_exec($ch);
 
-      Logger::debug('HTTP - ' . $this->_method . ' - ' . $url . ' - ' . $code);
+    Logger::debug('HTTP - ' . $this->_method . ' - ' . $url . ' - ' . $code);
 
-      curl_close($ch);
+    curl_close($ch);
 
-      if ($responseType == self::RESPONSE_JSON_ARRAY)
-      {
-        return new HttpResponse($code, json_decode($content, true));
-      }
-      else
-      {
-        return new HttpResponse($code, $content);
-      }
+    if ($responseType == self::RESPONSE_JSON_ARRAY)
+    {
+      return new HttpResponse($code, json_decode($content, true));
+    }
+    else
+    {
+      return new HttpResponse($code, $content);
+    }
   }
 }
