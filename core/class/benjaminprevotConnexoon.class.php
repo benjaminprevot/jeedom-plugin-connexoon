@@ -6,29 +6,6 @@ class benjaminprevotConnexoon extends eqLogic {
     const ID = 'benjaminprevotConnexoon';
 
     /**
-     * Logging methods.
-     */
-    private static function log($level, $message) {
-        log::add(self::ID, $level, $message);
-    }
-
-    public static function logDebug($message) {
-        self::log('debug', $message);
-    }
-
-    public static function logInfo($message) {
-        self::log('info', $message);
-    }
-
-    public static function logWarn($message) {
-        self::log('warning', $message);
-    }
-
-    public static function logError($message) {
-        self::log('error', $message);
-    }
-
-    /**
      * Configuration methods.
      */
     public static function getConfig($key) {
@@ -53,7 +30,7 @@ class benjaminprevotConnexoon extends eqLogic {
     private static function httpPost($url, $params = array(), $headers = array(), $body = false) {
         $requestUrl = self::buildUrl($url, $params);
 
-        self::logDebug('Calling "' . $requestUrl . '"');
+        log::add(self::ID, 'debug', 'Calling "' . $requestUrl . '"');
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $requestUrl);
@@ -71,8 +48,8 @@ class benjaminprevotConnexoon extends eqLogic {
 
         curl_close($ch);
 
-        self::logDebug('Response code: ' . $httpCode);
-        self::logDebug('Response body: ' . $response);
+        log::add(self::ID, 'debug', 'Response code: ' . $httpCode);
+        log::add(self::ID, 'debug', 'Response body: ' . $response);
 
         if ($httpCode == 200) {
             return $response;
@@ -96,7 +73,7 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     public static function refreshToken() {
-        self::logDebug('Refreshing token');
+        log::add(self::ID, 'debug', 'Refreshing token');
 
         $json = self::getJson(
             'https://accounts.somfy.com/oauth/oauth/v2/token',
@@ -111,7 +88,7 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     public static function getAndSaveToken($code, $state) {
-        self::logDebug('Getting access token');
+        log::add(self::ID, 'debug', 'Getting access token');
 
         $consumer_key = self::getConfig('consumer_key');
         $consumer_secret = self::getConfig('consumer_secret');
@@ -132,7 +109,7 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     public static function callApi($url, $limit = 5) {
-        self::logDebug('Calling API: ' . $url . ' (' . $limit . ')');
+        log::add(self::ID, 'debug', 'Calling API: ' . $url . ' (' . $limit . ')');
 
         if ($limit < 1) {
             return json_decode("{}", true);
@@ -160,7 +137,7 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     public static function sync() {
-        self::logDebug('Refreshing devices');
+        log::add(self::ID, 'debug', 'Refreshing devices');
 
         $sites = self::getSites();
 
@@ -176,7 +153,7 @@ class benjaminprevotConnexoon extends eqLogic {
                     if (in_array('roller_shutter', $device['categories'])) {
                         $logicalId = $device['id'];
 
-                        self::logDebug('Synching ' . $logicalId);
+                        log::add(self::ID, 'debug', 'Synching ' . $logicalId);
 
                         $benjaminprevotConnexoon = benjaminprevotConnexoon::byLogicalId($logicalId, self::ID);
 
@@ -208,13 +185,13 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     public static function getSites() {
-        self::logDebug('Getting sites list');
+        log::add(self::ID, 'debug', 'Getting sites list');
 
         return self::callApi('https://api.somfy.com/api/v1/site');
     }
 
     public static function getDevices($siteId) {
-        self::logDebug('Getting devices list for site ' . $siteId);
+        log::add(self::ID, 'debug', 'Getting devices list for site ' . $siteId);
 
         return self::callApi('https://api.somfy.com/api/v1/site/' . $siteId . '/device');
     }
