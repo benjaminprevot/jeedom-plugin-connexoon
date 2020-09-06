@@ -97,6 +97,11 @@ class HttpRequest
 
   const RESPONSE_STRING = 'STRING';
 
+  public static function get()
+  {
+      return new HttpRequest(self::METHOD_GET);
+  }
+
   public static function post()
   {
       return new HttpRequest(self::METHOD_POST);
