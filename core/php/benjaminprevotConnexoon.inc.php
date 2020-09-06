@@ -151,10 +151,15 @@ class HttpRequest
       return $this;
   }
 
+  public function buildUrl()
+  {
+    return $this->_url . (count($this->_params) == 0 ? '' : '?') . http_build_query($this->_params);
+  }
+
   public function send($responseType)
   {
       // Build url with query parameters if exist
-      $url = $this->_url . (count($this->_params) == 0 ? '' : '?') . http_build_query($this->_params);
+      $url = $this->buildUrl();
 
       // Build headers array
       $headers = array_map(array($this, 'header_map'), array_keys($this->_headers), $this->_headers);
