@@ -178,7 +178,7 @@ class HttpRequest
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     if ($this->_method === self::METHOD_POST) {
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_content);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_content);
     }
     
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
