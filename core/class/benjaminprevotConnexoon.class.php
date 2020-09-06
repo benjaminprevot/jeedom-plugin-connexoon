@@ -41,10 +41,6 @@ class benjaminprevotConnexoon extends eqLogic {
         return false;
     }
 
-    private static function getJson($url, $params = array(), $headers = array(), $body = false) {
-        return json_decode(self::httpPost($url, $params, $headers, $body), true);
-    }
-
     private static function saveToken($json) {
         if (isset($json['access_token']) && isset($json['refresh_token'])) {
             Config::set('access_token', $json['access_token']);
@@ -83,33 +79,29 @@ class benjaminprevotConnexoon extends eqLogic {
     self::saveToken($json);
   }
 
-    public static function callApi($url, $limit = 5) {
-        Logger::debug('Calling API: ' . $url . ' (' . $limit . ')');
+  public static function callApi($url, $limit = 5) {
+    Logger::debug('Calling API: ' . $url . ' (' . $limit . ')');
 
-        if ($limit < 1) {
-            return json_decode("{}", true);
-        }
-
-        $json = self::getJson(
-            $url,
-            array(),
-            array(
-                'Authorization: Bearer ' . Config::get('access_token'),
-                'Content-Type: application/json'
-            )
-        );
-
-        if (isset($json['fault'])
-                && isset($json['fault']['detail'])
-                && isset($json['fault']['detail']['errorcode'])
-                && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired') {
-            self::refreshToken();
-
-            return self::callApi($url, $limit - 1);
-        }
-
-        return $json;
+    if ($limit < 1) {
+      return json_decode("{}", true);
     }
+
+    $json = HttpRequest::get($url)
+        ->header('Authorization', 'Bearer ' . Config::get('access_token'))
+        ->header('Content-Type', 'application/json')
+        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+
+    if (isset($json['fault'])
+            && isset($json['fault']['detail'])
+            && isset($json['fault']['detail']['errorcode'])
+            && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired') {
+        self::refreshToken();
+
+        return self::callApi($url, $limit - 1);
+    }
+
+    return $json;
+  }
 
     public static function sync() {
         Logger::debug('Refreshing devices');
@@ -188,17 +180,13 @@ class benjaminprevotConnexoon extends eqLogic {
         $cmd->save();
     }
 
-    public function action($action) {
-        return self::getJson(
-            'https://api.somfy.com/api/v1/device/' . $this->getLogicalId() . '/exec',
-            array(),
-            array(
-                'Authorization: Bearer ' . Config::get('access_token'),
-                'Content-Type: application/json'
-            ),
-            '{ "name": "' . $action . '", "parameters": [] }'
-        );
-    }
+  public function action($action) {
+    return HttpRequest::post('https://api.somfy.com/api/v1/device/' . $this->getLogicalId() . '/exec')
+        ->header('Authorization', 'Bearer ' . Config::get('access_token'))
+        ->header('Content-Type', 'application/json')
+        ->content('{ "name": "' . $action . '", "parameters": [] }')
+        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+  }
 
     public function refresh() {
         $device = self::callApi('https://api.somfy.com/api/v1/device/' . $this->getLogicalId());
