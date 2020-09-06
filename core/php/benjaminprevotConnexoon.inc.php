@@ -89,6 +89,8 @@ class HttpResponse
 
 class HttpRequest
 {
+  const METHOD_GET = 'GET';
+
   const METHOD_POST = 'POST';
 
   const RESPONSE_JSON_ARRAY = 'JSON_ARRAY';
