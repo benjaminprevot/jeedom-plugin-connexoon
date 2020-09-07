@@ -6,41 +6,6 @@ class benjaminprevotConnexoon extends eqLogic {
     /**
      * HTTP utility functions.
      */
-    public static function buildUrl($url, $params = array()) {
-        return $url . '?' . http_build_query($params);
-    }
-
-    private static function httpPost($url, $params = array(), $headers = array(), $body = false) {
-        $requestUrl = self::buildUrl($url, $params);
-
-        Logger::debug('Calling "' . $requestUrl . '"');
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $requestUrl);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        if ($body !== false) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-        }
-        
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        curl_close($ch);
-
-        Logger::debug('Response code: ' . $httpCode);
-        Logger::debug('Response body: ' . $response);
-
-        if ($httpCode == 200) {
-            return $response;
-        }
-
-        return false;
-    }
-
     private static function saveToken($json) {
         if (isset($json['access_token']) && isset($json['refresh_token'])) {
             Config::set('access_token', $json['access_token']);
