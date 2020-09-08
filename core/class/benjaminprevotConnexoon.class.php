@@ -37,38 +37,14 @@ class benjaminprevotConnexoon extends eqLogic {
     self::saveToken($json);
   }
 
-  public static function callApi($url, $limit = 5) {
-    Logger::debug('Calling API: ' . $url . ' (' . $limit . ')');
-
-    if ($limit < 1) {
-      return json_decode("{}", true);
-    }
-
-    $json = HttpRequest::get($url)
-        ->header('Authorization', 'Bearer ' . Config::get('access_token'))
-        ->header('Content-Type', 'application/json')
-        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
-
-    if (isset($json['fault'])
-            && isset($json['fault']['detail'])
-            && isset($json['fault']['detail']['errorcode'])
-            && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired') {
-        self::refreshToken();
-
-        return self::callApi($url, $limit - 1);
-    }
-
-    return $json;
-  }
-
     public static function sync() {
         Logger::debug('Refreshing devices');
 
-        $sites = self::getSites();
+        $sites = Somfy::getSites();
 
         foreach ($sites as $site) {
             if (isset($site['id'])) {
-                $devices = self::getDevices($site['id']);
+                $devices = Somfy::getDevices($site['id']);
 
                 $capabilityNameFunc = function($capability) {
                     return $capability['name'];
@@ -107,18 +83,6 @@ class benjaminprevotConnexoon extends eqLogic {
 
     public static function cron30() {
         self::refreshToken();
-    }
-
-    public static function getSites() {
-        Logger::debug('Getting sites list');
-
-        return self::callApi('https://api.somfy.com/api/v1/site');
-    }
-
-    public static function getDevices($siteId) {
-        Logger::debug('Getting devices list for site ' . $siteId);
-
-        return self::callApi('https://api.somfy.com/api/v1/site/' . $siteId . '/device');
     }
 
     private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null) {
