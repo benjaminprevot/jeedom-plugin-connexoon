@@ -204,6 +204,46 @@ class HttpRequest
  */
 class Somfy
 {
+  private static function api($url, $limit = 5)
+  {
+    Logger::debug('Calling API: ' . $url . ' (' . $limit . ')');
+
+    if ($limit < 1) {
+      return json_decode("{}", true);
+    }
+
+    $json = HttpRequest::get($url)
+        ->header('Authorization', 'Bearer ' . Config::get('access_token'))
+        ->header('Content-Type', 'application/json')
+        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+
+    if (isset($json['fault'])
+      && isset($json['fault']['detail'])
+      && isset($json['fault']['detail']['errorcode'])
+      && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired')
+    {
+      self::refreshToken();
+
+      return self::api($url, $limit - 1);
+    }
+
+    return $json;
+  }
+
+  public static function getSites()
+  {
+    Logger::debug('Getting sites list');
+
+    return self::api('https://api.somfy.com/api/v1/site');
+  }
+
+  public static function getDevices($siteId)
+  {
+    Logger::debug('Getting devices list for site ' . $siteId);
+
+    return self::api('https://api.somfy.com/api/v1/site/' . $siteId . '/device');
+  }
+
   public static function refreshToken()
   {
     Logger::debug('Refreshing token');
