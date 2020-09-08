@@ -17,14 +17,7 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
   public static function refreshToken() {
-    Logger::debug('Refreshing token');
-
-    $json = HttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/token')
-        ->param('client_id', Config::get('consumer_key'))
-        ->param('client_secret', Config::get('consumer_secret'))
-        ->param('refresh_token', Config::get('refresh_token'))
-        ->param('grant_type', 'refresh_token')
-        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+    $json = Somfy::refreshToken();
 
     self::saveToken($json);
   }
