@@ -41,6 +41,21 @@ class Logger
   {
     self::log('debug', $message);
   }
+
+  public static function info($message)
+  {
+    self::log('info', $message);
+  }
+
+  public static function warning($message)
+  {
+    self::log('warning', $message);
+  }
+
+  public static function error($message)
+  {
+    self::log('error', $message);
+  }
 }
 
 /**
@@ -48,6 +63,8 @@ class Logger
  */
 class Config
 {
+  const ACCESS_TOKEN_KEY = 'access_token';
+
   public static function get($key) {
     return config::byKey($key, Plugin::ID);
   }
@@ -58,6 +75,21 @@ class Config
 
   public static function unset($key) {
     config::remove($key, Plugin::ID);
+  }
+
+  public static function getAccessToken()
+  {
+    return self::get(self::ACCESS_TOKEN_KEY);
+  }
+
+  public static function setAccessToken($accessToken)
+  {
+    return self::set(self::ACCESS_TOKEN_KEY, $accessToken);
+  }
+
+  public static function unsetAccessToken()
+  {
+    return self::unset(self::ACCESS_TOKEN_KEY);
   }
 }
 
@@ -206,22 +238,35 @@ class Somfy
 {
   private static function api($url, $limit = 5)
   {
-    Logger::debug('Calling API: ' . $url . ' (' . $limit . ')');
+    Logger::debug('[Somfy] Call ' . $url . ' - try ' . $limit);
 
     if ($limit < 1) {
-      return json_decode("{}", true);
+      Logger::error('[Somfy] Number of tries exceeded');
+
+      return false;
     }
 
-    $json = HttpRequest::get($url)
+    $response = HttpRequest::get($url)
         ->header('Authorization', 'Bearer ' . Config::get('access_token'))
         ->header('Content-Type', 'application/json')
         ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+    
+    $code = $response->getCode();
+    $json = $response->getContent();
 
-    if (isset($json['fault'])
+    if ($code > 299)
+    {
+      Logger::warning('[Somfy] Code received ' . $code . ' - retry');
+
+      return self::api($url, $limit - 1);
+    }
+    elseif (isset($json['fault'])
       && isset($json['fault']['detail'])
       && isset($json['fault']['detail']['errorcode'])
       && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired')
     {
+      Logger::info('[Somfy] Refresh token and retry');
+
       self::refreshToken();
 
       return self::api($url, $limit - 1);
