@@ -3,7 +3,7 @@ if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-Config::unset('access_token');
+Config::unsetAccessToken();
 Config::unset('refresh_token');
 Config::unset('token_exists');
 
