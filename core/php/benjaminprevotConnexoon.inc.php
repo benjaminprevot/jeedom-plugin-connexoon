@@ -236,7 +236,66 @@ class HttpRequest
  */
 class Somfy
 {
-  private static function api($url, $limit = 5)
+  private static function saveToken($response)
+  {
+    $code = $response->getCode();
+
+    if ($code == 200)
+    {
+      $json = $response->getContent();
+
+      if (isset($json['access_token']) && isset($json['refresh_token']))
+      {
+        Config::setAccessToken($json['access_token']);
+        Config::set('refresh_token', $json['refresh_token']);
+        Config::set('token_exists', 'true');
+
+        Logger::debug('[Somfy] Token saved');
+      }
+      else
+      {
+        Config::set('token_exists', 'false');
+
+        Logger::error('[Somfy] Incorrect token format: ' . print_r($json, true));
+      }
+    }
+    else
+    {
+      Logger::error('[Somfy] An error occured while refreshing token - HTTP code: ' . $code);
+    }
+  }
+
+  public static function getToken($code, $state)
+  {
+    Logger::debug('[Somfy] Get token');
+
+    $response = HttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/token')
+        ->param('client_id', Config::get('consumer_key'))
+        ->param('client_secret', Config::get('consumer_secret'))
+        ->param('grant_type', 'authorization_code')
+        ->param('code', $code)
+        ->param('redirect_uri', $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=' . Plugin::ID . '&modal=callback')
+        ->param('state', $state)
+        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+
+    self::saveToken($response);
+  }
+
+  public static function refreshToken()
+  {
+    Logger::debug('[Somfy] Refresh token');
+
+    $response = HttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/token')
+        ->param('client_id', Config::get('consumer_key'))
+        ->param('client_secret', Config::get('consumer_secret'))
+        ->param('refresh_token', Config::get('refresh_token'))
+        ->param('grant_type', 'refresh_token')
+        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+    
+    self::saveToken($response->getContent());
+  }
+
+  private static function api($url, $content = '', $limit = 5)
   {
     Logger::debug('[Somfy] Call ' . $url . ' - try ' . $limit);
 
@@ -249,6 +308,7 @@ class Somfy
     $response = HttpRequest::get($url)
         ->header('Authorization', 'Bearer ' . Config::get('access_token'))
         ->header('Content-Type', 'application/json')
+        ->content($content)
         ->send(HttpRequest::RESPONSE_JSON_ARRAY);
     
     $code = $response->getCode();
@@ -258,7 +318,7 @@ class Somfy
     {
       Logger::warning('[Somfy] Code received ' . $code . ' - retry');
 
-      return self::api($url, $limit - 1);
+      return self::api($url, $content, $limit - 1);
     }
     elseif (isset($json['fault'])
       && isset($json['fault']['detail'])
@@ -269,7 +329,7 @@ class Somfy
 
       self::refreshToken();
 
-      return self::api($url, $limit - 1);
+      return self::api($url, $content, $limit - 1);
     }
 
     return $json;
@@ -289,15 +349,13 @@ class Somfy
     return self::api('https://api.somfy.com/api/v1/site/' . $siteId . '/device');
   }
 
-  public static function refreshToken()
+  public static function getDevice($deviceId)
   {
-    Logger::debug('Refreshing token');
+    return self::api('https://api.somfy.com/api/v1/device/' . $deviceId);
+  }
 
-    return HttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/token')
-        ->param('client_id', Config::get('consumer_key'))
-        ->param('client_secret', Config::get('consumer_secret'))
-        ->param('refresh_token', Config::get('refresh_token'))
-        ->param('grant_type', 'refresh_token')
-        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+  public static function action($deviceId, $action)
+  {
+    return self::api('https://api.somfy.com/api/v1/device/' . $deviceId . '/exec', '{ "name": "' . $action . '", "parameters": [] }');
   }
 }
