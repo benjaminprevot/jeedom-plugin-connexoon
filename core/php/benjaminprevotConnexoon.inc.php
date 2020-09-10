@@ -65,6 +65,14 @@ class Config
 {
   const ACCESS_TOKEN_KEY = 'access_token';
 
+  const CONSUMER_KEY = 'consumer_key';
+
+  const CONSUMER_STATE = 'consumer_state';
+
+  const REFRESH_TOKEN = 'refresh_token';
+  
+  const TOKEN_EXISTS = 'token_exists';
+
   public static function get($key) {
     return config::byKey($key, Plugin::ID);
   }
@@ -90,6 +98,26 @@ class Config
   public static function unsetAccessToken()
   {
     return self::unset(self::ACCESS_TOKEN_KEY);
+  }
+
+  public static function unsetRefreshToken()
+  {
+    return self::unset(self::REFRESH_TOKEN);
+  }
+
+  public static function unsetTokenExists()
+  {
+    return self::unset(self::TOKEN_EXISTS);
+  }
+
+  public static function setConsumerState($consumerState)
+  {
+    return self::set(self::CONSUMER_STATE, $consumerState);
+  }
+
+  public static function getConsumerKey()
+  {
+    return self::get(self::CONSUMER_KEY);
   }
 }
 
