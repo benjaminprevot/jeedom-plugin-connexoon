@@ -117,6 +117,11 @@ class HttpResponse
   {
     return $this->_content;
   }
+
+  public function getContentAsJsonArray()
+  {
+    return json_decode($this->_content, true);
+  }
 }
 
 class HttpRequest
@@ -124,10 +129,6 @@ class HttpRequest
   const METHOD_GET = 'GET';
 
   const METHOD_POST = 'POST';
-
-  const RESPONSE_JSON_ARRAY = 'JSON_ARRAY';
-
-  const RESPONSE_STRING = 'STRING';
 
   public static function get($url)
   {
@@ -194,7 +195,7 @@ class HttpRequest
     return $this->_url . (count($this->_params) == 0 ? '' : '?') . http_build_query($this->_params);
   }
 
-  public function send($responseType)
+  public function send()
   {
     // Build url with query parameters if exist
     $url = $this->buildUrl();
@@ -220,14 +221,7 @@ class HttpRequest
 
     curl_close($ch);
 
-    if ($responseType == self::RESPONSE_JSON_ARRAY)
-    {
-      return new HttpResponse($code, json_decode($content, true));
-    }
-    else
-    {
-      return new HttpResponse($code, $content);
-    }
+    return new HttpResponse($code, $content);
   }
 }
 
@@ -242,7 +236,7 @@ class Somfy
 
     if ($code == 200)
     {
-      $json = $response->getContent();
+      $json = $response->getContentAsJsonArray();
 
       if (isset($json['access_token']) && isset($json['refresh_token']))
       {
@@ -276,7 +270,7 @@ class Somfy
         ->param('code', $code)
         ->param('redirect_uri', $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=' . Plugin::ID . '&modal=callback')
         ->param('state', $state)
-        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+        ->send();
 
     self::saveToken($response);
   }
@@ -290,9 +284,9 @@ class Somfy
         ->param('client_secret', Config::get('consumer_secret'))
         ->param('refresh_token', Config::get('refresh_token'))
         ->param('grant_type', 'refresh_token')
-        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+        ->send();
     
-    self::saveToken($response->getContent());
+    self::saveToken($response);
   }
 
   private static function api($url, $content = '', $limit = 5)
@@ -309,10 +303,10 @@ class Somfy
         ->header('Authorization', 'Bearer ' . Config::get('access_token'))
         ->header('Content-Type', 'application/json')
         ->content($content)
-        ->send(HttpRequest::RESPONSE_JSON_ARRAY);
+        ->send();
     
     $code = $response->getCode();
-    $json = $response->getContent();
+    $json = $response->getContentAsJsonArray();
 
     if ($code > 299)
     {
