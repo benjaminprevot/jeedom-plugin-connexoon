@@ -1,30 +1,38 @@
 <?php
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-class benjaminprevotConnexoon extends eqLogic {
+class benjaminprevotConnexoon extends eqLogic
+{
 
-  public static function sync() {
+  public static function sync()
+  {
     Logger::debug('Refreshing devices');
 
     $sites = Somfy::getSites();
 
-    foreach ($sites as $site) {
-      if (isset($site['id'])) {
+    foreach ($sites as $site)
+    {
+      if (isset($site['id']))
+      {
         $devices = Somfy::getDevices($site['id']);
 
-        $capabilityNameFunc = function($capability) {
+        $capabilityNameFunc = function($capability)
+        {
           return $capability['name'];
         };
 
-        foreach ($devices as $device) {
-          if (in_array('roller_shutter', $device['categories'])) {
+        foreach ($devices as $device)
+        {
+          if (in_array('roller_shutter', $device['categories']))
+          {
             $logicalId = $device['id'];
 
             Logger::debug('Sync ' . $logicalId);
 
             $benjaminprevotConnexoon = self::byLogicalId($logicalId, Plugin::ID);
 
-            if (!is_object($benjaminprevotConnexoon)) {
+            if (!is_object($benjaminprevotConnexoon))
+            {
               $benjaminprevotConnexoon = new benjaminprevotConnexoon();
             }
 
@@ -43,18 +51,22 @@ class benjaminprevotConnexoon extends eqLogic {
     }
   }
 
-  public static function cron5() {
+  public static function cron5()
+  {
     self::sync();
   }
 
-  public static function cron30() {
+  public static function cron30()
+  {
     Somfy::refreshToken();
   }
 
-  private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null) {
+  private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null)
+  {
     $cmd = $this->getCmd(null, $logicalId);
     
-    if (!is_object($cmd)) {
+    if (!is_object($cmd))
+    {
       $cmd = new benjaminprevotConnexoonCmd();
       $cmd->setLogicalId($logicalId);
     }
@@ -68,7 +80,8 @@ class benjaminprevotConnexoon extends eqLogic {
     $cmd->save();
   }
 
-  public function refresh() {
+  public function refresh()
+  {
     $device = Somfy::getDevice($this->getLogicalId());
 
     foreach ($device['states'] as $state)
@@ -84,23 +97,28 @@ class benjaminprevotConnexoon extends eqLogic {
     $this->refreshWidget();
   }
 
-  public function postSave() {
+  public function postSave()
+  {
     // Action
     $actions = explode('|', $this->getConfiguration('actions', ''));
 
-    if (in_array('open', $actions)) {
+    if (in_array('open', $actions))
+    {
       $this->addCommand('open', 'Ouvrir', 'ROLLER_OPEN');
     }
 
-    if (in_array('close', $actions)) {
+    if (in_array('close', $actions))
+    {
       $this->addCommand('close', 'Fermer', 'ROLLER_CLOSE');
     }
 
-    if (in_array('identify', $actions)) {
+    if (in_array('identify', $actions))
+    {
       $this->addCommand('identify', 'Identifier', 'ROLLER_IDENTIFY');
     }
 
-    if (in_array('stop', $actions)) {
+    if (in_array('stop', $actions))
+    {
       $this->addCommand('stop', 'Stop', 'ROLLER_STOP');
     }
 
@@ -110,7 +128,8 @@ class benjaminprevotConnexoon extends eqLogic {
     $this->addCommand('position', 'Position', 'ROLLER_POSITION', 'info', 'numeric', '%');
   }
 
-  public function toHtml($_version = 'dashboard') {
+  public function toHtml($_version = 'dashboard')
+  {
     $replace = $this->preToHtml($_version);
     if (!is_array($replace))
     {
@@ -140,9 +159,11 @@ class benjaminprevotConnexoon extends eqLogic {
 
 }
 
-class benjaminprevotConnexoonCmd extends cmd {
+class benjaminprevotConnexoonCmd extends cmd
+{
 
-  public function execute($_options = array()) {
+  public function execute($_options = array())
+  {
     if ($this->getType() == '')
     {
         return;
@@ -151,10 +172,14 @@ class benjaminprevotConnexoonCmd extends cmd {
     $eqLogic = $this->getEqLogic();
     $action= $this->getLogicalId();
 
-    if ($this->getType() == 'action') {
-      if ($action == 'refresh') {
+    if ($this->getType() == 'action')
+    {
+      if ($action == 'refresh')
+      {
         $eqLogic->refresh();
-      } else {
+      }
+      else
+      {
         $eqLogic->action($action);
       }
     }
