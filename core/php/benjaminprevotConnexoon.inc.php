@@ -245,7 +245,7 @@ class HttpRequest
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $content = curl_exec($ch);
 
-    Logger::debug('HTTP - ' . $this->_method . ' - ' . $url . ' - ' . $code);
+    Logger::debug('[HTTP] ' . $this->_method . ' - ' . $url . ' - ' . $code);
 
     curl_close($ch);
 
@@ -283,7 +283,7 @@ class Somfy
     }
     else
     {
-      Logger::error('[Somfy] An error occured while refreshing token - HTTP code: ' . $code);
+      Logger::error("[Somfy] An error occured while refreshing token - HTTP code: $code");
     }
   }
 
@@ -333,7 +333,7 @@ class Somfy
 
   private static function api($url, $content = '', $limit = 5)
   {
-    Logger::debug('[Somfy] Call ' . $url . ' - try ' . $limit);
+    Logger::debug("[Somfy] Call $url - try $limit");
 
     if ($limit < 1) {
       Logger::error('[Somfy] Number of tries exceeded');
@@ -352,7 +352,7 @@ class Somfy
 
     if ($code > 299)
     {
-      Logger::warning('[Somfy] Code received ' . $code . ' - retry');
+      Logger::warning("[Somfy] Code received $code - retry");
 
       return self::api($url, $content, $limit - 1);
     }
@@ -373,25 +373,29 @@ class Somfy
 
   public static function getSites()
   {
-    Logger::debug('Getting sites list');
+    Logger::debug('[Somfy] Get sites list');
 
     return self::api('https://api.somfy.com/api/v1/site');
   }
 
   public static function getDevices($siteId)
   {
-    Logger::debug('Getting devices list for site ' . $siteId);
+    Logger::debug("[Somfy] Get devices list for site $siteId");
 
     return self::api('https://api.somfy.com/api/v1/site/' . $siteId . '/device');
   }
 
   public static function getDevice($deviceId)
   {
+    Logger::debug("[Somfy] Get device information for $deviceId");
+
     return self::api('https://api.somfy.com/api/v1/device/' . $deviceId);
   }
 
   public static function action($deviceId, $action)
   {
+    Logger::debug("[Somfy] Launch action $action for device $deviceId");
+
     return self::api('https://api.somfy.com/api/v1/device/' . $deviceId . '/exec', '{ "name": "' . $action . '", "parameters": [] }');
   }
 }
