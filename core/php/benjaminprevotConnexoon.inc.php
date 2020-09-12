@@ -308,7 +308,7 @@ class Somfy
     Logger::debug('[Somfy] Refresh token');
 
     $response = HttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/token')
-        ->param('client_id', Config::get('consumer_key'))
+        ->param('client_id', Config::getConsumerKey())
         ->param('client_secret', Config::get('consumer_secret'))
         ->param('refresh_token', Config::get('refresh_token'))
         ->param('grant_type', 'refresh_token')
@@ -321,7 +321,7 @@ class Somfy
   {
     $state = hash("sha256", rand());
     Config::setConsumerState($state);
-    
+
     return HttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/auth')
         ->param('response_type', 'code')
         ->param('client_id', Config::getConsumerKey())
