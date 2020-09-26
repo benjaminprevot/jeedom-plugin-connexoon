@@ -7,6 +7,8 @@ if (!isset($_GET['code']) || !isset($_GET['state'])) {
     throw new Exception('{{400 - Paramètre manquant}}');
 }
 
+require_once __DIR__  . '/../../core/class/benjaminprevotConnexoon.class.php';
+
 $code = $_GET['code'];
 $state = $_GET['state'];
 
