@@ -6,7 +6,7 @@ class benjaminprevotConnexoon extends eqLogic
 
   public static function sync()
   {
-    ConnexoonLogger::debug('Refreshing devices');
+    ConnexoonLogger::debug('[benjaminprevotConnexoon] Synchronize devices');
 
     $sites = Somfy::getSites();
 
@@ -27,7 +27,7 @@ class benjaminprevotConnexoon extends eqLogic
           {
             $logicalId = $device['id'];
 
-            ConnexoonLogger::debug('Sync ' . $logicalId);
+            ConnexoonLogger::debug('[benjaminprevotConnexoon] Synchronize ' . $logicalId);
 
             $benjaminprevotConnexoon = self::byLogicalId($logicalId, Connexoon::ID);
 
