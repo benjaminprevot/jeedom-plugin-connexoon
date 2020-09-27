@@ -4,6 +4,10 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 class benjaminprevotConnexoon extends eqLogic
 {
 
+  const ALLOWED_COMMANDS = array(
+    'roller_shutter' => array( 'open', 'close', 'identify', 'stop', 'refresh', 'position' )
+  );
+
   public static function sync()
   {
     ConnexoonLogger::debug('[benjaminprevotConnexoon] Synchronize devices');
@@ -63,21 +67,27 @@ class benjaminprevotConnexoon extends eqLogic
 
   private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null)
   {
-    $cmd = $this->getCmd(null, $logicalId);
-    
-    if (!is_object($cmd))
-    {
-      $cmd = new benjaminprevotConnexoonCmd();
-      $cmd->setLogicalId($logicalId);
-    }
+    $actions = explode('|', $this->getConfiguration('actions', ''));
+    $allowedActions = self::ALLOWED_COMMANDS[$this->getConfiguration('type', '')];
 
-    $cmd->setName(__($name, __FILE__));
-    $cmd->setGeneric_type($genericType);
-    $cmd->setType($type);
-    $cmd->setSubType($subType);
-    $cmd->setUnite($unite);
-    $cmd->setEqLogic_id($this->getId());
-    $cmd->save();
+    if (in_array($logicalId, $actions) && in_array($logicalId, $allowedActions))
+    {
+      $cmd = $this->getCmd(null, $logicalId);
+    
+      if (!is_object($cmd))
+      {
+        $cmd = new benjaminprevotConnexoonCmd();
+        $cmd->setLogicalId($logicalId);
+      }
+
+      $cmd->setName(__($name, __FILE__));
+      $cmd->setGeneric_type($genericType);
+      $cmd->setType($type);
+      $cmd->setSubType($subType);
+      $cmd->setUnite($unite);
+      $cmd->setEqLogic_id($this->getId());
+      $cmd->save();
+    }
   }
 
   public function action($action) {
@@ -104,28 +114,10 @@ class benjaminprevotConnexoon extends eqLogic
   public function postSave()
   {
     // Action
-    $actions = explode('|', $this->getConfiguration('actions', ''));
-
-    if (in_array('open', $actions))
-    {
-      $this->addCommand('open', 'Ouvrir', 'ROLLER_OPEN');
-    }
-
-    if (in_array('close', $actions))
-    {
-      $this->addCommand('close', 'Fermer', 'ROLLER_CLOSE');
-    }
-
-    if (in_array('identify', $actions))
-    {
-      $this->addCommand('identify', 'Identifier', 'ROLLER_IDENTIFY');
-    }
-
-    if (in_array('stop', $actions))
-    {
-      $this->addCommand('stop', 'Stop', 'ROLLER_STOP');
-    }
-
+    $this->addCommand('open', 'Ouvrir', 'ROLLER_OPEN');
+    $this->addCommand('close', 'Fermer', 'ROLLER_CLOSE');
+    $this->addCommand('identify', 'Identifier', 'ROLLER_IDENTIFY');
+    $this->addCommand('stop', 'Stop', 'ROLLER_STOP');
     $this->addCommand('refresh', 'Rafraîchir', 'ROLLER_REFRESH');
 
     // Info
@@ -174,7 +166,7 @@ class benjaminprevotConnexoonCmd extends cmd
     }
 
     $eqLogic = $this->getEqLogic();
-    $action= $this->getLogicalId();
+    $action = $this->getLogicalId();
 
     if ($this->getType() == 'action')
     {
