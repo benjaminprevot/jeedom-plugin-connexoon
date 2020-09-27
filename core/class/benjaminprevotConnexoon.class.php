@@ -559,10 +559,14 @@ class Somfy
     return self::api('https://api.somfy.com/api/v1/device/' . $deviceId);
   }
 
-  public static function action($deviceId, $action)
+  public static function action($deviceId, $action, $parameters = array())
   {
     ConnexoonLogger::debug("[Somfy] Launch action $action for device $deviceId");
 
-    return self::api('https://api.somfy.com/api/v1/device/' . $deviceId . '/exec', ConnexoonHttpRequest::METHOD_POST, '{ "name": "' . $action . '", "parameters": [] }');
+    $mapParameter = function($key, $value) {
+      return array('name' => $key, 'value' => $value);
+    };
+
+    return self::api('https://api.somfy.com/api/v1/device/' . $deviceId . '/exec', ConnexoonHttpRequest::METHOD_POST, '{ "name": "' . $action . '", "parameters": ' . json_encode(array_map($mapParameter, array_keys($parameters), $parameters)) . ' }');
   }
 }
