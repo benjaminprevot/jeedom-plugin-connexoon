@@ -549,14 +549,14 @@ class Somfy
   {
     ConnexoonLogger::debug("[Somfy] Get devices list for site $siteId");
 
-    return self::api('https://api.somfy.com/api/v1/site/' . $siteId . '/device');
+    return self::api("https://api.somfy.com/api/v1/site/$siteId/device");
   }
 
   public static function getDevice($deviceId)
   {
     ConnexoonLogger::debug("[Somfy] Get device information for $deviceId");
 
-    return self::api('https://api.somfy.com/api/v1/device/' . $deviceId);
+    return self::api("https://api.somfy.com/api/v1/device/$deviceId");
   }
 
   public static function action($deviceId, $action, $parameters = array())
@@ -567,6 +567,6 @@ class Somfy
       return array('name' => $key, 'value' => $value);
     };
 
-    return self::api('https://api.somfy.com/api/v1/device/' . $deviceId . '/exec', ConnexoonHttpRequest::METHOD_POST, '{ "name": "' . $action . '", "parameters": ' . json_encode(array_map($mapParameter, array_keys($parameters), $parameters)) . ' }');
+    return self::api("https://api.somfy.com/api/v1/device/$deviceId/exec", ConnexoonHttpRequest::METHOD_POST, '{ "name": "' . $action . '", "parameters": ' . json_encode(array_map($mapParameter, array_keys($parameters), $parameters)) . ' }');
   }
 }
