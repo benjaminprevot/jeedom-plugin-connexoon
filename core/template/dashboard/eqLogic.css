@@ -80,3 +80,7 @@
   cursor: pointer;
   text-align: center;
 }
+
+.connexoon .connexoon__commands .commands__command:hover {
+  transform: scale(1.25);
+}
