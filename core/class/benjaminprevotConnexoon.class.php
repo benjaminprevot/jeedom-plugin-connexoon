@@ -503,7 +503,7 @@ class Somfy
     ConnexoonLogger::debug("[Somfy] Call $url - try $limit");
 
     if ($limit < 1) {
-      ConnexoonLogger::error('[Somfy] Number of tries exceeded');
+      ConnexoonLogger::error("[Somfy] $method - $url -  Number of tries exceeded");
 
       return false;
     }
