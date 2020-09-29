@@ -52,17 +52,20 @@
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value {
-  color: #000000;
   display: block;
   font-weight: bold;
   height: 100px;
-  left: 50%;
+  left: 0;
   line-height: 100px;
-  margin: -47px 0 0 -50px;
+  margin: -47px 0 0 0;
   position: absolute;
   text-align: center;
   top: 50%;
-  width: 100px;
+  width: 100%;
+}
+
+.connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value .value__display {
+  color: #000000;
 }
 
 .connexoon .connexoon__commands {

@@ -1,80 +1,82 @@
 .connexoon {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .connexoon .connexoon__status {
-    bottom: 6px;
-    left: 6px;
-    position: absolute;
-    width: 30px;
-    z-index: 1;
-  }
-  
-  .connexoon .connexoon__workspace {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
-  
-  .connexoon .connexoon__workspace .workspace__header {
-    color: #ffffff;
-    padding-top: 6px;
-    text-align: center;
-  }
-  
-  .connexoon .connexoon__workspace .workspace__content {
-    align-items: center;
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    padding: 6px;
-  }
-  
-  .connexoon .connexoon__workspace .workspace__content .content__shutter {
-    align-items: flex-start;
-    border-color: #ffffff;
-    border-style: solid;
-    border-width: 6px 6px 0 6px;
-    box-sizing: border-box;
-    display: flex;
-    height: 80%;
-    justify-content: center;
-    overflow: hidden;
-    padding: 3px 3px 0 3px;
-    position: relative;
-    width: 50%;
-  }
-  
-  .connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__display {
-    background-color: rgba(255, 255, 255, 0.5);
-    flex-grow: 1;
-  }
-  
-  .connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value {
-    color: #000000;
-    display: block;
-    font-weight: bold;
-    height: 100px;
-    left: 50%;
-    line-height: 100px;
-    margin: -47px 0 0 -50px;
-    position: absolute;
-    text-align: center;
-    top: 50%;
-    width: 100px;
-  }
-  
-  .connexoon .connexoon__commands {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    padding-right: 6px;
-  }
-  
-  .connexoon .connexoon__commands .commands__command {
-    color: #ffffff;
-    cursor: pointer;
-    text-align: center;
-  }
-  
+  display: flex;
+  flex-direction: row;
+}
+
+.connexoon .connexoon__status {
+  bottom: 6px;
+  left: 6px;
+  position: absolute;
+  width: 30px;
+  z-index: 1;
+}
+
+.connexoon .connexoon__workspace {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.connexoon .connexoon__workspace .workspace__header {
+  color: #ffffff;
+  padding-top: 6px;
+  text-align: center;
+}
+
+.connexoon .connexoon__workspace .workspace__content {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  padding: 6px;
+}
+
+.connexoon .connexoon__workspace .workspace__content .content__shutter {
+  align-items: flex-start;
+  border-color: #ffffff;
+  border-style: solid;
+  border-width: 6px 6px 0 6px;
+  box-sizing: border-box;
+  display: flex;
+  height: 80%;
+  justify-content: center;
+  overflow: hidden;
+  padding: 3px 3px 0 3px;
+  position: relative;
+  width: 50%;
+}
+
+.connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__display {
+  background-color: rgba(255, 255, 255, 0.5);
+  flex-grow: 1;
+}
+
+.connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value {
+  display: block;
+  font-weight: bold;
+  height: 100px;
+  left: 0;
+  line-height: 100px;
+  margin: -47px 0 0 0;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  width: 100%;
+}
+
+.connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value .value__display {
+  color: #000000;
+}
+
+.connexoon .connexoon__commands {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding-right: 6px;
+}
+
+.connexoon .connexoon__commands .commands__command {
+  color: #ffffff;
+  cursor: pointer;
+  text-align: center;
+}
