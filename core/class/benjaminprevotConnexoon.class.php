@@ -108,7 +108,7 @@ class benjaminprevotConnexoon extends eqLogic
         switch(self::ALLOWED_PARAMETERS[$key])
         {
           case 'int':
-            $parameters[$key] = intval($parameters[$key]);
+            $parameters[$key] = intval($value);
             break;
         }
       }
@@ -163,6 +163,11 @@ class benjaminprevotConnexoon extends eqLogic
     if ($this->getDisplay('hideOn' . $version) == 1)
     {
       return '';
+    }
+
+    foreach (self::ALLOWED_COMMANDS[$this->getConfiguration('type', '')] as $cmd)
+    {
+      $replace['#action_' . $cmd . '_hide#'] = 'display:none;';
     }
 
     foreach ($this->getCmd('info') as $cmd)
