@@ -1,26 +1,42 @@
-<div class="connexoon-eqLogic eqLogic-widget eqLogic allowResize allowReorderCmd" style="height:130px;width:200px;border:#border#;border-radius:#border-radius#;background-color:#background-color#;color:#color#;#style#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#">
-    <div class="connexoon-eqLogic__status statusCmd"></div>
-    <div class="connexoon-eqLogic__commands">
-        <i class="fa fa-refresh cursor tooltips cmd connexoon-eqLogic__command command__refresh" title="Rafraîchir" data-cmd_id="#refresh_id#" style="#refresh_hide#"></i>
-        <i class="fa fa-chevron-up cursor tooltips cmd connexoon-eqLogic__command command__open" title="Ouvrir" data-cmd_id="#open_id#" style="#open_hide#"></i>
-        <i class="fa fa-chevron-down cursor tooltips cmd connexoon-eqLogic__command command__close" title="Fermer" data-cmd_id="#close_id#" style="#close_hide#"></i>
-        <i class="fa fa-stop cursor tooltips cmd connexoon-eqLogic__command command__stop" title="Arrêter" data-cmd_id="#stop_id#" style="#stop_hide#"></i>
-        <i class="fa fa-question-circle cursor tooltips cmd connexoon-eqLogic__command command__identify" title="Identifier" data-cmd_id="#identify_id#" style="#identify_hide#"></i>
+<div class="connexoon eqLogic-widget eqLogic allowResize allowReorderCmd" id="connexoon-#id#" style="height:130px;width:200px;border:#border#;border-radius:#border-radius#;background-color:#background-color#;color:#color#;#style#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" data-value="#info_position_value#" data-position_cmd_id="#info_position_id#">
+  <div class="connexoon__status statusCmd"></div>
+  <div class="connexoon__workspace">
+    <div class="workspace__header widget-name">
+      <a href="#eqLink#" style="#hideEqLogicName#">#name_display# <span>#object_name#</span></a>
     </div>
-    <div class="connexoon-eqLogic__content">
-        <div class="connexoon-eqLogic__name widget-name">
-            #name_display# <span>#object_name#</span>
+    <div class="workspace__content">
+      <div class="content__shutter">
+        <div class="shutter__display"></div>
+        <div class="shutter__value">
+          <div class="value__display"></div>
         </div>
-        <div class="connexoon-eqLogic__shutter">
-            <span class="connexoon-eqLogic__shutter-value">#position#%</span>
-            <div class="connexoon-eqLogic__shutter-display" style="height:#position#%"></div>
-        </div>
+      </div>
+      <div class="content__slider" style="#action_position_set_hide#">
+        <div class="slider"></div>
+      </div>
     </div>
-    <script>
-        $.include([
-            'https://cdn.materialdesignicons.com/4.5.95/css/materialdesignicons.min.css',
-            'plugins/benjaminprevotConnexoon/core/template/dashboard/eqLogic.css',
-            'plugins/benjaminprevotConnexoon/core/template/dashboard/eqLogic.js'
-        ], function() {});
-    </script>
+  </div>
+  <div class="connexoon__commands">
+    <i class="commands__command fa fa-refresh cursor tooltips cmd" title="Rafraîchir" data-cmd_id="#action_refresh_id#" style="#action_refresh_hide#"></i>
+    <i class="commands__command fa fa-chevron-up cursor tooltips cmd" title="Ouvrir" data-cmd_id="#action_open_id#" style="#action_open_hide#"></i>
+    <i class="commands__command fa fa-stop cursor tooltips cmd" title="Arrêter" data-cmd_id="#action_stop_id#" style="#action_stop_hide#"></i>
+    <i class="commands__command fa fa-chevron-down cursor tooltips cmd" title="Fermer" data-cmd_id="#action_close_id#" style="#action_close_hide#"></i>
+    <i class="commands__command fa fa-question-circle cursor tooltips cmd" title="Identifier" data-cmd_id="#action_identify_id#" style="#action_identify_hide#"></i>
+  </div>
+  <div class="connexoon__confirmation">
+    <div class="confirmation__message"></div>
+    <div class="confirmation__commands">
+      <i class="commands__command commands__command--cancel fa fa-stop cursor tooltips cmd" title="Annuler"></i>
+      <i class="commands__command commands__command--validate fa fa-play cursor tooltips cmd" title="Valider (lent)" data-cmd_id="#action_position_low_speed_id#" style="#action_position_low_speed_hide#"></i>
+      <i class="commands__command commands__command--validate fa fa-forward cursor tooltips cmd" title="Valider" data-cmd_id="#action_position_set_id#"></i>    
+    </div>
+  </div>
+  <script>
+    $.include([
+      'plugins/benjaminprevotConnexoon/core/template/dashboard/eqLogic.css',
+      'plugins/benjaminprevotConnexoon/core/template/dashboard/eqLogic.js'
+    ], function() {});
+
+    $('#connexoon-#id#').connexoon();
+  </script>
 </div>
