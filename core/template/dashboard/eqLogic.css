@@ -1,6 +1,7 @@
 .connexoon {
   display: flex;
   flex-direction: row;
+  position: relative;
 }
 
 .connexoon .connexoon__status {
@@ -68,6 +69,30 @@
   color: #000000;
 }
 
+.connexoon .connexoon__workspace .workspace__content .content__slider {
+  height: 80%;
+  margin-left: 10px;
+}
+
+.connexoon .connexoon__workspace .workspace__content .content__slider .slider.ui-slider-vertical {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 0;
+  height: 100%;
+  width: 2px;
+}
+
+.connexoon .connexoon__workspace .workspace__content .content__slider .slider.ui-slider-vertical .ui-slider-handle {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 0;
+  cursor: ns-resize;
+  height: 12px;
+  left: -5px;
+  margin-bottom: -6px;
+  width: 12px;
+}
+
 .connexoon .connexoon__commands {
   display: flex;
   flex-direction: column;
@@ -82,5 +107,38 @@
 }
 
 .connexoon .connexoon__commands .commands__command:hover {
+  transform: scale(1.25);
+}
+
+.connexoon .connexoon__confirmation {
+  background-color: rgba(255, 255, 255, 0.75);
+  bottom: 0;
+  display: none;
+  flex-direction: column;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 3;
+}
+
+.connexoon .connexoon__confirmation.connexoon__confirmation--active {
+  display: flex;
+}
+
+.connexoon .connexoon__confirmation .confirmation__commands {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-evenly;
+}
+
+.connexoon .connexoon__confirmation .confirmation__commands .commands__command {
+  color: #000000;
+  cursor: pointer;
+  font-size: 2em;
+}
+
+.connexoon .connexoon__confirmation .confirmation__commands .commands__command:hover {
   transform: scale(1.25);
 }

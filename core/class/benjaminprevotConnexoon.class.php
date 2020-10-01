@@ -5,8 +5,10 @@ class benjaminprevotConnexoon extends eqLogic
 {
 
   const ALLOWED_COMMANDS = array(
-    'roller_shutter' => array( 'open', 'close', 'identify', 'stop', 'refresh', 'position' )
+    'roller_shutter' => array('open', 'close', 'identify', 'stop', 'refresh', 'position', 'position_set', 'position_low_speed' )
   );
+
+  const ALLOWED_PARAMETERS = array('position' => 'int');
 
   public static function sync()
   {
@@ -22,7 +24,14 @@ class benjaminprevotConnexoon extends eqLogic
 
         $capabilityNameFunc = function($capability)
         {
-          return $capability['name'];
+          $name = $capability['name'];
+
+          if ($name == 'position')
+          {
+            $name = 'position_set';
+          }
+
+          return $name;
         };
 
         foreach ($devices as $device)
@@ -90,8 +99,26 @@ class benjaminprevotConnexoon extends eqLogic
     }
   }
 
-  public function action($action) {
-    return Somfy::action($this->getLogicalId(), $action);
+  public function action($action, $parameters = array()) {
+    $action = ($action == 'position_set' ? 'position' : $action);
+
+    foreach ($parameters as $key => $value) {
+      if (array_key_exists($key, self::ALLOWED_PARAMETERS))
+      {
+        switch(self::ALLOWED_PARAMETERS[$key])
+        {
+          case 'int':
+            $parameters[$key] = intval($parameters[$key]);
+            break;
+        }
+      }
+      else
+      {
+        unset($parameters[$key]);
+      }
+    }
+
+    return Somfy::action($this->getLogicalId(), $action, $parameters);
   }
 
   public function refresh()
@@ -107,8 +134,6 @@ class benjaminprevotConnexoon extends eqLogic
         break;
       }
     }
-
-    $this->refreshWidget();
   }
 
   public function postSave()
@@ -119,6 +144,8 @@ class benjaminprevotConnexoon extends eqLogic
     $this->addCommand('identify', 'Identifier', 'ROLLER_IDENTIFY');
     $this->addCommand('stop', 'Stop', 'ROLLER_STOP');
     $this->addCommand('refresh', 'Rafraîchir', 'ROLLER_REFRESH');
+    $this->addCommand('position_set', 'Positionner', 'ROLLER_POSITION_SET');
+    $this->addCommand('position_low_speed', 'Positionner (lent)', 'ROLLER_POSITION_LOW_SPEED');
 
     // Info
     $this->addCommand('position', 'Position', 'ROLLER_POSITION', 'info', 'numeric', '%');
@@ -140,14 +167,14 @@ class benjaminprevotConnexoon extends eqLogic
 
     foreach ($this->getCmd('info') as $cmd)
     {
-      $replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
-      $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+      $replace['#info_' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
+      $replace['#info_' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
     }
 
     foreach ($this->getCmd('action') as $cmd)
     {
-      $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
-      $replace['#' . $cmd->getLogicalId() . '_hide#'] = $cmd->getIsVisible() ? '' : 'display:none;';
+      $replace['#action_' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+      $replace['#action_' . $cmd->getLogicalId() . '_hide#'] = $cmd->getIsVisible() ? '' : 'display:none;';
     }
     
     return template_replace($replace, getTemplate('core', $version, 'eqLogic', Connexoon::ID));
@@ -158,7 +185,7 @@ class benjaminprevotConnexoon extends eqLogic
 class benjaminprevotConnexoonCmd extends cmd
 {
 
-  public function execute($_options = array())
+  public function execute($options = array())
   {
     if ($this->getType() == '')
     {
@@ -173,10 +200,11 @@ class benjaminprevotConnexoonCmd extends cmd
       if ($action == 'refresh')
       {
         $eqLogic->refresh();
+        $eqLogic->refreshWidget();
       }
       else
       {
-        $eqLogic->action($action);
+        $eqLogic->action($action, $options);
       }
     }
   }
@@ -412,7 +440,7 @@ class ConnexoonHttpRequest
     $content = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-    ConnexoonLogger::debug('[HTTP] ' . $this->_method . ' - ' . $url . ' - Status: ' . $code);
+    ConnexoonLogger::debug('[HTTP] ' . $this->_method . ' - ' . $url . ' - Status: ' . $code . ' - Body: ' . $this->_content);
 
     curl_close($ch);
 
