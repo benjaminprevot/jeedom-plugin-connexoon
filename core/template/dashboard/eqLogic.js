@@ -11,9 +11,30 @@
       var $confirmationCancel = $('.confirmation__commands .commands__command.commands__command--cancel', $confirmation);
       var $confirmationValidate = $('.confirmation__commands .commands__command.commands__command--validate', $confirmation);
 
+      var positionCommandId = $(this).data('position_cmd_id');
+
       var display = function(value) {
         $value.text(value + '%');
         $shutter.height(value + '%');
+      }
+
+      var save = function(value) {
+        $connexoon.data('value', value);
+
+        display(value);
+      }
+
+      var refresh = function() {
+        jeedom.cmd.execute({
+          id: positionCommandId,
+          success: function(position) {
+            if (position != $connexoon.data('value')) {
+              save(position);
+            }
+
+            setTimeout(refresh, 300000);
+          }
+      });
       }
 
       $slider.slider({
@@ -49,11 +70,13 @@
                 position: (100 - $slider.slider('value'))
               },
               success: function() {
-                $connexoon.data('value', 100 - $slider.slider('value'));
+                save(100 - $slider.slider('value'));
                 $confirmation.removeClass('connexoon__confirmation--active');
               }
             });
           });
+
+      refresh();
     });
   };
 
