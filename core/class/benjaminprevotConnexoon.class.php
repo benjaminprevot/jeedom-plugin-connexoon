@@ -144,8 +144,8 @@ class benjaminprevotConnexoon extends eqLogic
     $this->addCommand('identify', 'Identifier', 'ROLLER_IDENTIFY');
     $this->addCommand('stop', 'Stop', 'ROLLER_STOP');
     $this->addCommand('refresh', 'Rafraîchir', 'ROLLER_REFRESH');
-    $this->addCommand('position_set', 'Positionner', 'ROLLER_POSITION_SET');
-    $this->addCommand('position_low_speed', 'Positionner (lent)', 'ROLLER_POSITION_LOW_SPEED');
+    $this->addCommand('position_set', 'Positionner', 'ROLLER_POSITION_SET', 'action', 'slider', '%');
+    $this->addCommand('position_low_speed', 'Positionner (lent)', 'ROLLER_POSITION_LOW_SPEED', 'action', 'slider', '%');
 
     // Info
     $this->addCommand('position', 'Position', 'ROLLER_POSITION', 'info', 'numeric', '%');
@@ -207,9 +207,13 @@ class benjaminprevotConnexoonCmd extends cmd
         $eqLogic->refresh();
         $eqLogic->refreshWidget();
       }
+      else if ($action == 'position_set' || $action == 'position_low_speed')
+      {
+        $eqLogic->action($action, array('position' => $options['slider']));
+      }
       else
       {
-        $eqLogic->action($action, $options);
+        $eqLogic->action($action);
       }
     }
   }

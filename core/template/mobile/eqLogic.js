@@ -67,7 +67,7 @@
             jeedom.cmd.execute({
               id: $(this).data('cmd_id'),
               value: {
-                position: (100 - $slider.slider('value'))
+                slider: (100 - $slider.slider('value'))
               },
               success: function() {
                 save(100 - $slider.slider('value'));
