@@ -26,13 +26,14 @@
   <div class="connexoon__confirmation">
     <div class="confirmation__message"></div>
     <div class="confirmation__commands">
-      <i class="commands__command commands__command--cancel fa fa-stop cursor tooltips cmd" title="Annuler"></i>
-      <i class="commands__command commands__command--validate fa fa-play cursor tooltips cmd" title="Valider (lent)" data-cmd_id="#action_position_low_speed_id#" style="#action_position_low_speed_hide#"></i>
-      <i class="commands__command commands__command--validate fa fa-forward cursor tooltips cmd" title="Valider" data-cmd_id="#action_position_set_id#"></i>    
+      <i class="commands__command commands__command--cancel fa fa-times cursor tooltips cmd" title="Annuler"></i>
+      <i class="commands__command commands__command--validate fa fa-feather-alt cursor tooltips cmd" title="Valider (lent)" data-cmd_id="#action_position_low_speed_id#" style="#action_position_low_speed_hide#"></i>
+      <i class="commands__command commands__command--validate fa fa-check cursor tooltips cmd" title="Valider" data-cmd_id="#action_position_set_id#"></i>    
     </div>
   </div>
   <script>
     $.include([
+      'plugins/benjaminprevotConnexoon/3rdparty/fontawesome/5.15.0/css/all.min.css',
       'plugins/benjaminprevotConnexoon/core/template/dashboard/eqLogic.css',
       'plugins/benjaminprevotConnexoon/core/template/dashboard/eqLogic.js'
     ], function() {});
