@@ -20,8 +20,7 @@
 
       var save = function(value) {
         $connexoon.data('value', value);
-
-        display(value);
+        $slider.slider('value', 100 - value);
       }
 
       var refresh = function() {
