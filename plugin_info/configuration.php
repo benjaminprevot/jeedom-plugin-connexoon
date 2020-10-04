@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+require_once dirname(__FILE__) . '/../core/class/benjaminprevotConnexoon.class.php';
 
 include_file('core', 'authentification', 'php');
 
@@ -10,6 +11,13 @@ if (!isConnect()) {
 ?>
 <form class="form-horizontal">
     <fieldset>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">{{Callback URL}}</label>
+            <div class="col-sm-3">
+                <input type="text" class="configKey form-control" value="<?php echo Somfy::getRedirectUri(); ?>" readonly />
+                <button class="fa fa-copy"></button>
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">{{Consumer Key}}</label>
             <div class="col-sm-3">
