@@ -95,6 +95,7 @@ class benjaminprevotConnexoon extends eqLogic
       $cmd->setSubType($subType);
       $cmd->setUnite($unite);
       $cmd->setEqLogic_id($this->getId());
+
       $cmd->save();
     }
   }
@@ -139,16 +140,16 @@ class benjaminprevotConnexoon extends eqLogic
   public function postSave()
   {
     // Action
-    $this->addCommand('open', 'Ouvrir', 'ROLLER_OPEN');
-    $this->addCommand('close', 'Fermer', 'ROLLER_CLOSE');
+    $this->addCommand('open', 'Ouvrir', 'FLAP_UP');
+    $this->addCommand('close', 'Fermer', 'FLAP_DOWN');
     $this->addCommand('identify', 'Identifier', 'ROLLER_IDENTIFY');
-    $this->addCommand('stop', 'Stop', 'ROLLER_STOP');
+    $this->addCommand('stop', 'Stop', 'FLAP_STOP');
     $this->addCommand('refresh', 'Rafraîchir', 'ROLLER_REFRESH');
-    $this->addCommand('position_set', 'Positionner', 'ROLLER_POSITION_SET', 'action', 'slider', '%');
-    $this->addCommand('position_low_speed', 'Positionner (lent)', 'ROLLER_POSITION_LOW_SPEED', 'action', 'slider', '%');
+    $this->addCommand('position_set', 'Positionner', 'FLAP_SLIDER', 'action', 'slider', '%');
+    $this->addCommand('position_low_speed', 'Positionner (lent)', 'FLAP_SLIDER', 'action', 'slider', '%');
 
     // Info
-    $this->addCommand('position', 'Position', 'ROLLER_POSITION', 'info', 'numeric', '%');
+    $this->addCommand('position', 'Position', 'FLAP_STATE', 'info', 'numeric', '%');
   }
 
   public function toHtml($_version = 'dashboard')
