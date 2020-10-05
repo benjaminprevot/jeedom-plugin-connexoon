@@ -88,9 +88,9 @@ class benjaminprevotConnexoon extends eqLogic
       {
         $cmd = new benjaminprevotConnexoonCmd();
         $cmd->setLogicalId($logicalId);
+        $cmd->setName(__($name, __FILE__));
       }
 
-      $cmd->setName(__($name, __FILE__));
       $cmd->setGeneric_type($genericType);
       $cmd->setType($type);
       $cmd->setSubType($subType);
