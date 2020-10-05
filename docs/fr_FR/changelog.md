@@ -10,7 +10,7 @@ type: changelog
 ## [Beta] - 2020-10-03
 ### Ajout
 - Configuration du plugin
-- Gestion des volets roulants : parent, visibilité, test des commandes
+- Gestion des volets roulants : parent, visibilité, test des commandes, mise à jour du nom
 - Widget des volets permettant d'ouvrir, fermer, identifier et positionner (vitesse normale ou lente)
 
 [Beta]: https://github.com/benjaminprevot/jeedom-plugin-connexoon/tree/beta

@@ -47,12 +47,13 @@ class benjaminprevotConnexoon extends eqLogic
             if (!is_object($benjaminprevotConnexoon))
             {
               $benjaminprevotConnexoon = new benjaminprevotConnexoon();
+              $benjaminprevotConnexoon->setName($device['name']);
             }
 
+            $benjaminprevotConnexoon->setConfiguration('name_somfy', $device['name']);
             $benjaminprevotConnexoon->setConfiguration('type', 'roller_shutter');
             $benjaminprevotConnexoon->setConfiguration('actions', implode('|', array_map($capabilityNameFunc, $device['capabilities'])));
             $benjaminprevotConnexoon->setLogicalId($logicalId);
-            $benjaminprevotConnexoon->setName($device['name']);
             $benjaminprevotConnexoon->setEqType_name(Connexoon::ID);
             $benjaminprevotConnexoon->setIsVisible(1);
             $benjaminprevotConnexoon->setIsEnable($device['available'] == 'true' ? 1 : 0);
@@ -95,6 +96,7 @@ class benjaminprevotConnexoon extends eqLogic
       $cmd->setSubType($subType);
       $cmd->setUnite($unite);
       $cmd->setEqLogic_id($this->getId());
+
       $cmd->save();
     }
   }
@@ -139,16 +141,16 @@ class benjaminprevotConnexoon extends eqLogic
   public function postSave()
   {
     // Action
-    $this->addCommand('open', 'Ouvrir', 'ROLLER_OPEN');
-    $this->addCommand('close', 'Fermer', 'ROLLER_CLOSE');
+    $this->addCommand('open', 'Ouvrir', 'FLAP_UP');
+    $this->addCommand('close', 'Fermer', 'FLAP_DOWN');
     $this->addCommand('identify', 'Identifier', 'ROLLER_IDENTIFY');
-    $this->addCommand('stop', 'Stop', 'ROLLER_STOP');
+    $this->addCommand('stop', 'Stop', 'FLAP_STOP');
     $this->addCommand('refresh', 'Rafraîchir', 'ROLLER_REFRESH');
-    $this->addCommand('position_set', 'Positionner', 'ROLLER_POSITION_SET', 'action', 'slider', '%');
-    $this->addCommand('position_low_speed', 'Positionner (lent)', 'ROLLER_POSITION_LOW_SPEED', 'action', 'slider', '%');
+    $this->addCommand('position_set', 'Positionner', 'FLAP_SLIDER', 'action', 'slider', '%');
+    $this->addCommand('position_low_speed', 'Positionner (lent)', 'FLAP_SLIDER', 'action', 'slider', '%');
 
     // Info
-    $this->addCommand('position', 'Position', 'ROLLER_POSITION', 'info', 'numeric', '%');
+    $this->addCommand('position', 'Position', 'FLAP_STATE', 'info', 'numeric', '%');
   }
 
   public function toHtml($_version = 'dashboard')
@@ -491,6 +493,11 @@ class Somfy
     }
   }
 
+  public static function getRedirectUri()
+  {
+    return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=' . Connexoon::ID . '&modal=callback';
+  }
+
   public static function getToken($code, $state)
   {
     ConnexoonLogger::debug('[Somfy] Get token');
@@ -500,7 +507,7 @@ class Somfy
         ->param('client_secret', ConnexoonConfig::get('consumer_secret'))
         ->param('grant_type', 'authorization_code')
         ->param('code', $code)
-        ->param('redirect_uri', $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=' . Connexoon::ID . '&modal=callback')
+        ->param('redirect_uri', self::getRedirectUri())
         ->param('state', $state)
         ->send();
 
