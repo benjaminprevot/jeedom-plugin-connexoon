@@ -75,7 +75,7 @@ class benjaminprevotConnexoon extends eqLogic
     Somfy::refreshToken();
   }
 
-  private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null)
+  private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null, $display = array())
   {
     $actions = explode('|', $this->getConfiguration('actions', ''));
     $allowedActions = self::ALLOWED_COMMANDS[$this->getConfiguration('type', '')];
@@ -96,6 +96,14 @@ class benjaminprevotConnexoon extends eqLogic
       $cmd->setSubType($subType);
       $cmd->setUnite($unite);
       $cmd->setEqLogic_id($this->getId());
+
+      foreach ($display as $key => $value)
+      {
+        if ($cmd->getDisplay($key, '') == '')
+        {
+          $cmd->setDisplay($key, $value);
+        }
+      }
 
       $cmd->save();
     }
@@ -141,10 +149,10 @@ class benjaminprevotConnexoon extends eqLogic
   public function postSave()
   {
     // Action
-    $this->addCommand('open', 'Ouvrir', 'FLAP_UP');
-    $this->addCommand('close', 'Fermer', 'FLAP_DOWN');
+    $this->addCommand('open', 'Ouvrir', 'FLAP_UP', 'action', 'other', null, array( 'icon' => '<i class="fa fa-chevron-up"></i>' ));
+    $this->addCommand('close', 'Fermer', 'FLAP_DOWN', 'action', 'other', null, array( 'icon' => '<i class="fa fa-chevron-down"></i>' ));
     $this->addCommand('identify', 'Identifier', 'ROLLER_IDENTIFY');
-    $this->addCommand('stop', 'Stop', 'FLAP_STOP');
+    $this->addCommand('stop', 'Stop', 'FLAP_STOP', 'action', 'other', null, array( 'icon' => '<i class="fa fa-stop"></i>' ));
     $this->addCommand('refresh', 'Rafraîchir', 'ROLLER_REFRESH');
     $this->addCommand('position_set', 'Positionner', 'FLAP_SLIDER', 'action', 'slider', '%');
     $this->addCommand('position_low_speed', 'Positionner (lent)', 'FLAP_SLIDER', 'action', 'slider', '%');
