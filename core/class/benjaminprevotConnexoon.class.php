@@ -47,12 +47,13 @@ class benjaminprevotConnexoon extends eqLogic
             if (!is_object($benjaminprevotConnexoon))
             {
               $benjaminprevotConnexoon = new benjaminprevotConnexoon();
+              $benjaminprevotConnexoon->setName($device['name']);
             }
 
+            $benjaminprevotConnexoon->setConfiguration('name_somfy', $device['name']);
             $benjaminprevotConnexoon->setConfiguration('type', 'roller_shutter');
             $benjaminprevotConnexoon->setConfiguration('actions', implode('|', array_map($capabilityNameFunc, $device['capabilities'])));
             $benjaminprevotConnexoon->setLogicalId($logicalId);
-            $benjaminprevotConnexoon->setName($device['name']);
             $benjaminprevotConnexoon->setEqType_name(Connexoon::ID);
             $benjaminprevotConnexoon->setIsVisible(1);
             $benjaminprevotConnexoon->setIsEnable($device['available'] == 'true' ? 1 : 0);

@@ -47,7 +47,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <label class="col-sm-3 control-label">{{Nom de l'équipement}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display:none;" />
-                                <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}" readonly/>
+                                <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -74,6 +74,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <label class="col-sm-3 control-label">{{Identifiant}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" placeholder="{{Identifiant}}" readonly/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Nom Somfy}}</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="name_somfy" placeholder="{{Nom Somfy}}" readonly/>
                             </div>
                         </div>
                         <div class="form-group">
