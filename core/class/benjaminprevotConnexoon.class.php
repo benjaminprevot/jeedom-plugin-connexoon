@@ -48,6 +48,8 @@ class benjaminprevotConnexoon extends eqLogic
             {
               $benjaminprevotConnexoon = new benjaminprevotConnexoon();
               $benjaminprevotConnexoon->setName($device['name']);
+              $benjaminprevotConnexoon->setEqType_name(Connexoon::ID);
+              $benjaminprevotConnexoon->setIsVisible(1);
             }
 
             $capabilities = $device['capabilities'];
@@ -57,8 +59,6 @@ class benjaminprevotConnexoon extends eqLogic
             $benjaminprevotConnexoon->setConfiguration('type', 'roller_shutter');
             $benjaminprevotConnexoon->setConfiguration('actions', implode('|', $actions));
             $benjaminprevotConnexoon->setLogicalId($logicalId);
-            $benjaminprevotConnexoon->setEqType_name(Connexoon::ID);
-            $benjaminprevotConnexoon->setIsVisible(1);
             $benjaminprevotConnexoon->setIsEnable($device['available'] == 'true' ? 1 : 0);
             $benjaminprevotConnexoon->save();
             $benjaminprevotConnexoon->refresh();
