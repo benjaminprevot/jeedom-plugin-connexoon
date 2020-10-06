@@ -14,7 +14,7 @@ if (!isConnect()) {
         <div class="form-group">
             <label class="col-sm-2 control-label">{{Callback URL}}</label>
             <div class="col-sm-10">
-                <input type="text" class="configKey form-control" value="<?php echo Somfy::getRedirectUri(); ?>" readonly />
+                <input type="text" class="form-control" id="configuration--callback_url" readonly />
             </div>
         </div>
         <div class="form-group">
@@ -48,8 +48,12 @@ if (!isConnect()) {
     </fieldset>
 </form>
 <script>
+    var callbackUrl = window.location.origin + '/index.php?v=d&plugin=<?php echo Connexoon::ID ?>&modal=callback';
+
+    $('#configuration--callback_url').value(callbackUrl);
+
     $('#bt_savePluginConfig').on('click', function(e) {
-        window.open('index.php?v=d&plugin=benjaminprevotConnexoon&modal=authorization', '{{Authorization}}', 'directories=no,menubar=no,status=no,location=no,fullscreen=yes');
+        window.open('index.php?v=d&plugin=benjaminprevotConnexoon&modal=authorization&callbackUrl=' + encodeURIComponent(callbackUrl), '{{Authorization}}', 'directories=no,menubar=no,status=no,location=no,fullscreen=yes');
     });
 
     $('#bt_syncConnexoon').on('click', function () {
