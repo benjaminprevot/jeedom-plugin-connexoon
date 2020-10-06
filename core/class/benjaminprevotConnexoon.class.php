@@ -501,11 +501,6 @@ class Somfy
     }
   }
 
-  public static function getRedirectUri()
-  {
-    return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=' . Connexoon::ID . '&modal=callback';
-  }
-
   public static function getToken($code, $state)
   {
     ConnexoonLogger::debug('[Somfy] Get token');
@@ -515,7 +510,7 @@ class Somfy
         ->param('client_secret', ConnexoonConfig::get('consumer_secret'))
         ->param('grant_type', 'authorization_code')
         ->param('code', $code)
-        ->param('redirect_uri', self::getRedirectUri())
+        ->param('redirect_uri', ConnexoonConfig::get('callback_url'))
         ->param('state', $state)
         ->send();
 
@@ -544,7 +539,7 @@ class Somfy
     return ConnexoonHttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/auth')
         ->param('response_type', 'code')
         ->param('client_id', ConnexoonConfig::getConsumerKey())
-        ->param('redirect_uri', $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/index.php?v=d&plugin=' . Connexoon::ID . '&modal=callback')
+        ->param('redirect_uri', ConnexoonConfig::get('callback_url'))
         ->param('state', $state)
         ->param('grant_type', 'authorization_code')
         ->buildUrl();
