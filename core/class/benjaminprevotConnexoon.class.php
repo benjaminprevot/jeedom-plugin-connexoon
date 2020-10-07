@@ -55,6 +55,8 @@ class benjaminprevotConnexoon extends eqLogic
             $capabilities = $device['capabilities'];
             $actions = array_merge(array_map($capabilityNameFunc, $capabilities), array('position', 'refresh'));
 
+            ConnexoonLogger::debug('[benjaminprevotConnexoon] Actions for ' . $logicalId . ': ' . implode('|', $actions));
+
             $benjaminprevotConnexoon->setConfiguration('name_somfy', $device['name']);
             $benjaminprevotConnexoon->setConfiguration('type', 'roller_shutter');
             $benjaminprevotConnexoon->setConfiguration('actions', implode('|', $actions));
