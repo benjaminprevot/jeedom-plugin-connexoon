@@ -34,7 +34,7 @@
 
 .connexoon .connexoon__workspace .workspace__content .content__shutter {
   align-items: flex-start;
-  border-color: #ffffff;
+  border-color: var(--defaultBkg-color);
   border-style: solid;
   border-width: 6px 6px 0 6px;
   box-sizing: border-box;
@@ -48,7 +48,7 @@
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__display {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--btnEq-default-color);
   flex-grow: 1;
 }
 
@@ -66,7 +66,7 @@
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value .value__display {
-  color: #000000;
+  color: var(--txt-color);
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__slider {
@@ -78,9 +78,9 @@
   background-color: #ffffff;
   border: none;
   border-radius: 0;
-  height: 100%;
+  height: 70%;
   width: 2px;
-  Right: 40px;
+  right: 40px;
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__slider .slider.ui-slider-vertical .ui-slider-handle {
