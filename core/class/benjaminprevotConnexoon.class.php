@@ -234,7 +234,12 @@ class benjaminprevotConnexoonCmd extends cmd
       }
       else if ($action == 'position_set' || $action == 'position_low_speed')
       {
-        $eqLogic->action($action, array('position' => $options['slider']));
+        $cmd = $eqLogic->getCmd('info', 'position');
+        $reversed = $cmd->getConfiguration('reversed', 0);
+        $value = $options['slider'];
+        $position = (1 - 2 * $reversed) * $value + 100 * $reversed;
+
+        $eqLogic->action($action, array('position' => $position));
       }
       else
       {
