@@ -41,7 +41,7 @@
         orientation: 'vertical',
         min: 0,
         max: 100,
-        value: 100 - $connexoon.data('value'),
+        value: 100 * (1 - valueReversed) - (1 - 2 * valueReversed) * $connexoon.data('value'),
         create: function(event, ui) {
           display($connexoon.data('value'));
         },
