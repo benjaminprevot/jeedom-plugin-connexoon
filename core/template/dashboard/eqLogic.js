@@ -46,7 +46,7 @@
           display($connexoon.data('value'));
         },
         slide: function(event, ui) {
-          display(100 - ui.value);
+          display(100 * (1 - valueReversed) - (1 - 2 * valueReversed) * ui.value);
         },
         change: function(event, ui) {
           display(100 - ui.value);
