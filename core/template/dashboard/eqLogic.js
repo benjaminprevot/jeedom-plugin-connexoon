@@ -12,10 +12,11 @@
       var $confirmationValidate = $('.confirmation__commands .commands__command.commands__command--validate', $confirmation);
 
       var positionCommandId = $(this).data('position_cmd_id');
+      var valueReversed = $(this).data('value_reversed');
 
       var display = function(value) {
         $value.text(value + '%');
-        $shutter.height(value + '%');
+        $shutter.height(((1 - 2 * valueReversed) * value + 100 * valueReversed) + '%');
       }
 
       var save = function(value) {
