@@ -149,7 +149,11 @@ class benjaminprevotConnexoon extends eqLogic
     {
       if ($state['name'] == 'position')
       {
-        $this->checkAndUpdateCmd('position', max(0, $state['value']));
+        $cmd = $this->getCmd('info', 'position');
+        $reversed = $cmd->getConfiguration('reversed', 0);
+        $value = max(0, $state['value']);
+
+        $this->checkAndUpdateCmd('position', (1 - 2 * $reversed) * $value + 100 * $reversed);
 
         break;
       }
