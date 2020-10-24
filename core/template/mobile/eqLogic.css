@@ -70,8 +70,10 @@
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__slider {
+  box-sizing: border-box;
   height: 80%;
   margin-left: 10px;
+  padding: 6px 0;
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__slider .slider.ui-slider-vertical {
