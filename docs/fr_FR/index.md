@@ -17,11 +17,23 @@ Il utilise l'API mise à disposition [https://developer.somfy.com/](https://deve
 
 Pour permettre le bon fonctionnement du plugin, une configuration préalable doit être faite dans le portail du développeur Somfy.
 
-Les informations générés devront ensuite être recopiés dans les paramètres du plugin.
+Les informations générées devront ensuite être recopiées dans les paramètres du plugin.
+
+Si plusieurs URLs permettent d'accéder à l'interface Jeedom, il faudra mettre en place une configuration par URL en se connectant sur chacune d'elle.
+
+### Paramètre du plugin
+
+Il faut tout d'abord vous connectez sur l'écran de configuration du plugin afin de récupérer l'URL permettant de valider l'authentification.
+
+S'il s'agit de la première configuration, il suffit de cliquer sur le bouton _Ajouter la configuration courante_.
+
+Un formulaire est alors affiché avec un champ non modifiable _Callback URL_.
+
+Conservez la valeur de ce champ pour la suite de la configuration.
 
 ### Portail du développeur
 
-Dans un premier, il faut se connecter à [https://developer.somfy.com/](https://developer.somfy.com/).
+Il faut maintenant se connecter à [https://developer.somfy.com/](https://developer.somfy.com/).
 
 Si vous disposez déjà d'un compte sur ce portail, vous pouvez vous rendre directement au paragraphe [Création d'une application](#création-dune-application).
 
@@ -47,7 +59,7 @@ Cliquez sur le bouton _Add a new App_.
 
 Renseignez les informations demandées :
 - _App Name_ : Nom que vous souhaitez donner à votre application
-- _Callback URL_ : URL vers votre box Jeedom (même si elle n'est pas accessible d'un réseau externe)
+- _Callback URL_ : URL vers votre box Jeedom, il s'agit de la valeur copiée précédemment dans l'écran de configuration du plugin
 - _App Description_ : Une description de votre application
 
 ![Formulaire Add a new App](add-a-new-app-form.png)
@@ -72,10 +84,22 @@ Elles seront utilisées plus tard pour configurer le plugin dans l'interface Jee
 
 ### Plugin
 
-Après avoir installé le plugin dans Jeedom, il faut renseigner les informations lui permettant d'utiliser l'API Somfy.
+Enfin, il faut renseigner les informations lui permettant au plugin d'utiliser l'API Somfy.
 
 Pour cela, il suffit de renseigner les valeurs de _Consumer Key_ et _Consumer Secret_ notées précédemment.
 
 Ensuite, cliquez sur le bouton _Sauvegarder_.
 
 Une fenêtre s'ouvre vous demandant de reseigner les informations de connexion au portail Somfy puis d'autoriser le plugin à utiliser l'API.
+
+Si vous venez de créer l'application dans le portail Somfy, il est possible qu'un délai soit nécessaire avant qu'elle ne soit disponible.
+
+En cas d'erreur d'authentification, attendez quelques minutes et recommencez l'enregistrement des paramètres.
+
+## Gestion de plusieurs URLs
+
+Le plugin permet de gérer plusieurs accès à votre box Jeedom.
+
+Pour des raisons de sécurité, il faut créer une application dans le portail Somfy par URL d'accès à la box.
+
+La configuration se fait ensuite en se connectant à chaque URL.

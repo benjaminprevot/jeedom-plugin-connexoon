@@ -7,7 +7,7 @@ type: changelog
 
 # Changelog en Français
 
-## [Beta] - 2020-10-03
+## [Beta] - 2020-10-24
 ### Ajout
 - Configuration du plugin
 - Gestion des volets roulants : parent, visibilité, test des commandes, mise à jour du nom

@@ -77,7 +77,12 @@ class benjaminprevotConnexoon extends eqLogic
 
   public static function cron30()
   {
-    Somfy::refreshToken();
+    Somfy::refreshTokens();
+  }
+
+  public static function cronDaily()
+  {
+    ConnexoonConfig::cleanConfigurations();
   }
 
   private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null, $display = array())
@@ -280,18 +285,9 @@ class ConnexoonLogger
  */
 class ConnexoonConfig
 {
-  const ACCESS_TOKEN_KEY = 'access_token';
 
-  const CONSUMER_KEY = 'consumer_key';
-
-  const CONSUMER_STATE = 'consumer_state';
-
-  const REFRESH_TOKEN = 'refresh_token';
-  
-  const TOKEN_EXISTS = 'token_exists';
-
-  public static function get($key) {
-    return config::byKey($key, Connexoon::ID);
+  public static function get($key, $default = '') {
+    return config::byKey($key, Connexoon::ID, $default);
   }
 
   public static function set($key, $value) {
@@ -302,40 +298,73 @@ class ConnexoonConfig
     config::remove($key, Connexoon::ID);
   }
 
-  public static function getAccessToken()
+  public static function getConfigurations($enabled = true)
   {
-    return self::get(self::ACCESS_TOKEN_KEY);
+    $configurations = explode('|', self::get('configurations'));
+    $configurations = array_filter($configurations, array('self', 'notBlank'));
+    $configurations = array_filter($configurations, array('self', $enabled ? 'enabled' : 'disabled'));
+    
+    return $configurations;
   }
 
-  public static function setAccessToken($accessToken)
+  public static function addConfiguration($configuration)
   {
-    return self::set(self::ACCESS_TOKEN_KEY, $accessToken);
+    $configurations = ConnexoonConfig::get('configurations');
+
+    if (preg_match("/(^|\|)${configuration}(\||$)/", $configurations) === 0)
+    {
+        ConnexoonConfig::set('configurations', trim($configurations . "|${configuration}", '|'));
+    }
   }
 
-  public static function unsetAccessToken()
+  public static function removeConfiguration($configuration)
   {
-    return self::unset(self::ACCESS_TOKEN_KEY);
+    $configurations = ConnexoonConfig::get('configurations');
+    $configurations = str_replace("${configuration}", '', $configurations);
+    $configurations = preg_replace('/\|{2,}/', '|', $configurations);
+    $configurations = trim($configurations, '|');
+
+    ConnexoonConfig::set('configurations', $configurations);
   }
 
-  public static function unsetRefreshToken()
+  public static function cleanConfigurations()
   {
-    return self::unset(self::REFRESH_TOKEN);
+    $disabledConfigurations = self::getConfigurations(false);
+
+    foreach ($disabledConfigurations as $disabledConfiguration)
+    {
+      self::cleanConfiguration($disabledConfiguration);
+    }
   }
 
-  public static function unsetTokenExists()
+  public static function cleanConfiguration($configuration)
   {
-    return self::unset(self::TOKEN_EXISTS);
+    self::unset("${configuration}_access_token");
+    self::unset("${configuration}_callback_url");
+    self::unset("${configuration}_consumer_key");
+    self::unset("${configuration}_consumer_secret");
+    self::unset("${configuration}_enabled");
+    self::unset("${configuration}_refresh_token");
+    self::unset("${configuration}_token_exists");
+
+    self::removeConfiguration($configuration);
   }
 
-  public static function setConsumerState($consumerState)
+  private static function notBlank($value)
   {
-    return self::set(self::CONSUMER_STATE, $consumerState);
+      return trim($value) != '';
   }
 
-  public static function getConsumerKey()
+  private static function enabled($configuration)
   {
-    return self::get(self::CONSUMER_KEY);
+      return ConnexoonConfig::get("${configuration}_enabled") != 'false';
   }
+
+  private static function disabled($configuration)
+  {
+    return !self::enabled($configuration);
+  }
+
 }
 
 /**
@@ -477,7 +506,7 @@ class ConnexoonHttpRequest
  */
 class Somfy
 {
-  private static function saveToken($response)
+  private static function saveToken($configuration, $response)
   {
     $code = $response->getCode();
 
@@ -487,9 +516,9 @@ class Somfy
 
       if (isset($json['access_token']) && isset($json['refresh_token']))
       {
-        ConnexoonConfig::setAccessToken($json['access_token']);
-        ConnexoonConfig::set('refresh_token', $json['refresh_token']);
-        ConnexoonConfig::set('token_exists', 'true');
+        ConnexoonConfig::set("${configuration}_access_token", $json['access_token']);
+        ConnexoonConfig::set("${configuration}_refresh_token", $json['refresh_token']);
+        ConnexoonConfig::set("${configuration}_token_exists", 'true');
 
         ConnexoonLogger::debug('[Somfy] Token saved');
       }
@@ -510,41 +539,54 @@ class Somfy
   {
     ConnexoonLogger::debug('[Somfy] Get token');
 
+    $configuration = ConnexoonConfig::get("${state}_state");
+
+    ConnexoonConfig::unset("${state}_state");
+
     $response = ConnexoonHttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/token')
-        ->param('client_id', ConnexoonConfig::get('consumer_key'))
-        ->param('client_secret', ConnexoonConfig::get('consumer_secret'))
+        ->param('client_id', ConnexoonConfig::get("${configuration}_consumer_key"))
+        ->param('client_secret', ConnexoonConfig::get("${configuration}_consumer_secret"))
         ->param('grant_type', 'authorization_code')
         ->param('code', $code)
-        ->param('redirect_uri', ConnexoonConfig::get('callback_url'))
+        ->param('redirect_uri', ConnexoonConfig::get("${configuration}_callback_url"))
         ->param('state', $state)
         ->send();
 
-    self::saveToken($response);
+    self::saveToken($configuration, $response);
   }
 
-  public static function refreshToken()
+  public static function refreshToken($configuration)
   {
-    ConnexoonLogger::debug('[Somfy] Refresh token');
+    ConnexoonLogger::debug("[Somfy] Refresh token for configuration ${configuration}");
 
     $response = ConnexoonHttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/token')
-        ->param('client_id', ConnexoonConfig::getConsumerKey())
-        ->param('client_secret', ConnexoonConfig::get('consumer_secret'))
-        ->param('refresh_token', ConnexoonConfig::get('refresh_token'))
+        ->param('client_id', ConnexoonConfig::get("${configuration}_consumer_key"))
+        ->param('client_secret', ConnexoonConfig::get("${configuration}_consumer_secret"))
+        ->param('refresh_token', ConnexoonConfig::get("${configuration}_refresh_token"))
         ->param('grant_type', 'refresh_token')
         ->send();
     
-    self::saveToken($response);
+    self::saveToken($configuration, $response);
   }
 
-  public static function getAuthUrl()
+  public static function refreshTokens()
+  {
+    ConnexoonLogger::debug('[Somfy] Refresh tokens');
+
+    foreach (ConnexoonConfig::getConfigurations() as $configuration) {
+      self::refreshToken($configuration);
+    }
+  }
+
+  public static function getAuthUrl($configuration)
   {
     $state = hash("sha256", rand());
-    ConnexoonConfig::setConsumerState($state);
+    ConnexoonConfig::set("${state}_state", $configuration);
 
     return ConnexoonHttpRequest::get('https://accounts.somfy.com/oauth/oauth/v2/auth')
         ->param('response_type', 'code')
-        ->param('client_id', ConnexoonConfig::getConsumerKey())
-        ->param('redirect_uri', ConnexoonConfig::get('callback_url'))
+        ->param('client_id', ConnexoonConfig::get("${configuration}_consumer_key"))
+        ->param('redirect_uri', ConnexoonConfig::get("${configuration}_callback_url"))
         ->param('state', $state)
         ->param('grant_type', 'authorization_code')
         ->buildUrl();
@@ -552,6 +594,13 @@ class Somfy
 
   private static function api($url, $method = ConnexoonHttpRequest::METHOD_GET, $content = '', $limit = 5)
   {
+    $configurations = ConnexoonConfig::getConfigurations();
+
+    if (empty($configurations))
+    {
+      ConnexoonLogger::debug("[Somfy] No configuration defined");
+    }
+
     ConnexoonLogger::debug("[Somfy] Call $url - try $limit");
 
     if ($limit < 1) {
@@ -560,34 +609,47 @@ class Somfy
       return false;
     }
 
-    $response = ConnexoonHttpRequest::request($method, $url)
-        ->header('Authorization', 'Bearer ' . ConnexoonConfig::get('access_token'))
-        ->header('Content-Type', 'application/json')
-        ->content($content)
-        ->send();
-    
-    $code = $response->getCode();
-    $json = $response->getContentAsJsonArray();
-
-    if ($code > 299)
+    foreach ($configurations as $configuration)
     {
-      ConnexoonLogger::warning("[Somfy] Code received $code - retry");
+      if ('true' != ConnexoonConfig::get("${configuration}_token_exists"))
+      {
+        continue;
+      }
 
-      return self::api($url, $method, $content, $limit - 1);
+      $response = ConnexoonHttpRequest::request($method, $url)
+          ->header('Authorization', 'Bearer ' . ConnexoonConfig::get("${configuration}_access_token"))
+          ->header('Content-Type', 'application/json')
+          ->content($content)
+          ->send();
+      
+      $code = $response->getCode();
+      $json = $response->getContentAsJsonArray();
+
+      if ($code > 299)
+      {
+        ConnexoonLogger::warning("[Somfy] Code received ${code} for configuration ${configuration}");
+
+        continue;
+      }
+
+      if (isset($json['fault'])
+        && isset($json['fault']['detail'])
+        && isset($json['fault']['detail']['errorcode'])
+        && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired')
+      {
+        ConnexoonLogger::info("[Somfy] Refresh token for configuration ${configuration}");
+  
+        self::refreshToken($configuration);
+
+        continue;
+      }
+
+      ConnexoonLogger::debug("[Somfy] API call success for configuration ${configuration}");
+
+      return $json;
     }
-    elseif (isset($json['fault'])
-      && isset($json['fault']['detail'])
-      && isset($json['fault']['detail']['errorcode'])
-      && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired')
-    {
-      ConnexoonLogger::info('[Somfy] Refresh token and retry');
 
-      self::refreshToken();
-
-      return self::api($url, $method, $content, $limit - 1);
-    }
-
-    return $json;
+    return self::api($url, $method, $content, $limit - 1);
   }
 
   public static function getSites()
