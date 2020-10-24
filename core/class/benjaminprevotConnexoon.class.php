@@ -149,7 +149,11 @@ class benjaminprevotConnexoon extends eqLogic
     {
       if ($state['name'] == 'position')
       {
-        $this->checkAndUpdateCmd('position', max(0, $state['value']));
+        $cmd = $this->getCmd('info', 'position');
+        $reversed = $cmd->getConfiguration('reversed', 0);
+        $value = max(0, $state['value']);
+
+        $this->checkAndUpdateCmd('position', (1 - 2 * $reversed) * $value + 100 * $reversed);
 
         break;
       }
@@ -194,6 +198,7 @@ class benjaminprevotConnexoon extends eqLogic
     {
       $replace['#info_' . $cmd->getLogicalId() . '_value#'] = $cmd->execCmd();
       $replace['#info_' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+      $replace['#info_' . $cmd->getLogicalId() . '_reversed#'] = $cmd->getConfiguration('reversed', 0);
     }
 
     foreach ($this->getCmd('action') as $cmd)
@@ -229,7 +234,12 @@ class benjaminprevotConnexoonCmd extends cmd
       }
       else if ($action == 'position_set' || $action == 'position_low_speed')
       {
-        $eqLogic->action($action, array('position' => $options['slider']));
+        $cmd = $eqLogic->getCmd('info', 'position');
+        $reversed = $cmd->getConfiguration('reversed', 0);
+        $value = $options['slider'];
+        $position = (1 - 2 * $reversed) * $value + 100 * $reversed;
+
+        $eqLogic->action($action, array('position' => $position));
       }
       else
       {

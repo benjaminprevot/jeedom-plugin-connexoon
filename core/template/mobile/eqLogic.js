@@ -12,15 +12,16 @@
       var $confirmationValidate = $('.confirmation__commands .commands__command.commands__command--validate', $confirmation);
 
       var positionCommandId = $(this).data('position_cmd_id');
+      var valueReversed = $(this).data('value_reversed');
 
       var display = function(value) {
         $value.text(value + '%');
-        $shutter.height(value + '%');
+        $shutter.height(((1 - 2 * valueReversed) * value + 100 * valueReversed) + '%');
       }
 
       var save = function(value) {
         $connexoon.data('value', value);
-        $slider.slider('value', 100 - value);
+        $slider.slider('value', 100 * (1 - valueReversed) - (1 - 2 * valueReversed) * value);
       }
 
       var refresh = function() {
@@ -40,15 +41,15 @@
         orientation: 'vertical',
         min: 0,
         max: 100,
-        value: 100 - $connexoon.data('value'),
+        value: 100 * (1 - valueReversed) - (1 - 2 * valueReversed) * $connexoon.data('value'),
         create: function(event, ui) {
           display($connexoon.data('value'));
         },
         slide: function(event, ui) {
-          display(100 - ui.value);
+          display(100 * (1 - valueReversed) - (1 - 2 * valueReversed) * ui.value);
         },
         change: function(event, ui) {
-          display(100 - ui.value);
+          display(100 * (1 - valueReversed) - (1 - 2 * valueReversed) * ui.value);
         },
         stop: function(event, ui) {
           $confirmation.addClass('connexoon__confirmation--active');
@@ -57,19 +58,21 @@
 
       $confirmationCancel
           .on('click', function() {
-            $slider.slider('value', 100 - $connexoon.data('value'));
+            $slider.slider('value', 100 * (1 - valueReversed) - (1 - 2 * valueReversed) * $connexoon.data('value'));
             $confirmation.removeClass('connexoon__confirmation--active');
           });
 
       $confirmationValidate
           .on('click', function() {
+            var newPosition = 100 * (1 - valueReversed) - (1 - 2 * valueReversed) * $slider.slider('value');
+            
             jeedom.cmd.execute({
               id: $(this).data('cmd_id'),
               value: {
-                slider: (100 - $slider.slider('value'))
+                slider: newPosition
               },
               success: function() {
-                save(100 - $slider.slider('value'));
+                save(newPosition);
                 $confirmation.removeClass('connexoon__confirmation--active');
               }
             });
