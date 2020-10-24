@@ -21,7 +21,7 @@
 
       var save = function(value) {
         $connexoon.data('value', value);
-        $slider.slider('value', 100 - value);
+        $slider.slider('value', 100 * (1 - valueReversed) - (1 - 2 * valueReversed) * value);
       }
 
       var refresh = function() {
@@ -64,13 +64,15 @@
 
       $confirmationValidate
           .on('click', function() {
+            var newPosition = 100 * (1 - valueReversed) - (1 - 2 * valueReversed) * $slider.slider('value');
+            
             jeedom.cmd.execute({
               id: $(this).data('cmd_id'),
               value: {
-                slider: (100 - $slider.slider('value'))
+                slider: newPosition
               },
               success: function() {
-                save(100 - $slider.slider('value'));
+                save(newPosition);
                 $confirmation.removeClass('connexoon__confirmation--active');
               }
             });
