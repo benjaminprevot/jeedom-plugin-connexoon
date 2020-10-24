@@ -4,17 +4,16 @@ if (!isConnect('admin'))
     throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-if (!isset($_GET['callbackUrl']))
+if (!isset($_GET['configuration']))
 {
-    throw new Exception('{{400 - Paramètre callbackUrl manquant}}');
+    throw new Exception('{{400 - Paramètre configuration manquant}}');
 }
 
 require_once __DIR__  . '/../../core/class/benjaminprevotConnexoon.class.php';
 
-ConnexoonConfig::unsetAccessToken();
-ConnexoonConfig::unsetRefreshToken();
-ConnexoonConfig::unsetTokenExists();
-ConnexoonConfig::set('callback_url', $_GET['callbackUrl']);
+$configuration = $_GET['configuration'];
 
-header('Location: ' . Somfy::getAuthUrl());
+ConnexoonConfig::addConfiguration($configuration);
+
+header('Location: ' . Somfy::getAuthUrl($configuration));
 ?>

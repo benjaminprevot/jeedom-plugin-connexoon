@@ -17,13 +17,44 @@
  */
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+require_once dirname(__FILE__) . '/../core/class/benjaminprevotConnexoon.class.php';
 
 function benjaminprevotConnexoon_install()
 { }
 
 function benjaminprevotConnexoon_update()
-{ }
+{
+  $updated = false;
 
+  $configuration = explode(' ', microtime())[1];
+
+  $updated = updateConfiguration($configuration, 'access_token') || $updated;
+  $updated = updateConfiguration($configuration, 'callback_url') || $updated;
+  $updated = updateConfiguration($configuration, 'consumer_key') || $updated;
+  $updated = updateConfiguration($configuration, 'consumer_secret') || $updated;
+  $updated = updateConfiguration($configuration, 'refresh_token') || $updated;
+  $updated = updateConfiguration($configuration, 'token_exists') || $updated;
+
+  if ($updated)
+  {
+    ConnexoonConfig::addConfiguration($configuration);
+
+    ConnexoonLogger::info("[Install] Configuration ${configuration} created");
+  }
+}
 
 function benjaminprevotConnexoon_remove()
 { }
+
+function updateConfiguration($configuration, $key)
+{
+  if (ConnexoonConfig::get($key))
+  {
+    ConnexoonConfig::set("${configuration}_${key}", ConnexoonConfig::get($key));
+    ConnexoonConfig::unset($key);
+
+    return true;
+  }
+
+  return false;
+}
