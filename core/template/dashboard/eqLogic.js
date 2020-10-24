@@ -58,7 +58,7 @@
 
       $confirmationCancel
           .on('click', function() {
-            $slider.slider('value', 100 - $connexoon.data('value'));
+            $slider.slider('value', 100 * (1 - valueReversed) - (1 - 2 * valueReversed) * $connexoon.data('value'));
             $confirmation.removeClass('connexoon__confirmation--active');
           });
 
