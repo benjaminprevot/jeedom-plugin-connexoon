@@ -19,7 +19,6 @@
 }
 
 .connexoon .connexoon__workspace .workspace__header {
-  color: #ffffff;
   padding-top: 6px;
   text-align: center;
 }
@@ -34,7 +33,7 @@
 
 .connexoon .connexoon__workspace .workspace__content .content__shutter {
   align-items: flex-start;
-  border-color: #ffffff;
+  border-color: var(--txt-color) !important;
   border-style: solid;
   border-width: 6px 6px 0 6px;
   box-sizing: border-box;
@@ -48,8 +47,9 @@
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__display {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--txt-color);
   flex-grow: 1;
+  opacity: 0.3;
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value {
@@ -66,7 +66,7 @@
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value .value__display {
-  color: #000000;
+  color: var(--txt-color);
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__slider {
@@ -74,23 +74,26 @@
   height: 80%;
   margin-left: 10px;
   padding: 6px 0;
+  position: relative;
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__slider .slider.ui-slider-vertical {
-  background-color: #ffffff;
-  border: none;
-  border-radius: 0;
+  border: none !important;
+  border-radius: 0 !important;
   height: 100%;
-  width: 2px;
+  left: 0;
+  margin: 0 !important;
+  position: relative;
+  top: 0 !important;
+  width: 2px !important;
 }
 
 .connexoon .connexoon__workspace .workspace__content .content__slider .slider.ui-slider-vertical .ui-slider-handle {
-  background-color: #ffffff;
-  border: none;
-  border-radius: 0;
-  cursor: ns-resize;
+  border: none !important;
+  border-radius: 0 !important;
+  cursor: ns-resize !important;
   height: 12px;
-  left: -5px;
+  left: -5px !important;
   margin-bottom: -6px;
   width: 12px;
 }
@@ -103,7 +106,6 @@
 }
 
 .connexoon .connexoon__commands .commands__command {
-  color: #ffffff;
   cursor: pointer;
   text-align: center;
 }
@@ -113,7 +115,7 @@
 }
 
 .connexoon .connexoon__confirmation {
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(var(--eq-bg-color), 1);
   bottom: 0;
   display: none;
   flex-direction: column;
@@ -136,11 +138,22 @@
 }
 
 .connexoon .connexoon__confirmation .confirmation__commands .commands__command {
-  color: #000000;
   cursor: pointer;
   font-size: 2em;
 }
 
 .connexoon .connexoon__confirmation .confirmation__commands .commands__command:hover {
   transform: scale(1.25);
+}
+
+.connexoon .connexoon__confirmation .confirmation__message {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.connexoon .connexoon__confirmation .confirmation__message .message__value {
+  font-size: 1.5em;
+  font-weight: bold;
 }
