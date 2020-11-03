@@ -8,6 +8,7 @@
       var $shutter = $('.shutter__display', $connexoon);
       var $slider = $('.slider', $connexoon);
       var $confirmation = $('.connexoon__confirmation', $connexoon);
+      var $confirmationMessage = $('.confirmation__message .message__value', $connexoon);
       var $confirmationCancel = $('.confirmation__commands .commands__command.commands__command--cancel', $confirmation);
       var $confirmationValidate = $('.confirmation__commands .commands__command.commands__command--validate', $confirmation);
 
@@ -52,6 +53,7 @@
           display(100 * (1 - valueReversed) - (1 - 2 * valueReversed) * ui.value);
         },
         stop: function(event, ui) {
+          $confirmationMessage.text((100 * (1 - valueReversed) - (1 - 2 * valueReversed) * ui.value) + '%');
           $confirmation.addClass('connexoon__confirmation--active');
         }
       });
