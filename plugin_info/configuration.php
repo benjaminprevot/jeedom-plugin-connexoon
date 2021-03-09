@@ -148,7 +148,7 @@ function fieldset($configuration, $host, $callbackUrl)
         });
 
         window.benjaminprevotConnexoon_postSaveConfiguration = function() {
-            if ($currentFieldset.filter(':not(.configuration--disabled)').find('.token__value').val() == 'false') {
+            if ($currentFieldset.length == 1) {
                 window.open('index.php?v=d&plugin=benjaminprevotConnexoon&modal=authorization&configuration=' + $currentFieldset.data('configuration'), '{{Authorization}}', 'directories=no,menubar=no,status=no,location=no,fullscreen=yes');
             }
         }
