@@ -15,7 +15,7 @@ function fieldset($configuration, $host, $callbackUrl)
 {
     return "
 <fieldset class=\"panel configuration\" data-configuration=\"${configuration}\" data-configuration_callback_url=\"${callbackUrl}\">
-    <legend>${host}</legend>
+    <legend>${host}<span> (Configuration courante)</span></legend>
     <div class=\"form-group\">
         <label class=\"col-sm-2 control-label\">{{Callback URL}}</label>
         <div class=\"col-sm-10\">
@@ -148,7 +148,7 @@ function fieldset($configuration, $host, $callbackUrl)
         });
 
         window.benjaminprevotConnexoon_postSaveConfiguration = function() {
-            if ($currentFieldset.filter(':not(.configuration--disabled)').find('.token__value').val() == 'false') {
+            if ($currentFieldset.length == 1) {
                 window.open('index.php?v=d&plugin=benjaminprevotConnexoon&modal=authorization&configuration=' + $currentFieldset.data('configuration'), '{{Authorization}}', 'directories=no,menubar=no,status=no,location=no,fullscreen=yes');
             }
         }
@@ -174,6 +174,15 @@ function fieldset($configuration, $host, $callbackUrl)
         display: inline;
         padding: 0 var(--lineheight);
         width: auto;
+    }
+
+    .connexoon__configurations .configuration legend span {
+        display: none;
+        font-style: italic;
+    }
+
+    .connexoon__configurations .configuration.configuration--current legend span {
+        display: inline;
     }
 
     .connexoon__configurations .configuration legend::first-letter {
