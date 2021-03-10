@@ -623,6 +623,8 @@ class Somfy
     {
       if ('true' != ConnexoonConfig::get("${configuration}_token_exists"))
       {
+        ConnexoonLogger::warning("[Somfy] No token for configuration ${configuration}");
+
         continue;
       }
 
