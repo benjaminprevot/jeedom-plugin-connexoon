@@ -604,6 +604,12 @@ class Somfy
 
   private static function api($url, $method = ConnexoonHttpRequest::METHOD_GET, $content = '', $limit = 5)
   {
+    if ($limit < 1) {
+      ConnexoonLogger::error("[Somfy] $method - $url -  Number of tries exceeded");
+
+      return false;
+    }
+
     $configurations = ConnexoonConfig::getConfigurations();
 
     if (empty($configurations))
@@ -613,16 +619,12 @@ class Somfy
 
     ConnexoonLogger::debug("[Somfy] Call $url - try $limit");
 
-    if ($limit < 1) {
-      ConnexoonLogger::error("[Somfy] $method - $url -  Number of tries exceeded");
-
-      return false;
-    }
-
     foreach ($configurations as $configuration)
     {
       if ('true' != ConnexoonConfig::get("${configuration}_token_exists"))
       {
+        ConnexoonLogger::warning("[Somfy] No token for configuration ${configuration}");
+
         continue;
       }
 
