@@ -9,6 +9,6 @@ type: changelog
 
 ## [Beta] - 2023-03-18
 
-Les actions sont actuellement désactivées lors de la réécriture du plugin suite aux modifications imposées par Somfy
+Les actions / objets sont actuellement désactivées lors de la réécriture du plugin suite aux modifications imposées par Somfy
 
 [Beta]: https://github.com/benjaminprevot/jeedom-plugin-connexoon/tree/beta
