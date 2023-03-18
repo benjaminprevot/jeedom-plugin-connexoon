@@ -5,4 +5,12 @@ if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
 ?>
-<div class="alert alert-danger" role="alert">Le plugin est en cours de réécriture suite aux changements imposés par Somfy.</div>
+<form class="form-horizontal">
+    <fieldset>
+        <?php
+		if (version_compare(PHP_VERSION, '7.0') < 0) {
+			echo '<div class="alert alert-danger">{{Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0.}}</div>';
+		}
+		?>
+    </fieldset>
+</form>

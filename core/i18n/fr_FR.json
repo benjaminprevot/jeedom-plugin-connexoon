@@ -11,6 +11,7 @@
     "Mes volets": "Mes volets"
   },
   "plugins\/benjaminprevotConnexoon\/plugin_info\/configuration.php": {
-    "401 - Accès non autorisé": "401 - Accès non autorisé"
+    "401 - Accès non autorisé": "401 - Accès non autorisé",
+    "Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0.": "Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0."
   }
 }
