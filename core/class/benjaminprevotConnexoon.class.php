@@ -10,79 +10,8 @@ class benjaminprevotConnexoon extends eqLogic
 
   const ALLOWED_PARAMETERS = array('position' => 'int');
 
-  public static function sync()
-  {
-    ConnexoonLogger::debug('[benjaminprevotConnexoon] Synchronize devices');
-
-    $sites = Somfy::getSites();
-
-    foreach ($sites as $site)
-    {
-      if (isset($site['id']))
-      {
-        $devices = Somfy::getDevices($site['id']);
-
-        $capabilityNameFunc = function($capability)
-        {
-          $name = $capability['name'];
-
-          if ($name == 'position')
-          {
-            $name = 'position_set';
-          }
-
-          return $name;
-        };
-
-        foreach ($devices as $device)
-        {
-          if (in_array('roller_shutter', $device['categories']))
-          {
-            $logicalId = $device['id'];
-
-            ConnexoonLogger::debug('[benjaminprevotConnexoon] Synchronize ' . $logicalId);
-
-            $benjaminprevotConnexoon = self::byLogicalId($logicalId, Connexoon::ID);
-
-            if (!is_object($benjaminprevotConnexoon))
-            {
-              $benjaminprevotConnexoon = new benjaminprevotConnexoon();
-              $benjaminprevotConnexoon->setName($device['name']);
-              $benjaminprevotConnexoon->setEqType_name(Connexoon::ID);
-              $benjaminprevotConnexoon->setIsVisible(1);
-            }
-
-            $capabilities = $device['capabilities'];
-            $actions = array_merge(array_map($capabilityNameFunc, $capabilities), array('position', 'refresh'));
-
-            ConnexoonLogger::debug('[benjaminprevotConnexoon] Actions for ' . $logicalId . ': ' . implode('|', $actions));
-
-            $benjaminprevotConnexoon->setConfiguration('name_somfy', $device['name']);
-            $benjaminprevotConnexoon->setConfiguration('type', 'roller_shutter');
-            $benjaminprevotConnexoon->setConfiguration('actions', implode('|', $actions));
-            $benjaminprevotConnexoon->setLogicalId($logicalId);
-            $benjaminprevotConnexoon->setIsEnable($device['available'] == 'true' ? 1 : 0);
-            $benjaminprevotConnexoon->save();
-            $benjaminprevotConnexoon->refresh();
-          }
-        }
-      }
-    }
-  }
-
-  public static function cron5()
-  {
-    self::sync();
-  }
-
-  public static function cron30()
-  {
-    Somfy::refreshTokens();
-  }
-
-  public static function cronDaily()
-  {
-    ConnexoonConfig::cleanConfigurations();
+  public static function sync() {
+    ConnexoonLogger::debug('[benjaminprevotConnexoon] Synchronization is disabled');
   }
 
   private function addCommand($logicalId, $name, $genericType, $type = 'action', $subType = 'other', $unite = null, $display = array())
