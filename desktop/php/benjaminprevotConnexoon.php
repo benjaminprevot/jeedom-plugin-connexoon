@@ -52,13 +52,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <label class="col-sm-3 control-label">{{Nom de l'équipement}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display:none;" />
-                                <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}" />
+                                <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}" readonly/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Objet parent}}</label>
                             <div class="col-sm-3">
-                                <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
+                                <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id" readonly>
                                     <option value="">{{Aucun}}</option>
                                     <?php
                                     foreach (jeeObject::all() as $object) {
@@ -72,7 +72,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <label class="col-sm-3 control-label"></label>
                             <div class="col-sm-9">
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked disabled/>{{Activer}}</label>
-                                <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
+                                <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked disabled/>{{Visible}}</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -85,12 +85,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <label class="col-sm-3 control-label">{{Nom Somfy}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="name_somfy" placeholder="{{Nom Somfy}}" readonly/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label"></label>
-                            <div class="col-sm-9 form-actions">
-                                <a class="btn btn-success eqLogicAction" data-action="save"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
                             </div>
                         </div>
                     </fieldset>
