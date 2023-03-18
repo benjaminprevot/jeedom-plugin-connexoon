@@ -26,6 +26,7 @@ function benjaminprevotConnexoon_update() {
   $objects = eqLogic::byType('benjaminprevotConnexoon');
 
   foreach ($objects as $object) {
+    $object->setIsEnable(false);
     $object->setIsVisible(false);
     $object->save();
   }
