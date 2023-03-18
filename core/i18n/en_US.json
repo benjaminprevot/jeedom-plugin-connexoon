@@ -9,5 +9,8 @@
   },
   "plugins\/benjaminprevotConnexoon\/desktop\/php\/benjaminprevotConnexoon.php": {
     "Mes volets": "My rollers"
+  },
+  "plugins\/benjaminprevotConnexoon\/plugin_info\/configuration.php": {
+    "401 - Accès non autorisé": "401 - Unauthorized access"
   }
 }
