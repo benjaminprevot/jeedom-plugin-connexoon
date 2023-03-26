@@ -8,12 +8,21 @@ if (!isConnect('admin')) {
 
 class Overkiz {
 
-    public static function login($email, $password) {
-        $ch = curl_init("https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/login");
-        curl_setopt($ch, CURLOPT_COOKIEFILE, '');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, array('userId' => $email, 'userPassword' => $password));
+    private static function curl($method, $endpoint) {
+        $ch = curl_init("https://ha101-1.overkiz.com$endpoint");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        if ($method == 'POST') {
+            curl_setopt($ch, CURLOPT_POST, true);
+        }
+
+        return $ch;
+    }
+
+    public static function login($email, $password) {
+        $ch = self::curl('POST', '/enduser-mobile-web/enduserAPI/login');
+        curl_setopt($ch, CURLOPT_COOKIEFILE, '');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array('userId' => $email, 'userPassword' => $password));
 
         $response = curl_exec($ch);
         $error = curl_error($ch);
@@ -48,10 +57,9 @@ class Overkiz {
     }
 
     public static function generateToken($pin, $jsessionid) {
-        $ch = curl_init("https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/$pin/local/tokens/generate");
+        $ch = self::curl('GET', "/enduser-mobile-web/enduserAPI/config/$pin/local/tokens/generate");
         curl_setopt($ch, CURLOPT_COOKIE, "JSESSIONID=$jsessionid");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
         $error = curl_error($ch);
@@ -75,16 +83,14 @@ class Overkiz {
     }
 
     public static function activateToken($pin, $jsessionid, $token) {
-        $ch = curl_init("https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/$pin/local/tokens");
+        $ch = self::curl('POST', "/enduser-mobile-web/enduserAPI/config/$pin/local/tokens");
         curl_setopt($ch, CURLOPT_COOKIE, "JSESSIONID=$jsessionid");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array(
             'label' => 'Jeedom',
             'token' => $token,
             'scope' => 'devmode'
         )));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
         $error = curl_error($ch);
