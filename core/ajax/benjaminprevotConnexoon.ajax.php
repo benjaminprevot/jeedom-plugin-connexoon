@@ -16,10 +16,16 @@ try {
         $email = config::byKey('somfy::email', 'benjaminprevotConnexoon');
         $password = config::byKey('somfy::password', 'benjaminprevotConnexoon');
 
+        config::remove('somfy::password', 'benjaminprevotConnexoon');
+
         try {
             $jsessionid = Overkiz::login($email, $password);
 
-            Overkiz::generateToken($pin, $jsessionid);
+            $token = Overkiz::generateToken($pin, $jsessionid);
+
+            Overkiz::activateToken($pin, $jsessionid, $token);
+
+            $password = config::save('somfy::token', $token, 'benjaminprevotConnexoon');
 
             ajax::success();
         } catch (Exception $e) {
