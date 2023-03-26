@@ -15,12 +15,18 @@ $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
     <form class="form-horizontal">
         <fieldset>
             <div class="form-group">
-                <label class="col-md-4 control-label">{{Adresse Connexoon}}</label>
+                <label class="col-md-4 control-label">{{IP Connexoon}}</label>
                 <div class="col-md-4">
-                    <input class="form-control configKey" data-l1key="somfy::host" placeholder="{{Par ex. 192.168.1.10 ou connexion.local}}">
+                    <input class="form-control configKey" id="connexoon-ip" data-l1key="somfy::ip" placeholder="{{Par ex. 192.168.1.10}}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label">{{Code PIN}}</label>
+                <div class="col-md-4">
+                    <input class="form-control configKey" id="connexoon-pin" data-l1key="somfy::pin" placeholder="{{Par ex. 1234-5678-9012}}">
                 </div>
                 <div class="col-md-4">
-                    <button class="btn btn-info">Tester</button>
+                    <a class="btn btn-info" id="connexoon-btn-test">Tester</a>
                 </div>
             </div>
             <div class="form-group">
@@ -32,7 +38,7 @@ $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
             <div class="form-group">
                 <label class="col-md-4 control-label">{{Mot de passe}}</label>
                 <div class="col-md-4">
-                    <input type="password" class="form-control">
+                    <input type="password" class="form-control configKey" data-l1key="somfy::password">
                 </div>
             </div>
         </fieldset>
@@ -40,8 +46,42 @@ $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
     <script>
         (function(window) {
             window.benjaminprevotConnexoon_postSaveConfiguration = function() {
-                console.log("postSaveConfiguration", arguments);
+                $.ajax({
+                    type: 'POST',
+                    url: "plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php",
+                    data: { action: "generate-token" },
+                    dataType: 'json',
+                    error: function (request, status, error) {
+                        handleAjaxError(request, status, error);
+                    },
+                    success: function (data) {
+                        if (data.state == 'ok') {
+                            $('#div_alert').showAlert({message: '{{Configuration terminée}} - ' + data.result, level: 'success'});
+                        } else {
+                            $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        }
+                    }
+                });
             };
+
+            $('#connexoon-btn-test').on('click', function() {
+                $.ajax({
+                    type: 'POST',
+                    url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
+                    data: { action: 'test', pin: $('#connexoon-pin').val(), ip: $('#connexoon-ip').val() },
+                    dataType: 'json',
+                    error: function (request, status, error) {
+                        handleAjaxError(request, status, error);
+                    },
+                    success: function (data) {
+                        if (data.state == 'ok') {
+                            $('#div_alert').showAlert({message: '{{Test de connexion à la box réussi}} - {{Version : }}' + data.result, level: 'success'});
+                        } else {
+                            $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        }
+                    }
+                });
+            });
         })(window);
     </script>
 <?php else: ?>

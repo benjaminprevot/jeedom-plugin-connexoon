@@ -3,6 +3,7 @@
     "Ouvrir": "Open",
     "Fermer": "Close",
     "Identifier": "Identify",
+    "Impossible de charger les données pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s": "Cannot get information for gateway %s: IP = %s - HTTP code = %s - Response = %s - Error = %s",
     "Stop": "Stop",
     "Rafraîchir": "Refresh",
     "Position": "Position"
@@ -14,9 +15,12 @@
     "401 - Accès non autorisé": "401 - Unauthorized access",
     "Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0.": "Be careful, your version of PHP ('. PHP_VERSION.') is too old, you need at least PHP 7.0.",
     "Adresse Connexoon": "Connexoon address",
-    "Par ex. 192.168.1.10 ou connexion.local": "e.g. 192.168.1.10 or connexion.local",
+    "Code PIN": "PIN code",
     "E-mail": "E-mail",
     "E-mail de votre compte Somfy": "Your Somfy account e-mail",
-    "Mot de passe": "Password"
+    "IP Connexoon": "Connexoon IP",
+    "Mot de passe": "Password",
+    "Par ex. 192.168.1.10": "Par ex. 192.168.1.10",
+    "Test de connexion à la box réussi": "Test connection success"
   }
 }

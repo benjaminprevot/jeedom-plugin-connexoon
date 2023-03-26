@@ -1,8 +1,35 @@
 <?php
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-class benjaminprevotConnexoon extends eqLogic
-{
+class benjaminprevotConnexoon extends eqLogic {
+
+    public static function testHost($pin, $ip) {
+        $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/apiVersion");
+        curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/../../3rdparty/somfy/overkiz-root-ca-2048.crt');
+        curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        if ($httpCode == 200) {
+            return json_decode($response, true)['protocolVersion'];
+        }
+
+        $errorFormat = 'Impossible de charger les données pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s';
+
+        $logMessage = sprintf($errorFormat, $pin, $ip, $httpCode, $response, $error);
+        $errorMessage = sprintf(__($errorFormat, __FILE__), $pin, $ip, $httpCode, $response, $error);
+
+        log::add(__CLASS__, 'error', $logMessage);
+
+        throw new Exception($errorMessage);
+    }
 
   const ALLOWED_COMMANDS = array(
     'roller_shutter' => array('open', 'close', 'identify', 'stop', 'refresh', 'position', 'position_set', 'position_low_speed' )
@@ -22,7 +49,7 @@ class benjaminprevotConnexoon extends eqLogic
     if (in_array($logicalId, $actions) && in_array($logicalId, $allowedActions))
     {
       $cmd = $this->getCmd(null, $logicalId);
-    
+
       if (!is_object($cmd))
       {
         $cmd = new benjaminprevotConnexoonCmd();
@@ -135,7 +162,7 @@ class benjaminprevotConnexoon extends eqLogic
       $replace['#action_' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
       $replace['#action_' . $cmd->getLogicalId() . '_hide#'] = $cmd->getIsVisible() ? '' : 'display:none;';
     }
-    
+
     return template_replace($replace, getTemplate('core', $version, 'eqLogic', Connexoon::ID));
   }
 
@@ -242,7 +269,7 @@ class ConnexoonConfig
     $configurations = explode('|', self::get('configurations'));
     $configurations = array_filter($configurations, array('self', 'notBlank'));
     $configurations = array_filter($configurations, array('self', $enabled ? 'enabled' : 'disabled'));
-    
+
     return $configurations;
   }
 
@@ -428,7 +455,7 @@ class ConnexoonHttpRequest
     if ($this->_method === self::METHOD_POST) {
       curl_setopt($ch, CURLOPT_POSTFIELDS, $this->_content);
     }
-    
+
     $content = curl_exec($ch);
     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
@@ -504,7 +531,7 @@ class Somfy
         ->param('refresh_token', ConnexoonConfig::get("${configuration}_refresh_token"))
         ->param('grant_type', 'refresh_token')
         ->send();
-    
+
     self::saveToken($configuration, $response);
   }
 
@@ -562,7 +589,7 @@ class Somfy
           ->header('Content-Type', 'application/json')
           ->content($content)
           ->send();
-      
+
       $code = $response->getCode();
       $json = $response->getContentAsJsonArray();
 
@@ -579,7 +606,7 @@ class Somfy
         && $json['fault']['detail']['errorcode'] == 'keymanagement.service.access_token_expired')
       {
         ConnexoonLogger::info("[Somfy] Refresh token for configuration ${configuration}");
-  
+
         self::refreshToken($configuration);
 
         continue;
