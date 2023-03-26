@@ -72,6 +72,25 @@ $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
             });
         };
 
+        $('#connexoon-btn-reset').on('click', function() {
+            $.ajax({
+                type: 'POST',
+                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
+                data: { action: 'reset' },
+                dataType: 'json',
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
+                    if (data.state == 'ok') {
+                        $('#div_alert').showAlert({message: '{{Reset}}', level: 'success'});
+                    } else {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                    }
+                }
+            });
+        });
+
         $('#connexoon-btn-test').on('click', function() {
             $.ajax({
                 type: 'POST',

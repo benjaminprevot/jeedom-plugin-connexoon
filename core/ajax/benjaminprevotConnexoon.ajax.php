@@ -34,6 +34,12 @@ try {
         }
     }
 
+    if (init('action') == 'reset') {
+        config::remove('somfy::token', 'benjaminprevotConnexoon');
+
+        ajax::success();
+    }
+
     if (init('action') == 'test') {
         try {
             $version = Somfy::testHost(init('pin'), init('ip'));
