@@ -11,7 +11,6 @@ class Overkiz {
     public static function login($email, $password) {
         $ch = curl_init("https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/login");
         curl_setopt($ch, CURLOPT_COOKIEFILE, '');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type' => 'application/x-www-form-urlencoded'));
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, array('userId' => $email, 'userPassword' => $password));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
