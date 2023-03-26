@@ -15,19 +15,35 @@ $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
     <form class="form-horizontal">
         <fieldset>
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{E-mail}}</label>
-                <div class="col-sm-7">
-                    <input class="form-control">
+                <label class="col-md-4 control-label">{{Adresse Connexoon}}</label>
+                <div class="col-md-4">
+                    <input class="form-control configKey" data-l1key="somfy::host" placeholder="{{Par ex. 192.168.1.10 ou connexion.local}}">
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-info">Tester</button>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{Mot de passe}}</label>
-                <div class="col-sm-7">
+                <label class="col-md-4 control-label">{{E-mail}}</label>
+                <div class="col-md-4">
+                    <input class="form-control configKey" data-l1key="somfy::email" placeholder="{{E-mail de votre compte Somfy}}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-4 control-label">{{Mot de passe}}</label>
+                <div class="col-md-4">
                     <input type="password" class="form-control">
                 </div>
             </div>
         </fieldset>
     </form>
+    <script>
+        (function(window) {
+            window.benjaminprevotConnexoon_postSaveConfiguration = function() {
+                console.log("postSaveConfiguration", arguments);
+            };
+        })(window);
+    </script>
 <?php else: ?>
     <form class="form-horizontal">
         <fieldset>
@@ -40,7 +56,7 @@ $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
             <div class="form-group">
                 <label class="col-sm-3 control-label">{{Action}}</label>
                 <div class="col-sm-7">
-                    <button type="button" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {{Supprimer le token}}</button>
+                    <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> {{Supprimer le token}}</button>
                 </div>
             </div>
         </fieldset>

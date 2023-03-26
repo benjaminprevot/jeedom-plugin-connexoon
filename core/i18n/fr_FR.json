@@ -13,7 +13,10 @@
   "plugins\/benjaminprevotConnexoon\/plugin_info\/configuration.php": {
     "401 - Accès non autorisé": "401 - Accès non autorisé",
     "Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0.": "Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0.",
+    "Adresse Connexoon": "Adresse Connexoon",
+    "Par ex. 192.168.1.10 ou connexion.local": "Par ex. 192.168.1.10 ou connexion.local",
     "E-mail": "E-mail",
+    "E-mail de votre compte Somfy": "E-mail de votre compte Somfy",
     "Mot de passe": "Mot de passe"
   }
 }
