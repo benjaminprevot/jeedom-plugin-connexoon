@@ -7,7 +7,8 @@ try {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
     }
 
-    require_once dirname(__FILE__) . '/../../3rdparty/somfy/Overkiz.class.php';
+    require_once __DIR__ . '/../../3rdparty/somfy/Overkiz.class.php';
+    require_once __DIR__ . '/../../3rdparty/somfy/Somfy.class.php';
 
     ajax::init();
 
@@ -35,7 +36,7 @@ try {
 
     if (init('action') == 'test') {
         try {
-            $version = benjaminprevotConnexoon::testHost(init('pin'), init('ip'));
+            $version = Somfy::testHost(init('pin'), init('ip'));
 
             ajax::success($version);
         } catch (Exception $e) {
