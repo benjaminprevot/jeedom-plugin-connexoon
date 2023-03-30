@@ -17,6 +17,9 @@ $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
 ?>
 <form class="form-horizontal">
     <fieldset <?= $disabledIfConfigured ?>>
+        <?php if ($isConfigured): ?>
+            <div class="alert alert-success" role="alert">{{Configuration terminée}}</div>
+        <?php endif ?>
         <div class="form-group">
             <label class="col-md-4 control-label">{{IP Connexoon}}</label>
             <div class="col-md-4">
@@ -64,8 +67,6 @@ $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
                 },
                 success: function (data) {
                     if (data.state == 'ok') {
-                        $('#div_alert').showAlert({message: '{{Configuration terminée}} - ' + data.result, level: 'success'});
-
                         $('div.pluginDisplayCard[data-plugin_id="benjaminprevotConnexoon"]').click();
                     } else {
                         $('#div_alert').showAlert({message: data.result, level: 'danger'});
