@@ -16,6 +16,7 @@
     "Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0.": "Be careful, your version of PHP ('. PHP_VERSION.') is too old, you need at least PHP 7.0.",
     "Adresse Connexoon": "Connexoon address",
     "Code PIN": "PIN code",
+    "Configuration terminée": "Configuration OK",
     "E-mail": "E-mail",
     "E-mail de votre compte Somfy": "Your Somfy account e-mail",
     "IP Connexoon": "Connexoon IP",
