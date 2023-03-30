@@ -65,6 +65,8 @@ $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
                 success: function (data) {
                     if (data.state == 'ok') {
                         $('#div_alert').showAlert({message: '{{Configuration terminée}} - ' + data.result, level: 'success'});
+
+                        $('div.pluginDisplayCard[data-plugin_id="benjaminprevotConnexoon"]').click();
                     } else {
                         $('#div_alert').showAlert({message: data.result, level: 'danger'});
                     }
