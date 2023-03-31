@@ -42,7 +42,7 @@ try {
 
     if (init('action') == 'test') {
         try {
-            $version = Somfy::testHost(init('pin'), init('ip'));
+            $version = Somfy::apiVersion(init('pin'), init('ip'));
 
             ajax::success($version);
         } catch (Exception $e) {

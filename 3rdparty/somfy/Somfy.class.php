@@ -8,7 +8,7 @@ if (!isConnect('admin')) {
 
 class Somfy {
 
-    public static function testHost($pin, $ip) {
+    public static function apiVersion($pin, $ip) {
         $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/apiVersion");
         curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/../../3rdparty/somfy/overkiz-root-ca-2048.crt');
         curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
