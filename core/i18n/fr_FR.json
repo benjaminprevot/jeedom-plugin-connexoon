@@ -3,11 +3,25 @@
     "Ouvrir": "Ouvrir",
     "Fermer": "Fermer",
     "Identifier": "Identifier",
+    "Impossible de charger les données pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s": "Impossible de charger les données pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s",
     "Stop": "Stop",
     "Rafraîchir": "Rafraîchir",
     "Position": "Position"
   },
   "plugins\/benjaminprevotConnexoon\/desktop\/php\/benjaminprevotConnexoon.php": {
     "Mes volets": "Mes volets"
+  },
+  "plugins\/benjaminprevotConnexoon\/plugin_info\/configuration.php": {
+    "401 - Accès non autorisé": "401 - Accès non autorisé",
+    "Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0.": "Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0.",
+    "Adresse Connexoon": "Adresse Connexoon",
+    "Code PIN": "Code PIN",
+    "Configuration terminée": "Configuration terminée",
+    "E-mail": "E-mail",
+    "E-mail de votre compte Somfy": "E-mail de votre compte Somfy",
+    "IP Connexoon": "IP Connexoon",
+    "Mot de passe": "Mot de passe",
+    "Par ex. 192.168.1.10": "Par ex. 192.168.1.10",
+    "Test de connexion à la box réussi": "Test de connexion à la box réussi"
   }
 }
