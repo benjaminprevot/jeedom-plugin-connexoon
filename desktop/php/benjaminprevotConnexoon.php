@@ -2,6 +2,7 @@
 if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
+
 $plugin = plugin::byId('benjaminprevotConnexoon');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
@@ -16,16 +17,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
             <p>Les actions / configurations ne sont plus accessibles pour le moment.</p>
         </div>
         <div class="eqLogicThumbnailContainer">
-            <?php
-            foreach ($eqLogics as $eqLogic) {
-                $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
-                echo '<div class="eqLogicDisplayCard cursor '.$opacity.'" data-eqLogic_id="' . $eqLogic->getId() . '">';
-                echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
-                echo '<br>';
-                echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
-                echo '</div>';
-            }
-            ?>
+            <?php foreach ($eqLogics as $eqLogic): ?>
+                <div class="eqLogicDisplayCard cursor <?= ($eqLogic->getIsEnable()) ? '' : 'disableCard' ?>" data-eqLogic_id="<?= $eqLogic->getId() ?>">
+                    <img src="<?= $plugin->getPathImgIcon() ?>"/>
+                    <br>
+                    <span class="name"><?= $eqLogic->getHumanName(true, true) ?></span>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="col-xs-12 eqLogic" style="display: none;">
@@ -62,13 +60,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{Objet parent}}</label>
                             <div class="col-sm-3">
-                                <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id" readonly>
+                                <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
                                     <option value="">{{Aucun}}</option>
-                                    <?php
-                                    foreach (jeeObject::all() as $object) {
-                                        echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
-                                    }
-                                    ?>
+                                    <?php foreach (jeeObject::all() as $object): ?>
+                                        <option value="<?= $object->getId() ?>"><?= $object->getName() ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                         </div>
