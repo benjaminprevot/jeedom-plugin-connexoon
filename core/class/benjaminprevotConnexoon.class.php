@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../../3rdparty/somfy/Somfy.class.php';
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
+require_once __DIR__ . '/../../3rdparty/somfy/Somfy.class.php';
 
 class benjaminprevotConnexoon extends eqLogic {
 
