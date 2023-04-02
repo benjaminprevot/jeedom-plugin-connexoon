@@ -1,6 +1,10 @@
 <?php
 class Somfy {
 
+    public static $roller_shutter = 'ROLLER_SHUTTER';
+
+    public static $not_managed = 'NOT_MANAGED';
+
     public static function apiVersion($pin, $ip) {
         $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/apiVersion");
         curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
@@ -45,10 +49,14 @@ class Somfy {
             $devices = [];
 
             foreach (json_decode($response, true) as $device) {
+                $deviceType = self::deviceTypeMapping($device['controllableName']);
+
                 $devices[] = array(
                     'deviceURL' => $device['deviceURL'],
                     'name'      => $device['label'],
-                    'enabled'   => $device['enabled']
+                    'enabled'   => $device['enabled'],
+                    'type'      => $deviceType,
+                    'actions'   => self::deviceActions($deviceType, $device['definition']['commands'])
                 );
             }
 
@@ -62,6 +70,31 @@ class Somfy {
         $errorMessage = sprintf($errorFormat, $pin, $ip, $httpCode, $response, $error);
 
         throw new Exception($errorMessage);
+    }
+
+    private static function deviceTypeMapping($controllableName) {
+        switch ($controllableName) {
+            case 'io:RollerShutterGenericIOComponent':
+            case 'io:RollerShutterWithLowSpeedManagementIOComponent':
+                return self::$roller_shutter;
+            default:
+                return self::$not_managed;
+        }
+    }
+
+    private static function deviceActions($deviceType, $deviceCommands) {
+        $commands = array_map('Somfy::mapCommand', $deviceCommands);
+
+        switch ($deviceType) {
+            case self::$roller_shutter:
+                return array_intersect([ 'open', 'close', 'stop' ], $commands);
+            default:
+                return [];
+        }
+    }
+
+    private static function mapCommand($command) {
+        return $command['commandName'];
     }
 
 }
