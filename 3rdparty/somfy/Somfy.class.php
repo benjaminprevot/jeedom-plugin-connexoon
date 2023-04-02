@@ -47,7 +47,8 @@ class Somfy {
             foreach (json_decode($response, true) as $device) {
                 $devices[] = array(
                     'deviceURL' => $device['deviceURL'],
-                    'name'      => $device['label']
+                    'name'      => $device['label'],
+                    'enabled'   => $device['enabled']
                 );
             }
 

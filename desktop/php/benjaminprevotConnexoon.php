@@ -7,7 +7,6 @@ $plugin = plugin::byId('benjaminprevotConnexoon');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 ?>
-
 <div class="row row-overflow">
     <div class="col-xs-12 eqLogicThumbnailDisplay">
         <legend><i class="fas fa-table"></i> {{Mes volets}}</legend>
@@ -109,5 +108,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
     </div>
 </div>
 
+<?php include_file('desktop', 'benjaminprevotConnexoon', 'css', 'benjaminprevotConnexoon');?>
 <?php include_file('desktop', 'benjaminprevotConnexoon', 'js', 'benjaminprevotConnexoon');?>
 <?php include_file('core', 'plugin.template', 'js');?>
