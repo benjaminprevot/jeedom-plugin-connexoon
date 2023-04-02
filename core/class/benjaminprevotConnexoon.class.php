@@ -34,6 +34,24 @@ class benjaminprevotConnexoon extends eqLogic {
             $eqLogic->setIsEnable((int) $device['enabled']);
             $eqLogic->save();
             $eqLogic->refresh();
+
+            foreach ($device['actions'] as $action) {
+                $cmd = $eqLogic->getCmd(null, $action);
+
+                if (!is_object($cmd)) {
+                    $cmd = new benjaminprevotConnexoonCmd();
+                    $cmd->setLogicalId($action);
+                }
+
+                $cmd->setName($action);
+                //$cmd->setGeneric_type($genericType);
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setUnite(null);
+                $cmd->setEqLogic_id($eqLogic->getId());
+
+                $cmd->save();
+            }
         }
     }
 
