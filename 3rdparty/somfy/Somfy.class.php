@@ -72,6 +72,44 @@ class Somfy {
         throw new Exception($errorMessage);
     }
 
+    public static function execute($pin, $ip, $token, $deviceUrl, $command) {
+        $json = json_encode(array(
+            'label' => $command,
+            'actions' => array(
+                array(
+                    'commands' => array(
+                        array( 'name' => $command )
+                    ),
+                    'deviceURL' => $deviceUrl
+                )
+            )
+        ), JSON_UNESCAPED_SLASHES);
+
+        $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/exec/apply");
+        curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $token", 'Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+        curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        if ($httpCode !== 200) {
+            $errorFormat = 'Impossible d\'exécuter la command pour la gateway %s : command = %s, IP = %s - HTTP code = %s - Response = %s - Error = %s';
+
+            $errorMessage = sprintf($errorFormat, $pin, $command, $ip, $httpCode, $response, $error);
+
+            throw new Exception($errorMessage);
+        }
+    }
+
     private static function deviceTypeMapping($controllableName) {
         switch ($controllableName) {
             case 'io:RollerShutterGenericIOComponent':

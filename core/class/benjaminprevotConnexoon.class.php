@@ -9,9 +9,9 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     private static function syncDevices() {
-        $token = config::byKey('somfy::token', __CLASS__);
         $pin = config::byKey('somfy::pin', __CLASS__);
         $ip = config::byKey('somfy::ip', __CLASS__);
+        $token = config::byKey('somfy::token', __CLASS__);
 
         if (empty($token)) {
             return;
@@ -80,6 +80,20 @@ class benjaminprevotConnexoon extends eqLogic {
 class benjaminprevotConnexoonCmd extends cmd {
 
     public function execute($options = array()) {
+        if ($this->getType() == '') {
+            return;
+        }
+
+        $eqLogic = $this->getEqLogic();
+        $action = $this->getLogicalId();
+
+        $pin = config::byKey('somfy::pin', 'benjaminprevotConnexoon');
+        $ip = config::byKey('somfy::ip', 'benjaminprevotConnexoon');
+        $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
+
+        if ($this->getType() == 'action') {
+            Somfy::execute($pin, $ip, $token, $eqLogic->getLogicalId(), $action);
+        }
     }
 
 }
