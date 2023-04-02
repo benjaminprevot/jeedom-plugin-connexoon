@@ -41,11 +41,11 @@ class benjaminprevotConnexoon extends eqLogic {
         $eqLogic->refresh();
 
         foreach ($device['commands'] as $command) {
-            self::saveCommand($command);
+            self::saveCommand($eqLogic, $command);
         }
     }
 
-    private static function saveCommand($command) {
+    private static function saveCommand($eqLogic, $command) {
         $cmd = $eqLogic->getCmd(null, $command);
 
         if (!is_object($cmd)) {
@@ -53,7 +53,7 @@ class benjaminprevotConnexoon extends eqLogic {
             $cmd->setLogicalId($command);
         }
 
-        $cmd->setName($action);
+        $cmd->setName($command);
         //$cmd->setGeneric_type($genericType);
         $cmd->setType('action');
         $cmd->setSubType('other');
