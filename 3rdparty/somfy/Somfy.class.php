@@ -87,7 +87,7 @@ class Somfy {
 
         switch ($deviceType) {
             case self::$roller_shutter:
-                return array_intersect([ 'open', 'close', 'stop' ], $commands);
+                return array_intersect([ 'close', 'open', 'stop' ], $commands);
             default:
                 return [];
         }

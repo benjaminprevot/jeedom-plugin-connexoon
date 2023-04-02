@@ -41,11 +41,11 @@ class benjaminprevotConnexoon extends eqLogic {
         $eqLogic->refresh();
 
         foreach ($device['commands'] as $command) {
-            self::saveCommand($eqLogic, $command);
+            self::saveCommand($eqLogic, $device, $command);
         }
     }
 
-    private static function saveCommand($eqLogic, $command) {
+    private static function saveCommand($eqLogic, $device, $command) {
         $cmd = $eqLogic->getCmd(null, $command);
 
         if (!is_object($cmd)) {
@@ -54,13 +54,25 @@ class benjaminprevotConnexoon extends eqLogic {
         }
 
         $cmd->setName($command);
-        //$cmd->setGeneric_type($genericType);
+        $cmd->setGeneric_type(self::commandGenericTypeMapping($device['type'], $command));
         $cmd->setType('action');
         $cmd->setSubType('other');
         $cmd->setUnite(null);
         $cmd->setEqLogic_id($eqLogic->getId());
 
         $cmd->save();
+    }
+
+    private static function commandGenericTypeMapping($deviceType, $command) {
+        if ($deviceType === Somfy::$roller_shutter) {
+            switch ($command) {
+                case 'close': return 'FLAP_DOWN';
+                case 'open':  return 'FLAP_UP';
+                case 'stop':  return 'FLAP_STOP';
+            }
+        }
+
+        return null;
     }
 
 }
