@@ -20,39 +20,47 @@ class benjaminprevotConnexoon extends eqLogic {
         $devices = Somfy::devices($pin, $ip, $token);
 
         foreach ($devices as $device) {
-            $logicalId = $device['deviceURL'];
-
-            $eqLogic = self::byLogicalId($logicalId, __CLASS__);
-
-            if (!is_object($eqLogic)) {
-                $eqLogic = new benjaminprevotConnexoon();
-                $eqLogic->setLogicalId($logicalId);
-                $eqLogic->setName($device['name']);
-                $eqLogic->setEqType_name(__CLASS__);
-            }
-
-            $eqLogic->setIsEnable((int) $device['enabled']);
-            $eqLogic->save();
-            $eqLogic->refresh();
-
-            foreach ($device['actions'] as $action) {
-                $cmd = $eqLogic->getCmd(null, $action);
-
-                if (!is_object($cmd)) {
-                    $cmd = new benjaminprevotConnexoonCmd();
-                    $cmd->setLogicalId($action);
-                }
-
-                $cmd->setName($action);
-                //$cmd->setGeneric_type($genericType);
-                $cmd->setType('action');
-                $cmd->setSubType('other');
-                $cmd->setUnite(null);
-                $cmd->setEqLogic_id($eqLogic->getId());
-
-                $cmd->save();
-            }
+            self::saveEqlogic($device);
         }
+    }
+
+    private static function saveEqlogic($device) {
+        $logicalId = $device['deviceURL'];
+
+        $eqLogic = self::byLogicalId($logicalId, __CLASS__);
+
+        if (!is_object($eqLogic)) {
+            $eqLogic = new benjaminprevotConnexoon();
+            $eqLogic->setLogicalId($logicalId);
+            $eqLogic->setName($device['name']);
+            $eqLogic->setEqType_name(__CLASS__);
+        }
+
+        $eqLogic->setIsEnable((int) $device['enabled']);
+        $eqLogic->save();
+        $eqLogic->refresh();
+
+        foreach ($device['commands'] as $command) {
+            self::saveCommand($command);
+        }
+    }
+
+    private static function saveCommand($command) {
+        $cmd = $eqLogic->getCmd(null, $command);
+
+        if (!is_object($cmd)) {
+            $cmd = new benjaminprevotConnexoonCmd();
+            $cmd->setLogicalId($command);
+        }
+
+        $cmd->setName($action);
+        //$cmd->setGeneric_type($genericType);
+        $cmd->setType('action');
+        $cmd->setSubType('other');
+        $cmd->setUnite(null);
+        $cmd->setEqLogic_id($eqLogic->getId());
+
+        $cmd->save();
     }
 
 }

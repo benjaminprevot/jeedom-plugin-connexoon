@@ -56,7 +56,7 @@ class Somfy {
                     'name'      => $device['label'],
                     'enabled'   => $device['enabled'],
                     'type'      => $deviceType,
-                    'actions'   => self::deviceActions($deviceType, $device['definition']['commands'])
+                    'commands'  => self::deviceCommands($deviceType, $device['definition']['commands'])
                 );
             }
 
@@ -82,7 +82,7 @@ class Somfy {
         }
     }
 
-    private static function deviceActions($deviceType, $deviceCommands) {
+    private static function deviceCommands($deviceType, $deviceCommands) {
         $commands = array_map('Somfy::mapCommand', $deviceCommands);
 
         switch ($deviceType) {
