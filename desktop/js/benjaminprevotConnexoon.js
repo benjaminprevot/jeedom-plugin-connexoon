@@ -17,7 +17,7 @@ function addCmdToTable(_cmd) {
     tr += '</td>';
     tr += '<td>';
     if (init(_cmd.type) == 'action') {
-        tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" disabled/>{{Afficher}}</label></span>';
+        tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible"/>{{Afficher}}</label></span>';
     }
     if (init(_cmd.type) == 'info') {
         tr += '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isHistorized" disabled/>{{Historiser}}</label></span>';
