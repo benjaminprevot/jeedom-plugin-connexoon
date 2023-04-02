@@ -7,8 +7,8 @@ type: changelog
 
 # Changelog en Français
 
-## [Beta] - 2023-03-18
+## [Beta] - 2023-04-02
 
-Les actions / objets sont actuellement désactivées lors de la réécriture du plugin suite aux modifications imposées par Somfy
+Les volets roulants sont chargés et les actions de bases (ouvrir, fermer et stopper) sont disponibles.
 
 [Beta]: https://github.com/benjaminprevot/jeedom-plugin-connexoon/tree/beta
