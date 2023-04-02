@@ -1,0 +1,7 @@
+.disableCard {
+  filter: grayscale(1);
+}
+
+.disableCard.cursor {
+  cursor: not-allowed;
+}
