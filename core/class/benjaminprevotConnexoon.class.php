@@ -86,8 +86,6 @@ class benjaminprevotConnexoon extends eqLogic {
         $cmd->save();
 
         $eqLogic->checkAndUpdateCmd($state['name'], $state['value']);
-
-        log::add(__CLASS__, 'debug', 'State saved: ' . print_r($state, true));
     }
 
     private static function commandGenericTypeMapping($deviceType, $command) {
