@@ -48,6 +48,8 @@ class benjaminprevotConnexoon extends eqLogic {
         foreach ($device['states'] as $state) {
             self::saveState($eqLogic, $device, $state);
         }
+
+        $eqLogic->refreshWidget();
     }
 
     private static function saveCommand($eqLogic, $device, $command) {
@@ -129,6 +131,10 @@ class benjaminprevotConnexoon extends eqLogic {
 
         if ($this->getDisplay('hideOn' . $version) == 1) {
             return '';
+        }
+
+        foreach ($this->getCmd('info') as $cmd) {
+            $replace['#info_' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
         }
 
         return template_replace($replace, getTemplate('core', $version, 'eqLogic', __CLASS__));
