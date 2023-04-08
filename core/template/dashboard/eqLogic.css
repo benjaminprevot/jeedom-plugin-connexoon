@@ -3,10 +3,6 @@
   background-size: 1px 6px;
 }
 
-.bg-white {
-  background-color: rgb(255 255 255);
-}
-
 .border-6 {
   border-width: 6px;
 }
@@ -53,10 +49,6 @@
 
 .justify-center {
   justify-content: center;
-}
-
-.m-6 {
-  margin: 6px;
 }
 
 .p-3 {
