@@ -153,9 +153,18 @@ class Somfy {
 
     private static function mapState($state) {
         return array(
+            'type'  => self::translateStateType($state['type']),
             'name'  => self::translateStateName($state['name']),
             'value' => $state['value']
         );
+    }
+
+    private static function translateStateType($stateType) {
+        if ($stateType === 1) {
+            return 'percent';
+        }
+
+        throw new Exception('Unknown state type: ' . $stateType);
     }
 
     private static function translateStateName($stateName) {
@@ -163,7 +172,7 @@ class Somfy {
             return 'closure';
         }
 
-        throw new Exception('Unknown state: ' . $stateName);
+        throw new Exception('Unknown state name: ' . $stateName);
     }
 
 }
