@@ -35,6 +35,10 @@
   flex-direction: column;
 }
 
+.gap-6 {
+  gap: 6px;
+}
+
 .grow {
   flex-grow: 1;
 }
