@@ -1,159 +1,43 @@
-.connexoon {
-  display: flex;
-  flex-direction: row;
-  position: relative;
+.border-4 {
+  border-width: 4px;
 }
 
-.connexoon .connexoon__status {
-  bottom: 6px;
-  left: 6px;
-  position: absolute;
-  width: 30px;
-  z-index: 1;
+.border-b-0 {
+  border-bottom-width: 0px;
 }
 
-.connexoon .connexoon__workspace {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.connexoon .connexoon__workspace .workspace__header {
-  padding-top: 6px;
-  text-align: center;
-}
-
-.connexoon .connexoon__workspace .workspace__content {
-  align-items: center;
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  padding: 6px;
-}
-
-.connexoon .connexoon__workspace .workspace__content .content__shutter {
-  align-items: flex-start;
-  border-color: var(--txt-color) !important;
+.border-solid {
   border-style: solid;
-  border-width: 6px 6px 0 6px;
-  box-sizing: border-box;
-  display: flex;
-  height: 80%;
-  justify-content: center;
-  overflow: hidden;
-  padding: 3px 3px 0 3px;
-  position: relative;
-  width: 50%;
 }
 
-.connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__display {
-  background-color: var(--txt-color);
+.border-white {
+  border-color: rgb(255 255 255);
+}
+
+.flex {
+  display: flex;
+}
+
+.grow {
   flex-grow: 1;
-  opacity: 0.3;
 }
 
-.connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value {
-  display: block;
-  font-weight: bold;
-  height: 100px;
-  left: 0;
-  line-height: 100px;
-  margin: -47px 0 0 0;
-  position: absolute;
-  text-align: center;
-  top: 50%;
-  width: 100%;
-}
-
-.connexoon .connexoon__workspace .workspace__content .content__shutter .shutter__value .value__display {
-  color: var(--txt-color);
-}
-
-.connexoon .connexoon__workspace .workspace__content .content__slider {
-  box-sizing: border-box;
-  height: 80%;
-  margin-left: 10px;
-  padding: 6px 0;
-  position: relative;
-}
-
-.connexoon .connexoon__workspace .workspace__content .content__slider .slider.ui-slider-vertical {
-  border: none !important;
-  border-radius: 0 !important;
-  height: 100%;
-  left: 0;
-  margin: 0 !important;
-  position: relative;
-  top: 0 !important;
-  width: 2px !important;
-}
-
-.connexoon .connexoon__workspace .workspace__content .content__slider .slider.ui-slider-vertical .ui-slider-handle {
-  border: none !important;
-  border-radius: 0 !important;
-  cursor: ns-resize !important;
-  height: 12px;
-  left: -5px !important;
-  margin-bottom: -6px;
-  width: 12px;
-}
-
-.connexoon .connexoon__commands {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  padding-right: 6px;
-}
-
-.connexoon .connexoon__commands .commands__command {
-  cursor: pointer;
-  text-align: center;
-}
-
-.connexoon .connexoon__commands .commands__command:hover {
-  transform: scale(1.25);
-}
-
-.connexoon .connexoon__confirmation {
-  background-color: rgba(var(--eq-bg-color), 1);
-  bottom: 0;
-  display: none;
-  flex-direction: column;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 3;
-}
-
-.connexoon .connexoon__confirmation.connexoon__confirmation--active {
-  display: flex;
-}
-
-.connexoon .connexoon__confirmation .confirmation__commands {
+.items-center {
   align-items: center;
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-evenly;
 }
 
-.connexoon .connexoon__confirmation .confirmation__commands .commands__command {
-  cursor: pointer;
-  font-size: 2em;
+.items-stretch {
+  align-items: stretch;
 }
 
-.connexoon .connexoon__confirmation .confirmation__commands .commands__command:hover {
-  transform: scale(1.25);
-}
-
-.connexoon .connexoon__confirmation .confirmation__message {
-  align-items: center;
-  display: flex;
-  flex-grow: 1;
+.justify-center {
   justify-content: center;
 }
 
-.connexoon .connexoon__confirmation .confirmation__message .message__value {
-  font-size: 1.5em;
-  font-weight: bold;
+.p-1 {
+  padding: 0.25rem;
+}
+
+.pb-0 {
+  padding-bottom: 0px;
 }
