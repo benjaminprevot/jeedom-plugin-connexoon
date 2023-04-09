@@ -133,6 +133,10 @@ class benjaminprevotConnexoon extends eqLogic {
             return '';
         }
 
+        foreach ($this->getCmd('action') as $cmd) {
+            $replace['#action_' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+        }
+
         foreach ($this->getCmd('info') as $cmd) {
             $replace['#info_' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
         }
