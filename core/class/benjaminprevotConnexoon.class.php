@@ -37,12 +37,19 @@ class benjaminprevotConnexoon extends eqLogic {
         }
 
         $eqLogic->setIsEnable((int) $device['enabled']);
+        $eqLogic->setIsVisible(1);
         $eqLogic->save();
         $eqLogic->refresh();
 
         foreach ($device['commands'] as $command) {
             self::saveCommand($eqLogic, $device, $command);
         }
+
+        foreach ($device['states'] as $state) {
+            self::saveState($eqLogic, $device, $state);
+        }
+
+        $eqLogic->refreshWidget();
     }
 
     private static function saveCommand($eqLogic, $device, $command) {
@@ -63,6 +70,26 @@ class benjaminprevotConnexoon extends eqLogic {
         $cmd->save();
     }
 
+    private static function saveState($eqLogic, $device, $state) {
+        $cmd = $eqLogic->getCmd(null, $state['name']);
+
+        if (!is_object($cmd)) {
+            $cmd = new benjaminprevotConnexoonCmd();
+            $cmd->setLogicalId($state['name']);
+        }
+
+        $cmd->setName($state['name']);
+        $cmd->setGeneric_type(self::stateGenericTypeMapping($device['type'], $state));
+        $cmd->setType('info');
+        $cmd->setSubType('numeric');
+        $cmd->setUnite(self::stateUnitMapping($state['type']));
+        $cmd->setEqLogic_id($eqLogic->getId());
+
+        $cmd->save();
+
+        $eqLogic->checkAndUpdateCmd($state['name'], $state['value']);
+    }
+
     private static function commandGenericTypeMapping($deviceType, $command) {
         if ($deviceType === Somfy::$roller_shutter) {
             switch ($command) {
@@ -73,6 +100,48 @@ class benjaminprevotConnexoon extends eqLogic {
         }
 
         return null;
+    }
+
+    private static function stateGenericTypeMapping($deviceType, $state) {
+        if ($deviceType === Somfy::$roller_shutter) {
+            switch ($state['name']) {
+                case 'closure': return 'FLAP_STATE';
+            }
+        }
+
+        return null;
+    }
+
+    private static function stateUnitMapping($stateType) {
+        switch ($stateType) {
+            case 'percent': return '%';
+        }
+
+        return null;
+    }
+
+    public function toHtml($_version = 'dashboard') {
+        $replace = $this->preToHtml($_version);
+
+        if (!is_array($replace)) {
+            return $replace;
+        }
+
+        $version = jeedom::versionAlias($_version);
+
+        if ($this->getDisplay('hideOn' . $version) == 1) {
+            return '';
+        }
+
+        foreach ($this->getCmd('action') as $cmd) {
+            $replace['#action_' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+        }
+
+        foreach ($this->getCmd('info') as $cmd) {
+            $replace['#info_' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
+        }
+
+        return template_replace($replace, getTemplate('core', $version, 'eqLogic', __CLASS__));
     }
 
 }

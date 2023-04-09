@@ -56,7 +56,8 @@ class Somfy {
                     'name'      => $device['label'],
                     'enabled'   => $device['enabled'],
                     'type'      => $deviceType,
-                    'commands'  => self::deviceCommands($deviceType, $device['definition']['commands'])
+                    'commands'  => self::deviceCommands($deviceType, $device['definition']['commands']),
+                    'states'    => self::deviceStates($deviceType, $device['states'])
                 );
             }
 
@@ -133,6 +134,45 @@ class Somfy {
 
     private static function mapCommand($command) {
         return $command['commandName'];
+    }
+
+    private static function deviceStates($deviceType, $deviceStates) {
+        switch ($deviceType) {
+            case self::$roller_shutter:
+                $states = array_filter($deviceStates, 'Somfy::filterState');
+
+                return array_map('Somfy::mapState', $states);
+            default:
+                return [];
+        }
+    }
+
+    private static function filterState($state) {
+        return $state['name'] === 'core:ClosureState';
+    }
+
+    private static function mapState($state) {
+        return array(
+            'type'  => self::translateStateType($state['type']),
+            'name'  => self::translateStateName($state['name']),
+            'value' => $state['value']
+        );
+    }
+
+    private static function translateStateType($stateType) {
+        if ($stateType === 1) {
+            return 'percent';
+        }
+
+        throw new Exception('Unknown state type: ' . $stateType);
+    }
+
+    private static function translateStateName($stateName) {
+        if ($stateName === 'core:ClosureState') {
+            return 'closure';
+        }
+
+        throw new Exception('Unknown state name: ' . $stateName);
     }
 
 }
