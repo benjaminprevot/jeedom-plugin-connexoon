@@ -11,7 +11,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
     <div class="col-xs-12 eqLogicThumbnailDisplay">
         <legend><i class="fas fa-table"></i> {{Mes volets}}</legend>
         <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
-        <div class="alert alert-danger" role="alert">
+        <div class="alert alert-warning" role="alert">
             <p>Le plugin est en cours de réécriture suite aux changements imposés par Somfy.</p>
         </div>
         <div class="eqLogicThumbnailContainer">
