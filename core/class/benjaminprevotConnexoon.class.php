@@ -34,10 +34,10 @@ class benjaminprevotConnexoon extends eqLogic {
             $eqLogic->setLogicalId($logicalId);
             $eqLogic->setName($device['name']);
             $eqLogic->setEqType_name(__CLASS__);
+            $eqLogic->setIsEnable((int) $device['enabled']);
+            $eqLogic->setIsVisible(1);
         }
 
-        $eqLogic->setIsEnable((int) $device['enabled']);
-        $eqLogic->setIsVisible(1);
         $eqLogic->save();
         $eqLogic->refresh();
 
