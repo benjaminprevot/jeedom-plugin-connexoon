@@ -13,7 +13,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
         <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
         <div class="alert alert-danger" role="alert">
             <p>Le plugin est en cours de réécriture suite aux changements imposés par Somfy.</p>
-            <p>Certaines actions sont en cours de mise en place et les anciens objets sont affichés pour information.</p>
         </div>
         <div class="eqLogicThumbnailContainer">
             <?php foreach ($eqLogics as $eqLogic): ?>
