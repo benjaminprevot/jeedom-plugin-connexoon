@@ -51,10 +51,24 @@
   justify-content: center;
 }
 
+.my-12 {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
 .p-3 {
   padding: 3px;
 }
 
 .pb-0 {
   padding-bottom: 0px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-xl {
+  font-size: 1.25em;
+  line-height: 1.75em;
 }
