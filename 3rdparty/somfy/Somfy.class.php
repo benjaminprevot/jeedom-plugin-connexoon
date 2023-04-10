@@ -175,4 +175,33 @@ class Somfy {
         throw new Exception('Unknown state name: ' . $stateName);
     }
 
+    public static function registerEventListener($pin, $ip, $token) {
+        $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/events/register");
+        curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $token"));
+        curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        if ($httpCode !== 200) {
+            $errorFormat = 'Impossible d\'enregistre l\'event listener pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s';
+
+            $errorMessage = sprintf($errorFormat, $pin, $ip, $httpCode, $response, $error);
+
+            throw new Exception($errorMessage);
+        }
+
+        $json = json_decode($response, true);
+
+        return $json['id'];
+    }
+
 }
