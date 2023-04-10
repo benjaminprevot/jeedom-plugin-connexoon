@@ -16,6 +16,10 @@ $isConfigured = !empty($token);
 $disabledIfConfigured = $isConfigured ? 'disabled' : '';
 $hiddenIfConfigured = $isConfigured ? 'style="display:none"' : '';
 $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
+
+$eventsCron = cron::byClassAndFunction('benjaminprevotConnexoon', 'fetchEvents');
+$isEventsCronCreacted = is_object($eventsCron);
+$isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
 ?>
 <form class="form-horizontal">
     <fieldset <?= $disabledIfConfigured ?>>
@@ -48,6 +52,19 @@ $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
         </div>
     </fieldset>
     <fieldset>
+        <div class="form-group" <?= $displayedIfConfigured ?>>
+            <div class="col-md-4 col-md-offset-4">
+                <?php if (!$isEventsCronCreacted): ?>
+                    <a class="btn btn-info" id="connexoon-btn-cron-create">Créer le démon</a>
+                <?php endif; ?>
+                <?php if ($isEventsCronCreacted && !$isEventsCronRunning): ?>
+                    <a class="btn btn-info" id="connexoon-btn-cron-start">Démarrer le démon</a>
+                <?php endif; ?>
+                <?php if ($isEventsCronRunning): ?>
+                    <a class="btn btn-danger" id="connexoon-btn-cron-stop">Arrêter le démon</a>
+                <?php endif; ?>
+            </div>
+        </div>
         <div class="form-group">
             <div class="col-md-4 col-md-offset-4">
                 <a class="btn btn-info" id="connexoon-btn-test" <?= $hiddenIfConfigured ?>>Tester</a>
@@ -108,6 +125,63 @@ $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
                 success: function (data) {
                     if (data.state == 'ok') {
                         $('#div_alert').showAlert({message: '{{Test de connexion à la box réussi}} - {{Version : }}' + data.result, level: 'success'});
+                    } else {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                    }
+                }
+            });
+        });
+
+        $('#connexoon-btn-cron-create').on('click', function() {
+            $.ajax({
+                type: 'POST',
+                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
+                data: { action: 'create-deamon' },
+                dataType: 'json',
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
+                    if (data.state == 'ok') {
+                        $('#div_alert').showAlert({message: '{{Démon créé}}', level: 'success'});
+                    } else {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                    }
+                }
+            });
+        });
+
+        $('#connexoon-btn-cron-start').on('click', function() {
+            $.ajax({
+                type: 'POST',
+                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
+                data: { action: 'start-deamon' },
+                dataType: 'json',
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
+                    if (data.state == 'ok') {
+                        $('#div_alert').showAlert({message: '{{Démon démarré}}', level: 'success'});
+                    } else {
+                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                    }
+                }
+            });
+        });
+
+        $('#connexoon-btn-cron-stop').on('click', function() {
+            $.ajax({
+                type: 'POST',
+                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
+                data: { action: 'stop-deamon' },
+                dataType: 'json',
+                error: function (request, status, error) {
+                    handleAjaxError(request, status, error);
+                },
+                success: function (data) {
+                    if (data.state == 'ok') {
+                        $('#div_alert').showAlert({message: '{{Démon démarré}}', level: 'success'});
                     } else {
                         $('#div_alert').showAlert({message: data.result, level: 'danger'});
                     }

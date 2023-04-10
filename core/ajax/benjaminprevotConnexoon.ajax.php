@@ -50,6 +50,36 @@ try {
         }
     }
 
+    if (init('action') == 'create-deamon') {
+        try {
+            benjaminprevotConnexoon::createDeamon();
+
+            ajax::success();
+        } catch (Exception $e) {
+            ajax::error($e->getMessage());
+        }
+    }
+
+    if (init('action') == 'start-deamon') {
+        try {
+            benjaminprevotConnexoon::startDeamon();
+
+            ajax::success();
+        } catch (Exception $e) {
+            ajax::error($e->getMessage());
+        }
+    }
+
+    if (init('action') == 'stop-deamon') {
+        try {
+            benjaminprevotConnexoon::stopDeamon();
+
+            ajax::success();
+        } catch (Exception $e) {
+            ajax::error($e->getMessage());
+        }
+    }
+
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));
 }
 catch (Exception $e) {

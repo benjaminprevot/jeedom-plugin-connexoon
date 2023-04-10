@@ -8,6 +8,54 @@ class benjaminprevotConnexoon extends eqLogic {
         self::syncDevices();
     }
 
+    public static function createDeamon() {
+        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
+
+        if (is_object($cron)) {
+            log::add(__CLASS__, 'warning', 'Trying to create already existing cron. Current ID: ' . $cron->getId());
+
+            throw new Exception('Cron already exists with ID ' . $cron->getId());
+        }
+
+        $cron = new cron();
+        $cron->setClass(__CLASS__);
+        $cron->setFunction('fetchEvents');
+        $cron->setEnable(1);
+        $cron->setDeamon(1);
+        $cron->setSchedule('* * * * *');
+        $cron->save();
+
+        self::startDeamon();
+    }
+
+    public static function startDeamon() {
+        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
+
+        if (!is_object($cron)) {
+            log::add(__CLASS__, 'warning', 'Trying to start non-existing cron.');
+
+            throw new Exception('Trying to start non-existing cron.');
+        }
+
+        $cron->run();
+    }
+
+    public static function stopDeamon() {
+        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
+
+        if (!is_object($cron)) {
+            log::add(__CLASS__, 'warning', 'Trying to stop non-existing cron.');
+
+            throw new Exception('Trying to stop non-existing cron.');
+        }
+
+        $cron->halt();
+    }
+
+    public static function fetchEvents() {
+        log::add(__CLASS__, 'debug', 'fetchEvents');
+    }
+
     private static function syncDevices() {
         $pin = config::byKey('somfy::pin', __CLASS__);
         $ip = config::byKey('somfy::ip', __CLASS__);
