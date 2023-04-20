@@ -62,8 +62,6 @@ class Somfy {
             }
 
             return $devices;
-
-            return array_map('Somfy::mapDevices', json_decode($response, true));
         }
 
         $errorFormat = 'Impossible de charger les objets pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s';
@@ -148,7 +146,7 @@ class Somfy {
     }
 
     private static function filterState($state) {
-        return $state['name'] === 'core:ClosureState';
+        return in_array($state['name'], array('core:ClosureState', 'core:MovingState'));
     }
 
     private static function mapState($state) {
@@ -160,16 +158,18 @@ class Somfy {
     }
 
     private static function translateStateType($stateType) {
-        if ($stateType === 1) {
-            return 'percent';
+        switch ($stateType) {
+            case 1: return 'percent';
+            case 6:  return 'boolean';
         }
 
         throw new Exception('Unknown state type: ' . $stateType);
     }
 
     private static function translateStateName($stateName) {
-        if ($stateName === 'core:ClosureState') {
-            return 'closure';
+        switch ($stateName) {
+            case 'core:ClosureState': return 'closure';
+            case 'core:MovingState':  return 'moving';
         }
 
         throw new Exception('Unknown state name: ' . $stateName);
@@ -179,7 +179,7 @@ class Somfy {
         $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/events/register");
         curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $token"));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $token", 'Content-Length: 0'));
         curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
@@ -202,6 +202,54 @@ class Somfy {
         $json = json_decode($response, true);
 
         return $json['id'];
+    }
+
+    public static function fetchEvents($pin, $ip, $token, $listenerId) {
+        $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/events/$listenerId/fetch");
+        curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $token", 'Content-Length: 0'));
+        curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        if ($httpCode !== 200) {
+            $errorFormat = 'Impossible de lire les événements pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s - Listener = %s';
+
+            $errorMessage = sprintf($errorFormat, $pin, $ip, $httpCode, $response, $error, $listenerId);
+
+            throw new Exception($errorMessage);
+        }
+
+        $events = array();
+
+        foreach (json_decode($response, true) as $event) {
+            $deviceUrl = $event['deviceURL'];
+
+            if (empty($deviceUrl)) {
+                continue;
+            }
+
+            $events[] = array(
+                'deviceURL' => $deviceUrl,
+                'states'    => self::eventStates($event['deviceStates'])
+            );
+        }
+
+        return $events;
+    }
+
+    private static function eventStates($deviceStates) {
+        $states = array_filter($deviceStates, 'Somfy::filterState');
+
+        return array_map('Somfy::mapState', $states);
     }
 
 }

@@ -17,6 +17,14 @@ class benjaminprevotConnexoon extends eqLogic {
             throw new Exception('Cron already exists with ID ' . $cron->getId());
         }
 
+        $pin = config::byKey('somfy::pin', __CLASS__);
+        $ip = config::byKey('somfy::ip', __CLASS__);
+        $token = config::byKey('somfy::token', __CLASS__);
+
+        $listenerId = Somfy::registerEventListener($pin, $ip, $token);
+
+        config::save('somfy::listenerId', $listenerId, __CLASS__);
+
         $cron = new cron();
         $cron->setClass(__CLASS__);
         $cron->setFunction('fetchEvents');
@@ -53,7 +61,20 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     public static function fetchEvents() {
-        log::add(__CLASS__, 'debug', 'fetchEvents');
+        $pin = config::byKey('somfy::pin', __CLASS__);
+        $ip = config::byKey('somfy::ip', __CLASS__);
+        $token = config::byKey('somfy::token', __CLASS__);
+        $listenerId = config::byKey('somfy::listenerId', __CLASS__);
+
+        $events = Somfy::fetchEvents($pin, $ip, $token, $listenerId);
+
+        foreach ($events as $event) {
+            $logicalId = $event['deviceURL'];
+
+            $eqLogic = self::byLogicalId($logicalId, __CLASS__);
+            $eqLogic->checkAndUpdateCmd($event['name'], $event['value']);
+            $eqLogic->refreshWidget();
+        }
     }
 
     private static function syncDevices() {
@@ -129,7 +150,7 @@ class benjaminprevotConnexoon extends eqLogic {
         $cmd->setName($state['name']);
         $cmd->setGeneric_type(self::stateGenericTypeMapping($device['type'], $state));
         $cmd->setType('info');
-        $cmd->setSubType('numeric');
+        $cmd->setSubType(self::stateSubTypeMapping($state['type']));
         $cmd->setUnite(self::stateUnitMapping($state['type']));
         $cmd->setEqLogic_id($eqLogic->getId());
 
@@ -155,6 +176,15 @@ class benjaminprevotConnexoon extends eqLogic {
             switch ($state['name']) {
                 case 'closure': return 'FLAP_STATE';
             }
+        }
+
+        return null;
+    }
+
+    private static function stateSubTypeMapping($stateType) {
+        switch ($stateType) {
+            case 'boolean': return 'binary';
+            case 'percent': return 'numeric';
         }
 
         return null;

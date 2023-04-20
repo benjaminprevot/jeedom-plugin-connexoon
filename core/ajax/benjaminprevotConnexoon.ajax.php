@@ -26,7 +26,7 @@ try {
 
             Overkiz::activateToken($pin, $jsessionid, $token);
 
-            $password = config::save('somfy::token', $token, 'benjaminprevotConnexoon');
+            config::save('somfy::token', $token, 'benjaminprevotConnexoon');
 
             ajax::success();
         } catch (Exception $e) {
