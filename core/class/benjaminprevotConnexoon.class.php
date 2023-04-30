@@ -69,6 +69,7 @@ class benjaminprevotConnexoon extends eqLogic {
         $events = Somfy::fetchEvents($pin, $ip, $token, $listenerId);
 
         foreach ($events as $event) {
+            log::add(__CLASS__, 'debug', 'Event: ' . print_r($event, true));
             $logicalId = $event['deviceURL'];
 
             $eqLogic = self::byLogicalId($logicalId, __CLASS__);
