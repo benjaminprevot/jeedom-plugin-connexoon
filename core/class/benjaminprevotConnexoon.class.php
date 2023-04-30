@@ -152,7 +152,7 @@ class benjaminprevotConnexoon extends eqLogic {
             $replace['#info_' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
         }
 
-        return template_replace($replace, getTemplate('core', $version, 'eqLogic', __CLASS__));
+        return template_replace($replace, getTemplate('core', $version, $this->getConfiguration('template'), __CLASS__));
     }
 
 }
