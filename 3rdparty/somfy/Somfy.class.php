@@ -243,13 +243,17 @@ class Somfy {
             );
         }
 
-        return $events;
+        return array_filter($events, 'Somfy::hasAtLeastOneState');
     }
 
     private static function eventStates($deviceStates) {
         $states = array_filter($deviceStates, 'Somfy::filterState');
 
         return array_map('Somfy::mapState', $states);
+    }
+
+    private static function hasAtLeastOneState($event) {
+        return !empty($event['states']);
     }
 
 }

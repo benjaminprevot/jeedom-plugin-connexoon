@@ -70,10 +70,11 @@ class benjaminprevotConnexoon extends eqLogic {
 
         foreach ($events as $event) {
             $logicalId = $event['deviceURL'];
+            $states = $event['states'];
 
             $eqLogic = self::byLogicalId($logicalId, __CLASS__);
 
-            foreach ($event['states'] as $state) {
+            foreach ($states as $state) {
                 $eqLogic->checkAndUpdateCmd($state['name'], $state['value']);
             }
 
