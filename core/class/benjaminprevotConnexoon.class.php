@@ -32,11 +32,13 @@ class benjaminprevotConnexoon extends eqLogic {
         if (!is_object($eqLogic)) {
             $eqLogic = new benjaminprevotConnexoon();
             $eqLogic->setLogicalId($logicalId);
-            $eqLogic->setName($device['name']);
             $eqLogic->setEqType_name(__CLASS__);
             $eqLogic->setIsEnable((int) $device['enabled']);
             $eqLogic->setIsVisible(1);
         }
+
+        $eqLogic->setName($device['name']);
+        $eqLogic->setConfiguration('template', self::mapTemplateName($device));
 
         $eqLogic->save();
         $eqLogic->refresh();
@@ -50,6 +52,15 @@ class benjaminprevotConnexoon extends eqLogic {
         }
 
         $eqLogic->refreshWidget();
+    }
+
+    private static function mapTemplateName($device) {
+        switch ($device['type']) {
+            case Somfy::$roller_shutter:
+                return 'roller_shutter';
+            default:
+                return 'generic';
+        }
     }
 
     private static function saveCommand($eqLogic, $device, $command) {
