@@ -79,12 +79,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" placeholder="{{Identifiant}}" readonly/>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">{{Nom Somfy}}</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="name_somfy" placeholder="{{Nom Somfy}}" readonly/>
-                            </div>
-                        </div>
                     </fieldset>
                 </form>
             </div>
