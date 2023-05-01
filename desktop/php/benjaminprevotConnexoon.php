@@ -49,6 +49,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 <form class="form-horizontal">
                     <fieldset>
                         <div class="form-group">
+                            <label class="col-sm-3 control-label">{{Identifiant}}</label>
+                            <div class="col-sm-3">
+                                <input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" placeholder="{{Identifiant}}" readonly/>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-sm-3 control-label">{{Nom de l'équipement}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display:none;" />
@@ -71,12 +77,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <div class="col-sm-9">
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked disabled/>{{Activer}}</label>
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible"/>{{Visible}}</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label">{{Identifiant}}</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" placeholder="{{Identifiant}}" readonly/>
                             </div>
                         </div>
                     </fieldset>
