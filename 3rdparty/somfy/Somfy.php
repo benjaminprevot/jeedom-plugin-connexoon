@@ -197,7 +197,7 @@ namespace Somfy {
             curl_close($ch);
 
             if ($httpCode !== 200) {
-                $errorFormat = 'Impossible d\'enregistre l\'event listener pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s';
+                $errorFormat = 'Impossible d\'enregistrer l\'event listener pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s';
 
                 $errorMessage = sprintf($errorFormat, $pin, $ip, $httpCode, $response, $error);
 

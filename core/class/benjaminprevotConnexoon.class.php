@@ -8,6 +8,72 @@ class benjaminprevotConnexoon extends eqLogic {
         self::syncDevices();
     }
 
+    public static function deamon_info() {
+        $return = array(
+            'log' => __CLASS__,
+            'state' => 'nok',
+            'launchable' => 'nok'
+        );
+
+        $token = config::byKey('somfy::token', __CLASS__);
+
+        if (!empty($token)) {
+            $return['launchable'] = 'ok';
+        }
+
+        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
+
+        if (is_object($cron) && $cron->running()) {
+            $return['state'] = 'ok';
+        }
+
+        return $return;
+    }
+
+    public static function deamon_start() {
+        self::deamon_stop();
+
+        $daemonInfo = self::deamon_info();
+
+        if ($daemonInfo['launchable'] !== 'ok') {
+            throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
+        }
+
+        log::add(__CLASS__, 'info', 'Lancement démon');
+
+        $pin = config::byKey('somfy::pin', __CLASS__);
+        $ip = config::byKey('somfy::ip', __CLASS__);
+        $token = config::byKey('somfy::token', __CLASS__);
+
+        $listenerId = \Somfy\Api::registerEventListener($pin, $ip, $token);
+
+        config::save('somfy::listenerId', $listenerId, __CLASS__);
+
+        $cron = new cron();
+        $cron->setClass(__CLASS__);
+        $cron->setFunction('fetchEvents');
+        $cron->setEnable(1);
+        $cron->setDeamon(1);
+        $cron->setSchedule('* * * * *');
+        $cron->save();
+        $cron->run();
+
+        return $cron->running();
+    }
+
+    public static function deamon_stop() {
+        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
+
+        if (!is_object($cron)) {
+            return;
+        }
+
+        $cron->stop();
+        $cron->remove();
+
+        config::remove('somfy::listenerId', __CLASS__);
+    }
+
     public static function createDaemon() {
         $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
 

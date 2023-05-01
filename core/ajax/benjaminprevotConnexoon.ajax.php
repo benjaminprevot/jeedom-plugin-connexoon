@@ -13,6 +13,10 @@ try {
     ajax::init();
 
     if (init('action') == 'generate-token') {
+        if (!empty(config::byKey('somfy::token', 'benjaminprevotConnexoon'))) {
+            ajax::success();
+        }
+
         $pin = config::byKey('somfy::pin', 'benjaminprevotConnexoon');
         $email = config::byKey('somfy::email', 'benjaminprevotConnexoon');
         $password = config::byKey('somfy::password', 'benjaminprevotConnexoon');
