@@ -1,11 +1,89 @@
 <?php
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
-require_once __DIR__ . '/../../3rdparty/somfy/Somfy.class.php';
+require_once __DIR__ . '/../../3rdparty/somfy/Somfy.php';
 
 class benjaminprevotConnexoon extends eqLogic {
 
     public static function cron() {
         self::syncDevices();
+    }
+
+    public static function createDaemon() {
+        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
+
+        if (is_object($cron)) {
+            log::add(__CLASS__, 'info', 'Cron already exists with ID ' . $cron->getId() . '. Trying to recreate it.');
+
+            if ($cron->running()) {
+                $cron->stop();
+            }
+
+            $cron->remove();
+        }
+
+        $pin = config::byKey('somfy::pin', __CLASS__);
+        $ip = config::byKey('somfy::ip', __CLASS__);
+        $token = config::byKey('somfy::token', __CLASS__);
+
+        $listenerId = \Somfy\Api::registerEventListener($pin, $ip, $token);
+
+        config::save('somfy::listenerId', $listenerId, __CLASS__);
+
+        $cron = new cron();
+        $cron->setClass(__CLASS__);
+        $cron->setFunction('fetchEvents');
+        $cron->setEnable(1);
+        $cron->setDeamon(1);
+        $cron->setSchedule('* * * * *');
+        $cron->save();
+
+        self::startDaemon();
+    }
+
+    public static function startDaemon() {
+        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
+
+        if (!is_object($cron)) {
+            log::add(__CLASS__, 'warning', 'Trying to start non-existing cron.');
+
+            throw new Exception('Trying to start non-existing cron.');
+        }
+
+        $cron->run();
+    }
+
+    public static function stopDaemon() {
+        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
+
+        if (!is_object($cron)) {
+            log::add(__CLASS__, 'warning', 'Trying to stop non-existing cron.');
+
+            throw new Exception('Trying to stop non-existing cron.');
+        }
+
+        $cron->halt();
+    }
+
+    public static function fetchEvents() {
+        $pin = config::byKey('somfy::pin', __CLASS__);
+        $ip = config::byKey('somfy::ip', __CLASS__);
+        $token = config::byKey('somfy::token', __CLASS__);
+        $listenerId = config::byKey('somfy::listenerId', __CLASS__);
+
+        $events = \Somfy\Api::fetchEvents($pin, $ip, $token, $listenerId);
+
+        foreach ($events as $event) {
+            $logicalId = $event['deviceURL'];
+            $states = $event['states'];
+
+            $eqLogic = self::byLogicalId($logicalId, __CLASS__);
+
+            foreach ($states as $state) {
+                $eqLogic->checkAndUpdateCmd($state['name'], $state['value']);
+            }
+
+            $eqLogic->refreshWidget();
+        }
     }
 
     private static function syncDevices() {
@@ -17,7 +95,7 @@ class benjaminprevotConnexoon extends eqLogic {
             return;
         }
 
-        $devices = Somfy::devices($pin, $ip, $token);
+        $devices = \Somfy\Api::devices($pin, $ip, $token);
 
         foreach ($devices as $device) {
             self::saveEqlogic($device);
@@ -56,7 +134,7 @@ class benjaminprevotConnexoon extends eqLogic {
 
     private static function mapTemplateName($device) {
         switch ($device['type']) {
-            case Somfy::$roller_shutter:
+            case \Somfy\Device::ROLLER_SHUTTER:
                 return 'roller_shutter';
             default:
                 return 'generic';
@@ -92,7 +170,7 @@ class benjaminprevotConnexoon extends eqLogic {
         $cmd->setName($state['name']);
         $cmd->setGeneric_type(self::stateGenericTypeMapping($device['type'], $state));
         $cmd->setType('info');
-        $cmd->setSubType('numeric');
+        $cmd->setSubType(self::stateSubTypeMapping($state['type']));
         $cmd->setUnite(self::stateUnitMapping($state['type']));
         $cmd->setEqLogic_id($eqLogic->getId());
 
@@ -102,7 +180,7 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     private static function commandGenericTypeMapping($deviceType, $command) {
-        if ($deviceType === Somfy::$roller_shutter) {
+        if ($deviceType === \Somfy\Device::ROLLER_SHUTTER) {
             switch ($command) {
                 case 'close': return 'FLAP_DOWN';
                 case 'open':  return 'FLAP_UP';
@@ -114,10 +192,19 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     private static function stateGenericTypeMapping($deviceType, $state) {
-        if ($deviceType === Somfy::$roller_shutter) {
+        if ($deviceType === \Somfy\Device::ROLLER_SHUTTER) {
             switch ($state['name']) {
                 case 'closure': return 'FLAP_STATE';
             }
+        }
+
+        return null;
+    }
+
+    private static function stateSubTypeMapping($stateType) {
+        switch ($stateType) {
+            case 'boolean': return 'binary';
+            case 'percent': return 'numeric';
         }
 
         return null;
@@ -172,7 +259,7 @@ class benjaminprevotConnexoonCmd extends cmd {
         $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
 
         if ($this->getType() == 'action') {
-            Somfy::execute($pin, $ip, $token, $eqLogic->getLogicalId(), $action);
+            \Somfy\Api::execute($pin, $ip, $token, $eqLogic->getLogicalId(), $action);
         }
     }
 

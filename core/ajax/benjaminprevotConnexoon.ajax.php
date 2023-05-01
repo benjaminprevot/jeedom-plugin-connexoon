@@ -8,7 +8,7 @@ try {
     }
 
     require_once __DIR__ . '/../../3rdparty/somfy/Overkiz.class.php';
-    require_once __DIR__ . '/../../3rdparty/somfy/Somfy.class.php';
+    require_once __DIR__ . '/../../3rdparty/somfy/Somfy.php';
 
     ajax::init();
 
@@ -26,7 +26,9 @@ try {
 
             Overkiz::activateToken($pin, $jsessionid, $token);
 
-            $password = config::save('somfy::token', $token, 'benjaminprevotConnexoon');
+            config::save('somfy::token', $token, 'benjaminprevotConnexoon');
+
+            benjaminprevotConnexoon::createDaemon();
 
             ajax::success();
         } catch (Exception $e) {
@@ -42,9 +44,39 @@ try {
 
     if (init('action') == 'test') {
         try {
-            $version = Somfy::apiVersion(init('pin'), init('ip'));
+            $version = \Somfy\Api::version(init('pin'), init('ip'));
 
             ajax::success($version);
+        } catch (Exception $e) {
+            ajax::error($e->getMessage());
+        }
+    }
+
+    if (init('action') == 'create-daemon') {
+        try {
+            benjaminprevotConnexoon::createDaemon();
+
+            ajax::success();
+        } catch (Exception $e) {
+            ajax::error($e->getMessage());
+        }
+    }
+
+    if (init('action') == 'start-daemon') {
+        try {
+            benjaminprevotConnexoon::startDaemon();
+
+            ajax::success();
+        } catch (Exception $e) {
+            ajax::error($e->getMessage());
+        }
+    }
+
+    if (init('action') == 'stop-daemon') {
+        try {
+            benjaminprevotConnexoon::stopDaemon();
+
+            ajax::success();
         } catch (Exception $e) {
             ajax::error($e->getMessage());
         }

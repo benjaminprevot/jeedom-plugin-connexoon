@@ -5,8 +5,6 @@ if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-require_once dirname(__FILE__) . '/../3rdparty/somfy/Somfy.class.php';
-
 if (version_compare(PHP_VERSION, '7.0') < 0) {
     echo '<div class="alert alert-danger">{{Attention votre version de PHP (' . PHP_VERSION . ') est trop veille, il faut au minimum PHP 7.0.}}</div>';
 }
@@ -16,6 +14,10 @@ $isConfigured = !empty($token);
 $disabledIfConfigured = $isConfigured ? 'disabled' : '';
 $hiddenIfConfigured = $isConfigured ? 'style="display:none"' : '';
 $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
+
+$eventsCron = cron::byClassAndFunction('benjaminprevotConnexoon', 'fetchEvents');
+$isEventsCronCreacted = is_object($eventsCron);
+$isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
 ?>
 <form class="form-horizontal">
     <fieldset <?= $disabledIfConfigured ?>>
@@ -48,6 +50,19 @@ $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
         </div>
     </fieldset>
     <fieldset>
+        <div class="form-group" <?= $displayedIfConfigured ?>>
+            <div class="col-md-4 col-md-offset-4">
+                <?php if (!$isEventsCronCreacted): ?>
+                    <a class="btn btn-info" id="connexoon-btn-cron-create">Créer le démon</a>
+                <?php endif; ?>
+                <?php if ($isEventsCronCreacted && !$isEventsCronRunning): ?>
+                    <a class="btn btn-info" id="connexoon-btn-cron-start">Démarrer le démon</a>
+                <?php endif; ?>
+                <?php if ($isEventsCronRunning): ?>
+                    <a class="btn btn-danger" id="connexoon-btn-cron-stop">Arrêter le démon</a>
+                <?php endif; ?>
+            </div>
+        </div>
         <div class="form-group">
             <div class="col-md-4 col-md-offset-4">
                 <a class="btn btn-info" id="connexoon-btn-test" <?= $hiddenIfConfigured ?>>Tester</a>
@@ -57,62 +72,57 @@ $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
     </fieldset>
 </form>
 <script>
-    (function(window) {
-        window.benjaminprevotConnexoon_postSaveConfiguration = function() {
+    (function(window, $) {
+        function refreshPluginPage() {
+            $('div.pluginDisplayCard[data-plugin_id="benjaminprevotConnexoon"]').click();
+        }
+
+        function ajax(data, successCallback) {
             $.ajax({
                 type: 'POST',
-                url: "plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php",
-                data: { action: "generate-token" },
+                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
+                data: data,
                 dataType: 'json',
                 error: function (request, status, error) {
                     handleAjaxError(request, status, error);
                 },
-                success: function (data) {
-                    if (data.state == 'ok') {
-                        $('div.pluginDisplayCard[data-plugin_id="benjaminprevotConnexoon"]').click();
+                success: function (response) {
+                    if (response.state == 'ok') {
+                        successCallback(response);
                     } else {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        $('#div_alert').showAlert({message: response.result, level: 'danger'});
                     }
                 }
             });
+        }
+
+        window.benjaminprevotConnexoon_postSaveConfiguration = function() {
+            ajax({ action: 'generate-token' }, refreshPluginPage);
         };
 
         $('#connexoon-btn-reset').on('click', function() {
-            $.ajax({
-                type: 'POST',
-                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
-                data: { action: 'reset' },
-                dataType: 'json',
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) {
-                    if (data.state == 'ok') {
-                        $('#div_alert').showAlert({message: '{{Reset}}', level: 'success'});
-                    } else {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                    }
-                }
-            });
+            ajax({ action: 'reset' }, refreshPluginPage);
         });
 
         $('#connexoon-btn-test').on('click', function() {
-            $.ajax({
-                type: 'POST',
-                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
-                data: { action: 'test', pin: $('#connexoon-pin').val(), ip: $('#connexoon-ip').val() },
-                dataType: 'json',
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) {
-                    if (data.state == 'ok') {
-                        $('#div_alert').showAlert({message: '{{Test de connexion à la box réussi}} - {{Version : }}' + data.result, level: 'success'});
-                    } else {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                    }
+            ajax(
+                { action: 'test', pin: $('#connexoon-pin').val(), ip: $('#connexoon-ip').val() },
+                function(response) {
+                    $('#div_alert').showAlert({message: '{{Test de connexion à la box réussi}} - {{Version : }}' + response.result, level: 'success'});
                 }
-            });
+            );
         });
-    })(window);
+
+        $('#connexoon-btn-cron-create').on('click', function() {
+            ajax({ action: 'create-daemon' }, refreshPluginPage);
+        });
+
+        $('#connexoon-btn-cron-start').on('click', function() {
+            ajax({ action: 'start-daemon' }, refreshPluginPage);
+        });
+
+        $('#connexoon-btn-cron-stop').on('click', function() {
+            ajax({ action: 'stop-daemon' }, refreshPluginPage);
+        });
+    })(window, $);
 </script>
