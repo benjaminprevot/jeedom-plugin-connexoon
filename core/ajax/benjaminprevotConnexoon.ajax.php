@@ -32,8 +32,6 @@ try {
 
             config::save('somfy::token', $token, 'benjaminprevotConnexoon');
 
-            benjaminprevotConnexoon::createDaemon();
-
             ajax::success();
         } catch (Exception $e) {
             ajax::error($e->getMessage());
@@ -42,6 +40,8 @@ try {
 
     if (init('action') == 'reset') {
         config::remove('somfy::token', 'benjaminprevotConnexoon');
+
+        benjaminprevotConnexoon::deamon_stop();
 
         ajax::success();
     }
