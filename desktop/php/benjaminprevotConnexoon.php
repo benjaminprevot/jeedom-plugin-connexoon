@@ -70,7 +70,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <label class="col-sm-3 control-label"></label>
                             <div class="col-sm-9">
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked disabled/>{{Activer}}</label>
-                                <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked disabled/>{{Visible}}</label>
+                                <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible"/>{{Visible}}</label>
                             </div>
                         </div>
                         <div class="form-group">
