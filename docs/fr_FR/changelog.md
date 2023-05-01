@@ -19,5 +19,6 @@ type: changelog
 - Les widgets sont disponibles sur le dashboard
 - Le widget prend en compte le type d'équipement
 - Création d'un démon pour écouter les évènements toutes les secondes
+- La mise à jour de la visibilité d'un objet est possible
 
 [Beta]: https://github.com/benjaminprevot/jeedom-plugin-connexoon/tree/beta
