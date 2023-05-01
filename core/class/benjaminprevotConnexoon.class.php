@@ -8,7 +8,7 @@ class benjaminprevotConnexoon extends eqLogic {
         self::syncDevices();
     }
 
-    public static function createDeamon() {
+    public static function createDaemon() {
         $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
 
         if (is_object($cron)) {
@@ -29,14 +29,14 @@ class benjaminprevotConnexoon extends eqLogic {
         $cron->setClass(__CLASS__);
         $cron->setFunction('fetchEvents');
         $cron->setEnable(1);
-        $cron->setDeamon(1);
+        $cron->setDaemon(1);
         $cron->setSchedule('* * * * *');
         $cron->save();
 
-        self::startDeamon();
+        self::startDaemon();
     }
 
-    public static function startDeamon() {
+    public static function startDaemon() {
         $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
 
         if (!is_object($cron)) {
@@ -48,7 +48,7 @@ class benjaminprevotConnexoon extends eqLogic {
         $cron->run();
     }
 
-    public static function stopDeamon() {
+    public static function stopDaemon() {
         $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
 
         if (!is_object($cron)) {

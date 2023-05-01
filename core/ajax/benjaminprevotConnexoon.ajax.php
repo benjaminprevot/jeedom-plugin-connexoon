@@ -50,9 +50,9 @@ try {
         }
     }
 
-    if (init('action') == 'create-deamon') {
+    if (init('action') == 'create-daemon') {
         try {
-            benjaminprevotConnexoon::createDeamon();
+            benjaminprevotConnexoon::createDaemon();
 
             ajax::success();
         } catch (Exception $e) {
@@ -60,9 +60,9 @@ try {
         }
     }
 
-    if (init('action') == 'start-deamon') {
+    if (init('action') == 'start-daemon') {
         try {
-            benjaminprevotConnexoon::startDeamon();
+            benjaminprevotConnexoon::startDaemon();
 
             ajax::success();
         } catch (Exception $e) {
@@ -70,9 +70,9 @@ try {
         }
     }
 
-    if (init('action') == 'stop-deamon') {
+    if (init('action') == 'stop-daemon') {
         try {
-            benjaminprevotConnexoon::stopDeamon();
+            benjaminprevotConnexoon::stopDaemon();
 
             ajax::success();
         } catch (Exception $e) {

@@ -116,15 +116,15 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
         });
 
         $('#connexoon-btn-cron-create').on('click', function() {
-            ajax({ action: 'create-deamon' }, refreshPluginPage);
+            ajax({ action: 'create-daemon' }, refreshPluginPage);
         });
 
         $('#connexoon-btn-cron-start').on('click', function() {
-            ajax({ action: 'start-deamon' }, refreshPluginPage);
+            ajax({ action: 'start-daemon' }, refreshPluginPage);
         });
 
         $('#connexoon-btn-cron-stop').on('click', function() {
-            ajax({ action: 'stop-deamon' }, refreshPluginPage);
+            ajax({ action: 'stop-daemon' }, refreshPluginPage);
         });
     })(window, $);
 </script>
