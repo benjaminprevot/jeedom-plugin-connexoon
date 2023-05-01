@@ -32,6 +32,8 @@ try {
 
             config::save('somfy::token', $token, 'benjaminprevotConnexoon');
 
+            benjaminprevotConnexoon::deamon_start();
+
             ajax::success();
         } catch (Exception $e) {
             ajax::error($e->getMessage());
