@@ -8,7 +8,7 @@ try {
     }
 
     require_once __DIR__ . '/../../3rdparty/somfy/Overkiz.class.php';
-    require_once __DIR__ . '/../../3rdparty/somfy/Somfy.class.php';
+    require_once __DIR__ . '/../../3rdparty/somfy/Somfy.php';
 
     ajax::init();
 
@@ -42,7 +42,7 @@ try {
 
     if (init('action') == 'test') {
         try {
-            $version = Somfy::apiVersion(init('pin'), init('ip'));
+            $version = \Somfy\Api::version(init('pin'), init('ip'));
 
             ajax::success($version);
         } catch (Exception $e) {

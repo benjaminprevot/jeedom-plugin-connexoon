@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
-require_once __DIR__ . '/../../3rdparty/somfy/Somfy.class.php';
+require_once __DIR__ . '/../../3rdparty/somfy/Somfy.php';
 
 class benjaminprevotConnexoon extends eqLogic {
 
@@ -21,7 +21,7 @@ class benjaminprevotConnexoon extends eqLogic {
         $ip = config::byKey('somfy::ip', __CLASS__);
         $token = config::byKey('somfy::token', __CLASS__);
 
-        $listenerId = Somfy::registerEventListener($pin, $ip, $token);
+        $listenerId = \Somfy\Api::registerEventListener($pin, $ip, $token);
 
         config::save('somfy::listenerId', $listenerId, __CLASS__);
 
@@ -66,7 +66,7 @@ class benjaminprevotConnexoon extends eqLogic {
         $token = config::byKey('somfy::token', __CLASS__);
         $listenerId = config::byKey('somfy::listenerId', __CLASS__);
 
-        $events = Somfy::fetchEvents($pin, $ip, $token, $listenerId);
+        $events = \Somfy\Api::fetchEvents($pin, $ip, $token, $listenerId);
 
         foreach ($events as $event) {
             $logicalId = $event['deviceURL'];
@@ -91,7 +91,7 @@ class benjaminprevotConnexoon extends eqLogic {
             return;
         }
 
-        $devices = Somfy::devices($pin, $ip, $token);
+        $devices = \Somfy\Api::devices($pin, $ip, $token);
 
         foreach ($devices as $device) {
             self::saveEqlogic($device);
@@ -130,7 +130,7 @@ class benjaminprevotConnexoon extends eqLogic {
 
     private static function mapTemplateName($device) {
         switch ($device['type']) {
-            case Somfy::$roller_shutter:
+            case \Somfy\Device::ROLLER_SHUTTER:
                 return 'roller_shutter';
             default:
                 return 'generic';
@@ -176,7 +176,7 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     private static function commandGenericTypeMapping($deviceType, $command) {
-        if ($deviceType === Somfy::$roller_shutter) {
+        if ($deviceType === \Somfy\Device::ROLLER_SHUTTER) {
             switch ($command) {
                 case 'close': return 'FLAP_DOWN';
                 case 'open':  return 'FLAP_UP';
@@ -188,7 +188,7 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     private static function stateGenericTypeMapping($deviceType, $state) {
-        if ($deviceType === Somfy::$roller_shutter) {
+        if ($deviceType === \Somfy\Device::ROLLER_SHUTTER) {
             switch ($state['name']) {
                 case 'closure': return 'FLAP_STATE';
             }
@@ -255,7 +255,7 @@ class benjaminprevotConnexoonCmd extends cmd {
         $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
 
         if ($this->getType() == 'action') {
-            Somfy::execute($pin, $ip, $token, $eqLogic->getLogicalId(), $action);
+            \Somfy\Api::execute($pin, $ip, $token, $eqLogic->getLogicalId(), $action);
         }
     }
 
