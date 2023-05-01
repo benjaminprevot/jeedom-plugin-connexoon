@@ -14,10 +14,6 @@ $isConfigured = !empty($token);
 $disabledIfConfigured = $isConfigured ? 'disabled' : '';
 $hiddenIfConfigured = $isConfigured ? 'style="display:none"' : '';
 $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
-
-$eventsCron = cron::byClassAndFunction('benjaminprevotConnexoon', 'fetchEvents');
-$isEventsCronCreacted = is_object($eventsCron);
-$isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
 ?>
 <form class="form-horizontal">
     <fieldset <?= $disabledIfConfigured ?>>
@@ -50,19 +46,6 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
         </div>
     </fieldset>
     <fieldset>
-        <div class="form-group" <?= $displayedIfConfigured ?>>
-            <div class="col-md-4 col-md-offset-4">
-                <?php if (!$isEventsCronCreacted): ?>
-                    <a class="btn btn-info" id="connexoon-btn-cron-create">Créer le démon</a>
-                <?php endif; ?>
-                <?php if ($isEventsCronCreacted && !$isEventsCronRunning): ?>
-                    <a class="btn btn-info" id="connexoon-btn-cron-start">Démarrer le démon</a>
-                <?php endif; ?>
-                <?php if ($isEventsCronRunning): ?>
-                    <a class="btn btn-danger" id="connexoon-btn-cron-stop">Arrêter le démon</a>
-                <?php endif; ?>
-            </div>
-        </div>
         <div class="form-group">
             <div class="col-md-4 col-md-offset-4">
                 <a class="btn btn-info" id="connexoon-btn-test" <?= $hiddenIfConfigured ?>>Tester</a>
@@ -111,18 +94,6 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
                     $('#div_alert').showAlert({message: '{{Test de connexion à la box réussi}} - {{Version : }}' + response.result, level: 'success'});
                 }
             );
-        });
-
-        $('#connexoon-btn-cron-create').on('click', function() {
-            ajax({ action: 'create-daemon' }, refreshPluginPage);
-        });
-
-        $('#connexoon-btn-cron-start').on('click', function() {
-            ajax({ action: 'start-daemon' }, refreshPluginPage);
-        });
-
-        $('#connexoon-btn-cron-stop').on('click', function() {
-            ajax({ action: 'stop-daemon' }, refreshPluginPage);
         });
     })(window, $);
 </script>
