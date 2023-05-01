@@ -74,62 +74,6 @@ class benjaminprevotConnexoon extends eqLogic {
         config::remove('somfy::listenerId', __CLASS__);
     }
 
-    public static function createDaemon() {
-        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
-
-        if (is_object($cron)) {
-            log::add(__CLASS__, 'info', 'Cron already exists with ID ' . $cron->getId() . '. Trying to recreate it.');
-
-            if ($cron->running()) {
-                $cron->stop();
-            }
-
-            $cron->remove();
-        }
-
-        $pin = config::byKey('somfy::pin', __CLASS__);
-        $ip = config::byKey('somfy::ip', __CLASS__);
-        $token = config::byKey('somfy::token', __CLASS__);
-
-        $listenerId = \Somfy\Api::registerEventListener($pin, $ip, $token);
-
-        config::save('somfy::listenerId', $listenerId, __CLASS__);
-
-        $cron = new cron();
-        $cron->setClass(__CLASS__);
-        $cron->setFunction('fetchEvents');
-        $cron->setEnable(1);
-        $cron->setDeamon(1);
-        $cron->setSchedule('* * * * *');
-        $cron->save();
-
-        self::startDaemon();
-    }
-
-    public static function startDaemon() {
-        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
-
-        if (!is_object($cron)) {
-            log::add(__CLASS__, 'warning', 'Trying to start non-existing cron.');
-
-            throw new Exception('Trying to start non-existing cron.');
-        }
-
-        $cron->run();
-    }
-
-    public static function stopDaemon() {
-        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
-
-        if (!is_object($cron)) {
-            log::add(__CLASS__, 'warning', 'Trying to stop non-existing cron.');
-
-            throw new Exception('Trying to stop non-existing cron.');
-        }
-
-        $cron->halt();
-    }
-
     public static function fetchEvents() {
         $pin = config::byKey('somfy::pin', __CLASS__);
         $ip = config::byKey('somfy::ip', __CLASS__);
