@@ -12,9 +12,13 @@ class benjaminprevotConnexoon extends eqLogic {
         $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
 
         if (is_object($cron)) {
-            log::add(__CLASS__, 'warning', 'Trying to create already existing cron. Current ID: ' . $cron->getId());
+            log::add(__CLASS__, 'info', 'Cron already exists with ID ' . $cron->getId() . '. Trying to recreate it.');
 
-            throw new Exception('Cron already exists with ID ' . $cron->getId());
+            if ($cron->running()) {
+                $cron->stop();
+            }
+
+            $cron->remove();
         }
 
         $pin = config::byKey('somfy::pin', __CLASS__);
@@ -29,7 +33,7 @@ class benjaminprevotConnexoon extends eqLogic {
         $cron->setClass(__CLASS__);
         $cron->setFunction('fetchEvents');
         $cron->setEnable(1);
-        $cron->setDaemon(1);
+        $cron->setDeamon(1);
         $cron->setSchedule('* * * * *');
         $cron->save();
 

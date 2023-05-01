@@ -28,6 +28,8 @@ try {
 
             config::save('somfy::token', $token, 'benjaminprevotConnexoon');
 
+            benjaminprevotConnexoon::createDaemon();
+
             ajax::success();
         } catch (Exception $e) {
             ajax::error($e->getMessage());
