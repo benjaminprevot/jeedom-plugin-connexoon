@@ -7,7 +7,7 @@
     "require": "3.0",
     "category": "automatisation",
     "hasDependency": false,
-    "hasOwnDeamon": true,
+    "hasOwnDeamon": false,
     "maxDependancyInstallTime": 0,
     "changelog": "https://benjaminprevot.github.io/jeedom-plugin-connexoon/#language#/changelog.html",
     "documentation": "https://benjaminprevot.github.io/jeedom-plugin-connexoon/#language#/",
