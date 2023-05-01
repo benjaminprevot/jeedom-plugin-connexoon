@@ -7,7 +7,7 @@ type: changelog
 
 # Changelog en Français
 
-## [Beta] - 2023-04-30
+## [Beta] - 2023-05-01
 
 - Les volets roulants sont chargés et les actions de bases (ouvrir, fermer et stopper) sont disponibles
 - Les widgets sont disponibles sur le dashboard
