@@ -74,123 +74,57 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
     </fieldset>
 </form>
 <script>
-    (function(window) {
+    (function(window, $) {
         function refreshPluginPage() {
             $('div.pluginDisplayCard[data-plugin_id="benjaminprevotConnexoon"]').click();
         }
 
-        window.benjaminprevotConnexoon_postSaveConfiguration = function() {
+        function ajax(data, successCallback) {
             $.ajax({
                 type: 'POST',
-                url: "plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php",
-                data: { action: "generate-token" },
+                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
+                data: data,
                 dataType: 'json',
                 error: function (request, status, error) {
                     handleAjaxError(request, status, error);
                 },
-                success: function (data) {
-                    if (data.state == 'ok') {
-                        refreshPluginPage();
+                success: function (response) {
+                    if (response.state == 'ok') {
+                        successCallback(response);
                     } else {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
+                        $('#div_alert').showAlert({message: response.result, level: 'danger'});
                     }
                 }
             });
+        }
+
+        window.benjaminprevotConnexoon_postSaveConfiguration = function() {
+            ajax({ action: 'generate-token' }, refreshPluginPage);
         };
 
         $('#connexoon-btn-reset').on('click', function() {
-            $.ajax({
-                type: 'POST',
-                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
-                data: { action: 'reset' },
-                dataType: 'json',
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) {
-                    if (data.state == 'ok') {
-                        refreshPluginPage();
-                    } else {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                    }
-                }
-            });
+            ajax({ action: 'reset' }, refreshPluginPage);
         });
 
         $('#connexoon-btn-test').on('click', function() {
-            $.ajax({
-                type: 'POST',
-                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
-                data: { action: 'test', pin: $('#connexoon-pin').val(), ip: $('#connexoon-ip').val() },
-                dataType: 'json',
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) {
-                    if (data.state == 'ok') {
-                        $('#div_alert').showAlert({message: '{{Test de connexion à la box réussi}} - {{Version : }}' + data.result, level: 'success'});
-                    } else {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                    }
+            ajax(
+                { action: 'test', pin: $('#connexoon-pin').val(), ip: $('#connexoon-ip').val() },
+                function(response) {
+                    $('#div_alert').showAlert({message: '{{Test de connexion à la box réussi}} - {{Version : }}' + response.result, level: 'success'});
                 }
-            });
+            );
         });
 
         $('#connexoon-btn-cron-create').on('click', function() {
-            $.ajax({
-                type: 'POST',
-                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
-                data: { action: 'create-deamon' },
-                dataType: 'json',
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) {
-                    if (data.state == 'ok') {
-                        refreshPluginPage();
-                    } else {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                    }
-                }
-            });
+            ajax({ action: 'create-deamon' }, refreshPluginPage);
         });
 
         $('#connexoon-btn-cron-start').on('click', function() {
-            $.ajax({
-                type: 'POST',
-                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
-                data: { action: 'start-deamon' },
-                dataType: 'json',
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) {
-                    if (data.state == 'ok') {
-                        refreshPluginPage();
-                    } else {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                    }
-                }
-            });
+            ajax({ action: 'start-deamon' }, refreshPluginPage);
         });
 
         $('#connexoon-btn-cron-stop').on('click', function() {
-            $.ajax({
-                type: 'POST',
-                url: 'plugins/benjaminprevotConnexoon/core/ajax/benjaminprevotConnexoon.ajax.php',
-                data: { action: 'stop-deamon' },
-                dataType: 'json',
-                error: function (request, status, error) {
-                    handleAjaxError(request, status, error);
-                },
-                success: function (data) {
-                    if (data.state == 'ok') {
-                        refreshPluginPage();
-                    } else {
-                        $('#div_alert').showAlert({message: data.result, level: 'danger'});
-                    }
-                }
-            });
+            ajax({ action: 'stop-deamon' }, refreshPluginPage);
         });
-    })(window);
+    })(window, $);
 </script>
