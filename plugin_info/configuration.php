@@ -75,6 +75,10 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
 </form>
 <script>
     (function(window) {
+        function refreshPluginPage() {
+            $('div.pluginDisplayCard[data-plugin_id="benjaminprevotConnexoon"]').click();
+        }
+
         window.benjaminprevotConnexoon_postSaveConfiguration = function() {
             $.ajax({
                 type: 'POST',
@@ -86,7 +90,7 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
                 },
                 success: function (data) {
                     if (data.state == 'ok') {
-                        $('div.pluginDisplayCard[data-plugin_id="benjaminprevotConnexoon"]').click();
+                        refreshPluginPage();
                     } else {
                         $('#div_alert').showAlert({message: data.result, level: 'danger'});
                     }
@@ -105,7 +109,7 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
                 },
                 success: function (data) {
                     if (data.state == 'ok') {
-                        $('#div_alert').showAlert({message: '{{Reset}}', level: 'success'});
+                        refreshPluginPage();
                     } else {
                         $('#div_alert').showAlert({message: data.result, level: 'danger'});
                     }
@@ -144,6 +148,8 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
                 success: function (data) {
                     if (data.state == 'ok') {
                         $('#div_alert').showAlert({message: '{{Démon créé}}', level: 'success'});
+
+                        refreshPluginPage();
                     } else {
                         $('#div_alert').showAlert({message: data.result, level: 'danger'});
                     }
@@ -162,7 +168,7 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
                 },
                 success: function (data) {
                     if (data.state == 'ok') {
-                        $('#div_alert').showAlert({message: '{{Démon démarré}}', level: 'success'});
+                        refreshPluginPage();
                     } else {
                         $('#div_alert').showAlert({message: data.result, level: 'danger'});
                     }
@@ -181,7 +187,7 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
                 },
                 success: function (data) {
                     if (data.state == 'ok') {
-                        $('#div_alert').showAlert({message: '{{Démon démarré}}', level: 'success'});
+                        refreshPluginPage();
                     } else {
                         $('#div_alert').showAlert({message: data.result, level: 'danger'});
                     }
