@@ -13,6 +13,10 @@ try {
     ajax::init();
 
     if (init('action') == 'generate-token') {
+        if (!empty(config::byKey('somfy::token', 'benjaminprevotConnexoon'))) {
+            ajax::success();
+        }
+
         $pin = config::byKey('somfy::pin', 'benjaminprevotConnexoon');
         $email = config::byKey('somfy::email', 'benjaminprevotConnexoon');
         $password = config::byKey('somfy::password', 'benjaminprevotConnexoon');
@@ -28,7 +32,7 @@ try {
 
             config::save('somfy::token', $token, 'benjaminprevotConnexoon');
 
-            benjaminprevotConnexoon::createDaemon();
+            benjaminprevotConnexoon::deamon_start();
 
             ajax::success();
         } catch (Exception $e) {
@@ -39,6 +43,8 @@ try {
     if (init('action') == 'reset') {
         config::remove('somfy::token', 'benjaminprevotConnexoon');
 
+        benjaminprevotConnexoon::deamon_stop();
+
         ajax::success();
     }
 
@@ -47,36 +53,6 @@ try {
             $version = \Somfy\Api::version(init('pin'), init('ip'));
 
             ajax::success($version);
-        } catch (Exception $e) {
-            ajax::error($e->getMessage());
-        }
-    }
-
-    if (init('action') == 'create-daemon') {
-        try {
-            benjaminprevotConnexoon::createDaemon();
-
-            ajax::success();
-        } catch (Exception $e) {
-            ajax::error($e->getMessage());
-        }
-    }
-
-    if (init('action') == 'start-daemon') {
-        try {
-            benjaminprevotConnexoon::startDaemon();
-
-            ajax::success();
-        } catch (Exception $e) {
-            ajax::error($e->getMessage());
-        }
-    }
-
-    if (init('action') == 'stop-daemon') {
-        try {
-            benjaminprevotConnexoon::stopDaemon();
-
-            ajax::success();
         } catch (Exception $e) {
             ajax::error($e->getMessage());
         }

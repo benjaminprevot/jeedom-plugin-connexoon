@@ -8,18 +8,38 @@ class benjaminprevotConnexoon extends eqLogic {
         self::syncDevices();
     }
 
-    public static function createDaemon() {
+    public static function deamon_info() {
+        $return = array(
+            'log' => __CLASS__,
+            'state' => 'nok',
+            'launchable' => 'nok'
+        );
+
+        $token = config::byKey('somfy::token', __CLASS__);
+
+        if (!empty($token)) {
+            $return['launchable'] = 'ok';
+        }
+
         $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
 
-        if (is_object($cron)) {
-            log::add(__CLASS__, 'info', 'Cron already exists with ID ' . $cron->getId() . '. Trying to recreate it.');
-
-            if ($cron->running()) {
-                $cron->stop();
-            }
-
-            $cron->remove();
+        if (is_object($cron) && $cron->running()) {
+            $return['state'] = 'ok';
         }
+
+        return $return;
+    }
+
+    public static function deamon_start() {
+        self::deamon_stop();
+
+        $daemonInfo = self::deamon_info();
+
+        if ($daemonInfo['launchable'] !== 'ok') {
+            throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
+        }
+
+        log::add(__CLASS__, 'info', 'Lancement démon');
 
         $pin = config::byKey('somfy::pin', __CLASS__);
         $ip = config::byKey('somfy::ip', __CLASS__);
@@ -36,32 +56,22 @@ class benjaminprevotConnexoon extends eqLogic {
         $cron->setDeamon(1);
         $cron->setSchedule('* * * * *');
         $cron->save();
-
-        self::startDaemon();
-    }
-
-    public static function startDaemon() {
-        $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
-
-        if (!is_object($cron)) {
-            log::add(__CLASS__, 'warning', 'Trying to start non-existing cron.');
-
-            throw new Exception('Trying to start non-existing cron.');
-        }
-
         $cron->run();
+
+        return $cron->running();
     }
 
-    public static function stopDaemon() {
+    public static function deamon_stop() {
         $cron = cron::byClassAndFunction(__CLASS__, 'fetchEvents');
 
         if (!is_object($cron)) {
-            log::add(__CLASS__, 'warning', 'Trying to stop non-existing cron.');
-
-            throw new Exception('Trying to stop non-existing cron.');
+            return;
         }
 
-        $cron->halt();
+        $cron->stop();
+        $cron->remove();
+
+        config::remove('somfy::listenerId', __CLASS__);
     }
 
     public static function fetchEvents() {
