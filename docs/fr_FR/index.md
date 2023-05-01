@@ -29,3 +29,5 @@ Il faut ensuite renseigner les informations suivantes :
 | Code PIN     | Code PIN de la box, disponible dans le portail Somfy |
 | E-mail       | Adresse permettant de se connecter au portail Somfy  |
 | Mot de passe | Mot de passe du portail Somfy                        |
+
+Le bouton *Tester* permet de vérifier que les informations `IP Connexoon` et `Code PIN` sont corrects.
