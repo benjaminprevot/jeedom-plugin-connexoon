@@ -147,8 +147,6 @@ $isEventsCronRunning = $isEventsCronCreacted && $eventsCron->running();
                 },
                 success: function (data) {
                     if (data.state == 'ok') {
-                        $('#div_alert').showAlert({message: '{{Démon créé}}', level: 'success'});
-
                         refreshPluginPage();
                     } else {
                         $('#div_alert').showAlert({message: data.result, level: 'danger'});
