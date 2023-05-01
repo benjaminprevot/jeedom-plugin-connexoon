@@ -56,36 +56,6 @@ try {
         }
     }
 
-    if (init('action') == 'create-daemon') {
-        try {
-            benjaminprevotConnexoon::createDaemon();
-
-            ajax::success();
-        } catch (Exception $e) {
-            ajax::error($e->getMessage());
-        }
-    }
-
-    if (init('action') == 'start-daemon') {
-        try {
-            benjaminprevotConnexoon::startDaemon();
-
-            ajax::success();
-        } catch (Exception $e) {
-            ajax::error($e->getMessage());
-        }
-    }
-
-    if (init('action') == 'stop-daemon') {
-        try {
-            benjaminprevotConnexoon::stopDaemon();
-
-            ajax::success();
-        } catch (Exception $e) {
-            ajax::error($e->getMessage());
-        }
-    }
-
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));
 }
 catch (Exception $e) {
