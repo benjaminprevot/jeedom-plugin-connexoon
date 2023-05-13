@@ -21,4 +21,8 @@ type: changelog
 - Création d'un démon pour écouter les évènements toutes les secondes
 - La mise à jour de la visibilité d'un objet est possible
 
+### Corrections
+
+- Utilisation de Fontawesome pour le widget
+
 [Beta]: https://github.com/benjaminprevot/jeedom-plugin-connexoon/tree/beta
