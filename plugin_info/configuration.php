@@ -11,9 +11,8 @@ if (version_compare(PHP_VERSION, '7.0') < 0) {
 
 $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
 $isConfigured = !empty($token);
+$isNotConfigured = !$isConfigured;
 $disabledIfConfigured = $isConfigured ? 'disabled' : '';
-$hiddenIfConfigured = $isConfigured ? 'style="display:none"' : '';
-$displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
 ?>
 <form class="form-horizontal">
     <fieldset <?= $disabledIfConfigured ?>>
@@ -38,18 +37,24 @@ $displayedIfConfigured = $isConfigured ? '' : 'style="display:none"';
                 <input class="form-control configKey" data-l1key="somfy::email" placeholder="{{E-mail de votre compte Somfy}}">
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-md-4 control-label">{{Mot de passe}}</label>
-            <div class="col-md-4">
-                <input type="password" class="form-control configKey" data-l1key="somfy::password">
+        <?php if ($isNotConfigured): ?>
+            <div class="form-group">
+                <label class="col-md-4 control-label">{{Mot de passe}}</label>
+                <div class="col-md-4">
+                    <input type="password" class="form-control configKey" data-l1key="somfy::password">
+                </div>
             </div>
-        </div>
+        <?php endif ?>
     </fieldset>
     <fieldset>
         <div class="form-group">
             <div class="col-md-4 col-md-offset-4">
-                <a class="btn btn-info" id="connexoon-btn-test" <?= $hiddenIfConfigured ?>>Tester</a>
-                <a class="btn btn-danger" id="connexoon-btn-reset" <?= $displayedIfConfigured ?>>Reset</a>
+                <?php if ($isNotConfigured): ?>
+                    <a class="btn btn-info" id="connexoon-btn-test">Tester</a>
+                <?php endif ?>
+                <?php if ($isConfigured): ?>
+                    <a class="btn btn-danger" id="connexoon-btn-reset">Reset</a>
+                <?php endif ?>
             </div>
         </div>
     </fieldset>

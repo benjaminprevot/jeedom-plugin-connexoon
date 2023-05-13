@@ -7,7 +7,7 @@ type: changelog
 
 # Changelog en Français
 
-## [Beta] - 2023-05-01
+## [Beta] - 2023-05-13
 
 ### CHANGEMENTS IMPACTANTS !!!
 
@@ -20,6 +20,7 @@ type: changelog
 - Le widget prend en compte le type d'équipement
 - Création d'un démon pour écouter les évènements toutes les secondes
 - La mise à jour de la visibilité d'un objet est possible
+- L'écran de configuration a été amélioré
 
 ### Corrections
 
