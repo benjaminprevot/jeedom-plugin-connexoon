@@ -62,7 +62,11 @@ namespace Somfy {
                         'enabled'   => $device['enabled'],
                         'type'      => $deviceType,
                         'commands'  => self::deviceCommands($deviceType, $device['definition']['commands']),
-                        'states'    => self::deviceStates($deviceType, $device['states'])
+                        'states'    => self::deviceStates($deviceType, $device['states']) + array(array(
+                            'type'  => 'string',
+                            'name'  => 'debug',
+                            'value' => json_encode($device, JSON_PRETTY_PRINT)
+                        ))
                     );
                 }
 

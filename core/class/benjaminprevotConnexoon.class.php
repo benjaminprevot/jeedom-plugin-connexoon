@@ -215,6 +215,7 @@ class benjaminprevotConnexoon extends eqLogic {
         switch ($stateType) {
             case 'boolean': return 'binary';
             case 'percent': return 'numeric';
+            case 'string': return 'string';
         }
 
         return null;
