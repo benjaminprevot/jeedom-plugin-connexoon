@@ -62,7 +62,11 @@ namespace Somfy {
                         'enabled'   => $device['enabled'],
                         'type'      => $deviceType,
                         'commands'  => self::deviceCommands($deviceType, $device['definition']['commands']),
-                        'states'    => self::deviceStates($deviceType, $device['states'])
+                        'states'    => self::deviceStates($deviceType, $device['states']) + array(self::state(
+                            'debug',
+                            'string',
+                            json_encode($device, JSON_PRETTY_PRINT)
+                        ))
                     );
                 }
 
@@ -155,10 +159,18 @@ namespace Somfy {
         }
 
         private static function mapState($state) {
+            return self::state(
+                self::translateStateName($state['name']),
+                self::translateStateType($state['type']),
+                $state['value']
+            );
+        }
+
+        private static function state($name, $type, $value) {
             return array(
-                'type'  => self::translateStateType($state['type']),
-                'name'  => self::translateStateName($state['name']),
-                'value' => $state['value']
+                'name'  => $name,
+                'type'  => $type,
+                'value' => $value
             );
         }
 
