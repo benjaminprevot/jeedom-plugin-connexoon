@@ -4,6 +4,14 @@ require_once __DIR__ . '/../../3rdparty/somfy/Somfy.php';
 
 class benjaminprevotConnexoon extends eqLogic {
 
+    private static function api() {
+        $pin = config::byKey('somfy::pin', __CLASS__);
+        $ip = config::byKey('somfy::ip', __CLASS__);
+        $token = config::byKey('somfy::token', __CLASS__);
+
+        return new \Somfy\Api($pin, $ip, $token);
+    }
+
     public static function cron() {
         self::syncDevices();
     }
@@ -97,15 +105,13 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     private static function syncDevices() {
-        $pin = config::byKey('somfy::pin', __CLASS__);
-        $ip = config::byKey('somfy::ip', __CLASS__);
-        $token = config::byKey('somfy::token', __CLASS__);
+        $api = self::api();
 
-        if (empty($token)) {
+        if (!$api->hasToken()) {
             return;
         }
 
-        $devices = \Somfy\Api::devices($pin, $ip, $token);
+        $devices = $api->devices();
 
         foreach ($devices as $device) {
             self::saveEqlogic($device);

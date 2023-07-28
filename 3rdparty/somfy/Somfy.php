@@ -34,6 +34,10 @@ namespace Somfy {
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 
+            if ($this->hasToken()) {
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $this->token"));
+            }
+
             $body = curl_exec($ch);
             $error = curl_error($ch);
             $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -57,25 +61,13 @@ namespace Somfy {
             throw new Exception($errorMessage);
         }
 
-        public static function devices($pin, $ip, $token) {
-            $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/setup/devices");
-            curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $token"));
-            curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        public function devices() {
+            $response = $this->curl('GET', '/setup/devices');
 
-            $response = curl_exec($ch);
-            $error = curl_error($ch);
-
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            curl_close($ch);
-
-            if ($httpCode == 200) {
+            if ($response->code() === 200) {
                 $devices = [];
 
-                foreach (json_decode($response, true) as $device) {
+                foreach (json_decode($response->body(), true) as $device) {
                     $deviceType = self::deviceTypeMapping($device['definition']['uiClass']);
 
                     $devices[] = array(
@@ -97,7 +89,7 @@ namespace Somfy {
 
             $errorFormat = 'Impossible de charger les objets pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s';
 
-            $errorMessage = sprintf($errorFormat, $pin, $ip, $httpCode, $response, $error);
+            $errorMessage = sprintf($errorFormat, $this->pin, $this->ip, $response->code(), $response->body(), $response->error());
 
             throw new Exception($errorMessage);
         }
