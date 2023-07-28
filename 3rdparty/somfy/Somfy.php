@@ -185,7 +185,7 @@ namespace Somfy {
         private static function translateStateType($stateType) {
             switch ($stateType) {
                 case 1: return 'percent';
-                case 6:  return 'boolean';
+                case 6: return 'boolean';
             }
 
             throw new Exception('Unknown state type: ' . $stateType);
