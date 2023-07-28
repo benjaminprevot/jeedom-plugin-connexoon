@@ -54,7 +54,7 @@ namespace Somfy {
                 $devices = [];
 
                 foreach (json_decode($response, true) as $device) {
-                    $deviceType = self::deviceTypeMapping($device['controllableName']);
+                    $deviceType = self::deviceTypeMapping($device['definition']['uiClass']);
 
                     $devices[] = array(
                         'deviceURL' => $device['deviceURL'],
@@ -118,10 +118,9 @@ namespace Somfy {
             }
         }
 
-        private static function deviceTypeMapping($controllableName) {
-            switch ($controllableName) {
-                case 'io:RollerShutterGenericIOComponent':
-                case 'io:RollerShutterWithLowSpeedManagementIOComponent':
+        private static function deviceTypeMapping($uiClass) {
+            switch ($uiClass) {
+                case 'RollerShutter':
                     return \Somfy\Device::ROLLER_SHUTTER;
                 default:
                     return \Somfy\Device::NOT_MANAGED;
