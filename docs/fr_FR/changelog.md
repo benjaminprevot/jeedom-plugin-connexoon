@@ -15,7 +15,7 @@ type: changelog
 
 ### Fonctionnalités
 
-- Les volets roulants sont chargés et les actions de bases (ouvrir, fermer et stopper) sont disponibles
+- Les volets roulants sont chargés et les actions de bases (`ouvrir`, `fermer`, `stopper` et `identifier`) sont disponibles
 - Les widgets sont disponibles sur le dashboard
 - Le widget prend en compte le type d'équipement
 - Création d'un démon pour écouter les évènements toutes les secondes
