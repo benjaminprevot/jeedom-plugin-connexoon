@@ -10,27 +10,49 @@ namespace Somfy {
 
     class Api {
 
-        public static function version($pin, $ip) {
-            $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/apiVersion");
+        private $pin;
+
+        private $ip;
+
+        private $token;
+
+        public function __construct($pin, $ip, $token = '') {
+            $this->pin = $pin;
+            $this->ip = $ip;
+            $this->token = $token;
+        }
+
+        public function hasToken() {
+            return !is_null($this->token) && !empty($this->token);
+        }
+
+        private function curl($method, $endpoint) {
+            $ch = curl_init("https://$this->pin.local:8443/enduser-mobile-web/1/enduserAPI$endpoint");
+
             curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
-            curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
+            curl_setopt($ch, CURLOPT_RESOLVE, array("$this->pin.local:8443:$this->ip"));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 
-            $response = curl_exec($ch);
+            $body = curl_exec($ch);
             $error = curl_error($ch);
-
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
             curl_close($ch);
 
-            if ($httpCode == 200) {
-                return json_decode($response, true)['protocolVersion'];
+            return new \Somfy\Api\Response($code, $body, $error);
+        }
+
+        public function version() {
+            $response = $this->curl('GET', '/apiVersion');
+
+            if ($response->code() === 200) {
+                return json_decode($response->body(), true)['protocolVersion'];
             }
 
             $errorFormat = 'Impossible de charger la version pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s';
 
-            $errorMessage = sprintf($errorFormat, $pin, $ip, $httpCode, $response, $error);
+            $errorMessage = sprintf($errorFormat, $this->pin, $this->ip, $response->code(), $response->body(), $response->error());
 
             throw new Exception($errorMessage);
         }
@@ -270,6 +292,38 @@ namespace Somfy {
 
         private static function hasAtLeastOneState($event) {
             return !empty($event['states']);
+        }
+
+    }
+
+}
+
+namespace Somfy\Api {
+
+    class Response {
+
+        private $code;
+
+        private $body;
+
+        private $error;
+
+        public function __construct($code, $body, $error) {
+            $this->code = $code;
+            $this->body = $body;
+            $this->error = $error;
+        }
+
+        public function code() {
+            return $this->code;
+        }
+
+        public function body() {
+            return $this->body;
+        }
+
+        public function error() {
+            return $this->error;
         }
 
     }
