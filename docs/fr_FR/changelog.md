@@ -7,7 +7,7 @@ type: changelog
 
 # Changelog en Français
 
-## [Beta] - 2023-05-13
+## [Beta] - 2023-07-28
 
 ### CHANGEMENTS IMPACTANTS !!!
 
@@ -24,6 +24,7 @@ type: changelog
 
 ### Corrections
 
+- Correction du filtre appliqué à l'API Somfy pour lister les volets roulants
 - Utilisation de Fontawesome pour le widget
 
 [Beta]: https://github.com/benjaminprevot/jeedom-plugin-connexoon/tree/beta
