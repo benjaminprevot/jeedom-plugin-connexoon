@@ -119,7 +119,7 @@ namespace Somfy {
             $response = $this->curl('POST', '/exec/apply', $json);
 
             if ($response->code() !== 200) {
-                $errorFormat = 'Impossible d\'exécuter la commands pour la gateway %s : command = %s, IP = %s - HTTP code = %s - Response = %s - Error = %s';
+                $errorFormat = 'Impossible d\'exécuter la commande pour la gateway %s : Command = %s, IP = %s - HTTP code = %s - Response = %s - Error = %s';
 
                 $errorMessage = sprintf($errorFormat, $this->pin, $command, $this->ip, $response->code(), $response->body(), $response->error());
 
