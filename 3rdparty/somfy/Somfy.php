@@ -26,7 +26,7 @@ namespace Somfy {
             return !is_null($this->token) && !empty($this->token);
         }
 
-        private function curl($method, $endpoint, $body = '') {
+        private function curl($method, $endpoint, $body = '', $headers = array()) {
             $ch = curl_init("https://$this->pin.local:8443/enduser-mobile-web/1/enduserAPI$endpoint");
 
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -39,7 +39,7 @@ namespace Somfy {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
             }
 
-            $headers = array('Content-Type: application/json');
+            array_push($headers, 'Content-Type: application/json');
 
             if ($this->hasToken()) {
                 array_push($headers, "Authorization: Bearer $this->token");
