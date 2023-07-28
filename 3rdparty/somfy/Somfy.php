@@ -200,62 +200,36 @@ namespace Somfy {
             throw new Exception('Unknown state name: ' . $stateName);
         }
 
-        public static function registerEventListener($pin, $ip, $token) {
-            $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/events/register");
-            curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $token", 'Content-Length: 0'));
-            curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        public function registerEventListener() {
+            $response = $this->curl('POST', '/events/register', '', array('Content-Length: 0'));
 
-            $response = curl_exec($ch);
-            $error = curl_error($ch);
-
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            curl_close($ch);
-
-            if ($httpCode !== 200) {
+            if ($response->code() !== 200) {
                 $errorFormat = 'Impossible d\'enregistrer l\'event listener pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s';
 
-                $errorMessage = sprintf($errorFormat, $pin, $ip, $httpCode, $response, $error);
+                $errorMessage = sprintf($errorFormat, $this->pin, $this->ip, $response->code(), $response->body(), $response->error());
 
                 throw new Exception($errorMessage);
             }
 
-            $json = json_decode($response, true);
+            $json = json_decode($response->body(), true);
 
             return $json['id'];
         }
 
-        public static function fetchEvents($pin, $ip, $token, $listenerId) {
-            $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/events/$listenerId/fetch");
-            curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $token", 'Content-Length: 0'));
-            curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+        public function fetchEvents($listenerId) {
+            $response = $this->curl('POST', "/events/$listenerId/fetch", '', array('Content-Length: 0'));
 
-            $response = curl_exec($ch);
-            $error = curl_error($ch);
-
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            curl_close($ch);
-
-            if ($httpCode !== 200) {
+            if ($response->code() !== 200) {
                 $errorFormat = 'Impossible de lire les événements pour la gateway %s : IP = %s - HTTP code = %s - Response = %s - Error = %s - Listener = %s';
 
-                $errorMessage = sprintf($errorFormat, $pin, $ip, $httpCode, $response, $error, $listenerId);
+                $errorMessage = sprintf($errorFormat, $this->pin, $this->ip, $response->code(), $response->body(), $response->error(), $listenerId);
 
                 throw new Exception($errorMessage);
             }
 
             $events = array();
 
-            foreach (json_decode($response, true) as $event) {
+            foreach (json_decode($response->body(), true) as $event) {
                 $deviceUrl = $event['deviceURL'];
 
                 if (empty($deviceUrl)) {
