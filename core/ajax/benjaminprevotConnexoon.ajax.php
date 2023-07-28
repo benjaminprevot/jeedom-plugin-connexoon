@@ -50,7 +50,8 @@ try {
 
     if (init('action') == 'test') {
         try {
-            $version = \Somfy\Api::version(init('pin'), init('ip'));
+            $api = new \Somfy\Api(init('pin'), init('ip'));
+            $version = $api->version();
 
             ajax::success($version);
         } catch (Exception $e) {

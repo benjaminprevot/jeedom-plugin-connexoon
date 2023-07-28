@@ -4,6 +4,14 @@ require_once __DIR__ . '/../../3rdparty/somfy/Somfy.php';
 
 class benjaminprevotConnexoon extends eqLogic {
 
+    private static function api() {
+        $pin = config::byKey('somfy::pin', __CLASS__);
+        $ip = config::byKey('somfy::ip', __CLASS__);
+        $token = config::byKey('somfy::token', __CLASS__);
+
+        return new \Somfy\Api($pin, $ip, $token);
+    }
+
     public static function cron() {
         self::syncDevices();
     }
@@ -15,9 +23,9 @@ class benjaminprevotConnexoon extends eqLogic {
             'launchable' => 'nok'
         );
 
-        $token = config::byKey('somfy::token', __CLASS__);
+        $api = self::api();
 
-        if (!empty($token)) {
+        if ($api->hasToken()) {
             $return['launchable'] = 'ok';
         }
 
@@ -41,11 +49,9 @@ class benjaminprevotConnexoon extends eqLogic {
 
         log::add(__CLASS__, 'info', 'Lancement démon');
 
-        $pin = config::byKey('somfy::pin', __CLASS__);
-        $ip = config::byKey('somfy::ip', __CLASS__);
-        $token = config::byKey('somfy::token', __CLASS__);
+        $api = self::api();
 
-        $listenerId = \Somfy\Api::registerEventListener($pin, $ip, $token);
+        $listenerId = $api->registerEventListener();
 
         config::save('somfy::listenerId', $listenerId, __CLASS__);
 
@@ -75,12 +81,11 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     public static function fetchEvents() {
-        $pin = config::byKey('somfy::pin', __CLASS__);
-        $ip = config::byKey('somfy::ip', __CLASS__);
-        $token = config::byKey('somfy::token', __CLASS__);
+        $api = self::api();
+
         $listenerId = config::byKey('somfy::listenerId', __CLASS__);
 
-        $events = \Somfy\Api::fetchEvents($pin, $ip, $token, $listenerId);
+        $events = $api->fetchEvents($listenerId);
 
         foreach ($events as $event) {
             $logicalId = $event['deviceURL'];
@@ -97,15 +102,13 @@ class benjaminprevotConnexoon extends eqLogic {
     }
 
     private static function syncDevices() {
-        $pin = config::byKey('somfy::pin', __CLASS__);
-        $ip = config::byKey('somfy::ip', __CLASS__);
-        $token = config::byKey('somfy::token', __CLASS__);
+        $api = self::api();
 
-        if (empty($token)) {
+        if (!$api->hasToken()) {
             return;
         }
 
-        $devices = \Somfy\Api::devices($pin, $ip, $token);
+        $devices = $api->devices();
 
         foreach ($devices as $device) {
             self::saveEqlogic($device);
@@ -253,6 +256,10 @@ class benjaminprevotConnexoon extends eqLogic {
         return template_replace($replace, getTemplate('core', $version, $this->getConfiguration('template'), __CLASS__));
     }
 
+    public function execute($command) {
+        $this->api()->execute($this->getLogicalId(), $command);
+    }
+
 }
 
 class benjaminprevotConnexoonCmd extends cmd {
@@ -265,12 +272,8 @@ class benjaminprevotConnexoonCmd extends cmd {
         $eqLogic = $this->getEqLogic();
         $action = $this->getLogicalId();
 
-        $pin = config::byKey('somfy::pin', 'benjaminprevotConnexoon');
-        $ip = config::byKey('somfy::ip', 'benjaminprevotConnexoon');
-        $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
-
         if ($this->getType() == 'action') {
-            \Somfy\Api::execute($pin, $ip, $token, $eqLogic->getLogicalId(), $action);
+            $eqLogic->execute($action);
         }
     }
 

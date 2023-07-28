@@ -27,4 +27,8 @@ type: changelog
 - Correction du filtre appliqué à l'API Somfy pour lister les volets roulants
 - Utilisation de Fontawesome pour le widget
 
+### Technique
+
+- Réécriture de la librairie Somfy
+
 [Beta]: https://github.com/benjaminprevot/jeedom-plugin-connexoon/tree/beta
