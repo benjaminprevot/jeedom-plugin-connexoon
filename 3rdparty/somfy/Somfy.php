@@ -132,7 +132,7 @@ namespace Somfy {
 
             switch ($deviceType) {
                 case \Somfy\Device::ROLLER_SHUTTER:
-                    return array_intersect([ 'close', 'open', 'stop' ], $commands);
+                    return array_intersect([ 'close', 'identify', 'open', 'stop' ], $commands);
                 default:
                     return [];
             }
