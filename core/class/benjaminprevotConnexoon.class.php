@@ -259,6 +259,10 @@ class benjaminprevotConnexoon extends eqLogic {
         return template_replace($replace, getTemplate('core', $version, $this->getConfiguration('template'), __CLASS__));
     }
 
+    public function execute($command) {
+        $this->api()->execute($this->getLogicalId(), $command);
+    }
+
 }
 
 class benjaminprevotConnexoonCmd extends cmd {
@@ -271,12 +275,8 @@ class benjaminprevotConnexoonCmd extends cmd {
         $eqLogic = $this->getEqLogic();
         $action = $this->getLogicalId();
 
-        $pin = config::byKey('somfy::pin', 'benjaminprevotConnexoon');
-        $ip = config::byKey('somfy::ip', 'benjaminprevotConnexoon');
-        $token = config::byKey('somfy::token', 'benjaminprevotConnexoon');
-
         if ($this->getType() == 'action') {
-            \Somfy\Api::execute($pin, $ip, $token, $eqLogic->getLogicalId(), $action);
+            $eqLogic->execute($action);
         }
     }
 

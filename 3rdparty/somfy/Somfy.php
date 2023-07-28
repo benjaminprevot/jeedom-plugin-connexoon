@@ -26,17 +26,26 @@ namespace Somfy {
             return !is_null($this->token) && !empty($this->token);
         }
 
-        private function curl($method, $endpoint) {
+        private function curl($method, $endpoint, $body = '') {
             $ch = curl_init("https://$this->pin.local:8443/enduser-mobile-web/1/enduserAPI$endpoint");
 
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
             curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
             curl_setopt($ch, CURLOPT_RESOLVE, array("$this->pin.local:8443:$this->ip"));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 
-            if ($this->hasToken()) {
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $this->token"));
+            if (!empty($body)) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
             }
+
+            $headers = array('Content-Type: application/json');
+
+            if ($this->hasToken()) {
+                array_push($headers, "Authorization: Bearer $this->token");
+            }
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
             $body = curl_exec($ch);
             $error = curl_error($ch);
@@ -94,7 +103,7 @@ namespace Somfy {
             throw new Exception($errorMessage);
         }
 
-        public static function execute($pin, $ip, $token, $deviceUrl, $command) {
+        public function execute($deviceUrl, $command) {
             $json = json_encode(array(
                 'label' => $command,
                 'actions' => array(
@@ -107,26 +116,12 @@ namespace Somfy {
                 )
             ), JSON_UNESCAPED_SLASHES);
 
-            $ch = curl_init("https://$pin.local:8443/enduser-mobile-web/1/enduserAPI/exec/apply");
-            curl_setopt($ch, CURLOPT_CAINFO, __DIR__ . '/overkiz-root-ca-2048.crt');
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer $token", 'Content-Type: application/json'));
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-            curl_setopt($ch, CURLOPT_RESOLVE, array("$pin.local:8443:$ip"));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            $response = $this->curl('POST', '/exec/apply', $json);
 
-            $response = curl_exec($ch);
-            $error = curl_error($ch);
+            if ($response->code() !== 200) {
+                $errorFormat = 'Impossible d\'exécuter la commands pour la gateway %s : command = %s, IP = %s - HTTP code = %s - Response = %s - Error = %s';
 
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            curl_close($ch);
-
-            if ($httpCode !== 200) {
-                $errorFormat = 'Impossible d\'exécuter la command pour la gateway %s : command = %s, IP = %s - HTTP code = %s - Response = %s - Error = %s';
-
-                $errorMessage = sprintf($errorFormat, $pin, $command, $ip, $httpCode, $response, $error);
+                $errorMessage = sprintf($errorFormat, $this->pin, $command, $this->ip, $response->code(), $response->body(), $response->error());
 
                 throw new Exception($errorMessage);
             }
